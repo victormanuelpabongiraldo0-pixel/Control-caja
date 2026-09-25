@@ -103,13 +103,13 @@
                 </div>
             </div>
 
-            <!-- CARD PRESTAMOS INTERNOS / SOCIOS (NO AFECTA CAJA DIRECTAMENTE) -->
+            <!-- CARD PRESTAMOS PROPIOS / RETIRO DE SOCIOS -->
             <div class="card admin-only-card" style="border: 2px solid #f59e0b; background: #fffbebf5;">
                 <div class="card-header" style="color: #b45309; display: flex; justify-content: space-between; align-items: center;">
                     <span>🤝 Préstamos Propios / Retiro de Socios</span>
-                    <span id="total-prestamos-internos-badge" style="font-size: 12px; font-weight: bold; color: #b45309;">Hace falta: $0</span>
+                    <span id="total-prestamos-internos-badge" style="font-size: 12px; font-weight: bold; color: #b45309;">HACE FALTA: $0</span>
                 </div>
-                <p style="font-size: 11px; color: #78350f; margin-bottom: 10px;">Dinero retirado por ustedes que no afecta la caja diaria hasta su reembolso.</p>
+                <p style="font-size: 11px; color: #78350f; margin-bottom: 10px;">Dinero retirado de caja por socios. Se descontará de caja y regresará al reembolsarlo.</p>
                 
                 <div class="grid-2">
                     <div class="input-group">
@@ -473,12 +473,22 @@
                 return alert("Ingresa el nombre del socio y un monto válido.");
             }
 
+            const tipoRetiroOpt = prompt(`Escriba el método de donde sale el dinero para ${nombre}:\n\n1: EFECTIVO\n2: TRANSFERENCIA`, "1");
+            const metodo = tipoRetiroOpt === "2" ? "Transferencia" : "Efectivo";
+
+            if (metodo === "Transferencia") {
+                window.dbState.cajaTransferencia = (window.dbState.cajaTransferencia || 0) - monto;
+            } else {
+                window.dbState.cajaEfectivo = (window.dbState.cajaEfectivo || 0) - monto;
+            }
+
             if (!window.dbState.prestamosInternos) window.dbState.prestamosInternos = [];
 
             window.dbState.prestamosInternos.push({
                 id: Date.now(),
                 nombre: nombre,
                 monto: monto,
+                metodo: metodo,
                 fecha: new Date().toLocaleDateString()
             });
 
@@ -486,7 +496,7 @@
 
             document.getElementById("p-interno-nombre").value = "";
             document.getElementById("p-interno-monto").value = "";
-            alert(`Retiro de $${monto.toLocaleString()} asignado a ${nombre} registrado en préstamos internos (No afecta la caja de clientes).`);
+            alert(`Retiro de $${monto.toLocaleString()} (${metodo}) asignado a ${nombre} registrado. Se descontó de caja.`);
         }
 
         function devolverPrestamoInterno(id) {
@@ -494,7 +504,7 @@
             const p = window.dbState.prestamosInternos.find(x => x.id === id);
             if (!p) return;
 
-            const opcion = prompt(`Devolver $${p.monto.toLocaleString()} prestados a ${p.nombre}:\n\nEscribe 1 para ingresar a EFECTIVO\nEscribe 2 para ingresar a TRANSFERENCIA\nEscribe 3 para SALDAR SIN INGRESAR A CAJA`, "1");
+            const opcion = prompt(`Devolver $${p.monto.toLocaleString()} prestados a ${p.nombre}:\n\nEscribe 1 para ingresar a EFECTIVO\nEscribe 2 para ingresar a TRANSFERENCIA\nEscribe 3 para ELIMINAR SIN INGRESAR A CAJA`, "1");
 
             if (opcion === "1") {
                 window.dbState.cajaEfectivo = (window.dbState.cajaEfectivo || 0) + p.monto;
@@ -861,7 +871,7 @@
             document.getElementById("gasto-motivo").value = "";
 
             alert("Gasto registrado exitosamente");
-        }
+                }
                 function setHistFilter(cat, btn) {
             currentHistFilter = cat;
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -1007,7 +1017,7 @@
                     listInternos.innerHTML += `
                         <div class="list-item">
                             <div>
-                                <strong style="color: #78350f;">${p.nombre}</strong> <br>
+                                <strong style="color: #78350f;">${p.nombre}</strong> <small style="color: #0284c7;">(${p.metodo || 'Efectivo'})</small> <br>
                                 <small style="color: #b45309;">Retirado: $${p.monto.toLocaleString()}</small> <br>
                                 <small style="color: #94a3b8;">Fecha: ${p.fecha}</small>
                             </div>
@@ -1023,7 +1033,7 @@
                 listInternos.innerHTML = '<p style="font-size: 11px; color: #92400e; text-align: center;">No hay préstamos propios o retiros pendientes</p>';
             }
 
-            if (badgeInternos) badgeInternos.innerText = `Hace falta: $${totalInterno.toLocaleString()}`;
+            if (badgeInternos) badgeInternos.innerText = `HACE FALTA: $${totalInterno.toLocaleString()}`;
         }
 
         function render() {
