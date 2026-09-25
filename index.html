@@ -57,7 +57,7 @@
 <body>
     <div id="pin-screen">
         <div class="pin-title">Ingresa tu PIN</div>
-        <p id="role-indicator" style="font-size: 12px; color: #38bdf8; margin-bottom: 20px;">PIN Admin (1234) o Operador (0000)</p>
+        <p id="role-indicator" style="font-size: 12px; color: #38bdf8; margin-bottom: 20px;">Acceso al sistema</p>
         <div class="pin-dots">
             <div class="pin-dot" id="dot-0"></div>
             <div class="pin-dot" id="dot-1"></div>
@@ -495,9 +495,21 @@
 
         function borrarPrestamo(id) {
             if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
-            if (confirm("¿Estás seguro de que deseas eliminar este cliente/préstamo permanentemente?")) {
+            const p = window.dbState.prestamos.find(x => x.id === id);
+            if (!p) return;
+
+            if (confirm(`¿Estás seguro de que deseas eliminar permanentemente el crédito de ${p.cliente}?\n\nSe devolverán $${p.monto.toLocaleString()} a la caja.`)) {
+                // Devolver el dinero prestado originalmente a la caja
+                window.dbState.caja += p.monto;
+
+                // Eliminar la transacción original asociada si existe
+                window.dbState.transacciones = window.dbState.transacciones.filter(t => t.prestamoId !== id);
+
+                // Eliminar el préstamo
                 window.dbState.prestamos = window.dbState.prestamos.filter(x => x.id !== id);
+
                 window.saveToCloud();
+                alert("Crédito eliminado y dinero devuelto a caja.");
             }
         }
 
