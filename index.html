@@ -103,6 +103,29 @@
                 </div>
             </div>
 
+            <!-- CARD PRESTAMOS INTERNOS / SOCIOS (NO AFECTA CAJA DIRECTAMENTE) -->
+            <div class="card admin-only-card" style="border: 2px solid #f59e0b; background: #fffbebf5;">
+                <div class="card-header" style="color: #b45309; display: flex; justify-content: space-between; align-items: center;">
+                    <span>🤝 Préstamos Propios / Retiro de Socios</span>
+                    <span id="total-prestamos-internos-badge" style="font-size: 12px; font-weight: bold; color: #b45309;">Hace falta: $0</span>
+                </div>
+                <p style="font-size: 11px; color: #78350f; margin-bottom: 10px;">Dinero retirado por ustedes que no afecta la caja diaria hasta su reembolso.</p>
+                
+                <div class="grid-2">
+                    <div class="input-group">
+                        <input type="text" id="p-interno-nombre" placeholder="Socio / Nombre">
+                    </div>
+                    <div class="input-group">
+                        <input type="number" id="p-interno-monto" placeholder="Monto $">
+                    </div>
+                </div>
+                <button class="btn btn-primary" style="background: #d97706;" onclick="registrarPrestamoInterno()">➕ Registrar Retiro Socio</button>
+
+                <div id="lista-prestamos-internos" style="margin-top: 12px; border-top: 1px dashed #fcd34d; padding-top: 8px;">
+                    <p style="font-size: 11px; color: #92400e; text-align: center;">Cargando retiros pendientes...</p>
+                </div>
+            </div>
+
             <div class="card" style="border: 2px solid #2563eb; background: #f0f9ff;">
                 <div class="card-header" style="color: #1e3a8a; display: flex; justify-content: space-between; align-items: center;">
                     <span>📊 CIERRE DEL DÍA</span>
@@ -191,7 +214,7 @@
         <!-- VISTA NUEVO PRESTAMO -->
         <div id="view-nuevo" class="view">
             <div class="card">
-                <div class="card-header">Nuevo Préstamo</div>
+                <div class="card-header">Nuevo Préstamo a Cliente</div>
                 <div class="input-group">
                     <label>Nombre del Cliente</label>
                     <input type="text" id="p-cliente" placeholder="Nombre completo">
@@ -354,7 +377,7 @@
         const db = getFirestore(app);
         const docRef = doc(db, "control_caja", "general");
 
-        window.dbState = { cajaEfectivo: 0, cajaTransferencia: 0, prestamos: [], transacciones: [], clientesClavos: [], adminPin: "1234", operatorPin: "0000" };
+        window.dbState = { cajaEfectivo: 0, cajaTransferencia: 0, prestamos: [], prestamosInternos: [], transacciones: [], clientesClavos: [], adminPin: "1234", operatorPin: "0000" };
 
         onSnapshot(docRef, (docSnap) => {
             if (docSnap.exists()) {
@@ -366,6 +389,7 @@
                 if (window.dbState.cajaTransferencia === undefined) window.dbState.cajaTransferencia = 0;
                 if (!window.dbState.transacciones) window.dbState.transacciones = [];
                 if (!window.dbState.prestamos) window.dbState.prestamos = [];
+                if (!window.dbState.prestamosInternos) window.dbState.prestamosInternos = [];
                 if (!window.dbState.clientesClavos) window.dbState.clientesClavos = [];
                 if (!window.dbState.adminPin) window.dbState.adminPin = "1234";
                 if (!window.dbState.operatorPin) window.dbState.operatorPin = "0000";
@@ -438,6 +462,51 @@
         function toggleInteresInput() {
             const tipo = document.getElementById("p-tipo-interes").value;
             document.getElementById("lbl-interes").innerText = tipo === "porcentaje" ? "Interés (%)" : "Interés Fijo ($)";
+        }
+
+        function registrarPrestamoInterno() {
+            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
+            const nombre = document.getElementById("p-interno-nombre").value.trim();
+            const monto = parseFloat(document.getElementById("p-interno-monto").value);
+
+            if (!nombre || isNaN(monto) || monto <= 0) {
+                return alert("Ingresa el nombre del socio y un monto válido.");
+            }
+
+            if (!window.dbState.prestamosInternos) window.dbState.prestamosInternos = [];
+
+            window.dbState.prestamosInternos.push({
+                id: Date.now(),
+                nombre: nombre,
+                monto: monto,
+                fecha: new Date().toLocaleDateString()
+            });
+
+            window.saveToCloud();
+
+            document.getElementById("p-interno-nombre").value = "";
+            document.getElementById("p-interno-monto").value = "";
+            alert(`Retiro de $${monto.toLocaleString()} asignado a ${nombre} registrado en préstamos internos (No afecta la caja de clientes).`);
+        }
+
+        function devolverPrestamoInterno(id) {
+            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
+            const p = window.dbState.prestamosInternos.find(x => x.id === id);
+            if (!p) return;
+
+            const opcion = prompt(`Devolver $${p.monto.toLocaleString()} prestados a ${p.nombre}:\n\nEscribe 1 para ingresar a EFECTIVO\nEscribe 2 para ingresar a TRANSFERENCIA\nEscribe 3 para SALDAR SIN INGRESAR A CAJA`, "1");
+
+            if (opcion === "1") {
+                window.dbState.cajaEfectivo = (window.dbState.cajaEfectivo || 0) + p.monto;
+            } else if (opcion === "2") {
+                window.dbState.cajaTransferencia = (window.dbState.cajaTransferencia || 0) + p.monto;
+            } else if (opcion !== "3") {
+                return;
+            }
+
+            window.dbState.prestamosInternos = window.dbState.prestamosInternos.filter(x => x.id !== id);
+            window.saveToCloud();
+            alert("Devolución completada exitosamente.");
         }
 
         function setBaseCaja() {
@@ -522,6 +591,7 @@
                         cajaEfectivo: 0,
                         cajaTransferencia: 0,
                         prestamos: [],
+                        prestamosInternos: [],
                         transacciones: [],
                         clientesClavos: [],
                         adminPin: currentAdminPin,
@@ -922,6 +992,40 @@
             }
         }
 
+        function renderPrestamosInternos() {
+            const listInternos = document.getElementById("lista-prestamos-internos");
+            const badgeInternos = document.getElementById("total-prestamos-internos-badge");
+            
+            if (!listInternos) return;
+            listInternos.innerHTML = "";
+
+            let totalInterno = 0;
+
+            if (window.dbState.prestamosInternos && window.dbState.prestamosInternos.length > 0) {
+                window.dbState.prestamosInternos.forEach(p => {
+                    totalInterno += p.monto;
+                    listInternos.innerHTML += `
+                        <div class="list-item">
+                            <div>
+                                <strong style="color: #78350f;">${p.nombre}</strong> <br>
+                                <small style="color: #b45309;">Retirado: $${p.monto.toLocaleString()}</small> <br>
+                                <small style="color: #94a3b8;">Fecha: ${p.fecha}</small>
+                            </div>
+                            <div>
+                                ${currentUserRole === 'admin' ? `
+                                    <button class="btn btn-success" style="padding: 4px 8px; font-size: 11px;" onclick="devolverPrestamoInterno(${p.id})">🔄 Devolver a Caja</button>
+                                ` : '<span class="badge badge-pending">PENDIENTE</span>'}
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                listInternos.innerHTML = '<p style="font-size: 11px; color: #92400e; text-align: center;">No hay préstamos propios o retiros pendientes</p>';
+            }
+
+            if (badgeInternos) badgeInternos.innerText = `Hace falta: $${totalInterno.toLocaleString()}`;
+        }
+
         function render() {
             const efec = window.dbState.cajaEfectivo || 0;
             const transf = window.dbState.cajaTransferencia || 0;
@@ -1017,6 +1121,7 @@
             calcularCierreDiario();
             renderHistorial();
             renderClavos();
+            renderPrestamosInternos();
         }
     </script>
 </body>
