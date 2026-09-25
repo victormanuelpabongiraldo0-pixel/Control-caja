@@ -2,330 +2,319 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Control de Cobros y Caja</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='110' fill='%230f172a'/><circle cx='256' cy='266' r='64' fill='%23f59e0b'/><text x='256' y='292' font-family='sans-serif' font-size='76' font-weight='900' fill='%230f172a' text-anchor='middle'>$</text></svg>">
-<link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='110' fill='%230f172a'/><circle cx='256' cy='266' r='64' fill='%23f59e0b'/><text x='256' y='292' font-family='sans-serif' font-size='76' font-weight='900' fill='%230f172a' text-anchor='middle'>$</text></svg>">
-    
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkNvbnRyb2wgZGUgQ2FqYSB5IENvYnJvcyIsCiAgInNob3J0X25hbWUiOiAiQ2FqYUFwcCIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMGYxNzJhIiwKICAidGhlbWVfY29sb3IiOiAiIzBmMTcyYSIKfQ==">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='110' fill='%230f172a'/><circle cx='256' cy='266' r='64' fill='%23f59e0b'/><text x='256' y='292' font-family='sans-serif' font-size='76' font-weight='900' fill='%230f172a' text-anchor='middle'>$</text></svg>">
+    <link rel="manifest" href='data:application/manifest+json,{"name":"Control de Cobros","short_name":"ControlCaja","start_url":".","display":"standalone","background_color":"#0f172a","theme_color":"#0f172a","icons":[{"src":"data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22><rect width=%22512%22 height=%22512%22 rx=%22110%22 fill=%22%230f172a%22/><circle cx=%22256%22 cy=%22266%22 r=%2264%22 fill=%22%23f59e0b%22/><text x=%22256%22 y=%22292%22 font-family=%22sans-serif%22 font-size=%2276%22 font-weight=%22900%22 fill=%22%230f172a%22 text-anchor=%22middle%22>$</text></svg>","sizes":"512x512","type":"image/svg+xml","purpose":"any maskable"}]}'>
     <meta name="theme-color" content="#0f172a">
     <style>
-        :root { --bg-main: #f8fafc; --card-bg: #ffffff; --primary: #2563eb; --success: #16a34a; --danger: #dc2626; --warning: #d97706; --text-dark: #0f172a; --text-muted: #64748b; --border-color: #e2e8f0; }
-        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-main); color: var(--text-dark); padding-bottom: 70px; max-width: 600px; margin: 0 auto; min-height: 100vh; }
-        #pin-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #0f172a; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; }
-        .pin-title { font-size: 22px; font-weight: bold; margin-bottom: 10px; }
-        .pin-dots { display: flex; gap: 15px; margin: 25px 0; }
-        .pin-dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #38bdf8; background: transparent; }
+        :root { --bg-main: #f8fafc; --card-bg: #ffffff; --primary: #2563eb; --accent: #f59e0b; --danger: #ef4444; --success: #22c55e; }
+        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; }
+        body { background-color: var(--bg-main); color: #1e293b; padding-bottom: 70px; }
+        #pin-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #0f172a; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; }
+        .pin-title { font-size: 22px; font-weight: bold; margin-bottom: 20px; }
+        .pin-dots { display: flex; gap: 15px; margin-bottom: 30px; }
+        .pin-dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #38bdf8; }
         .pin-dot.filled { background: #38bdf8; }
-        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 280px; }
-        .key-btn { background: #1e293b; color: white; border: 1px solid #334155; font-size: 24px; font-weight: bold; padding: 18px 0; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .top-header { background: #0f172a; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-        .top-header h1 { font-size: 18px; font-weight: 700; color: #f8fafc; }
-        .lock-btn { background: #1e293b; border: none; color: #38bdf8; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 600px; margin: 0 auto; background: white; border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; padding: 8px 0; z-index: 100; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 11px; color: var(--text-muted); background: none; border: none; cursor: pointer; width: 20%; }
+        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 260px; }
+        .key-btn { background: #1e293b; color: white; border: none; padding: 18px; font-size: 20px; border-radius: 12px; cursor: pointer; }
+        .top-header { background: #0f172a; color: white; padding: 16px; display: flex; justify-content: space-between; align-items: center; }
+        .top-header h1 { font-size: 18px; font-weight: 600; }
+        .lock-btn { background: #1e293b; border: none; color: #f59e0b; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: #ffffff; border-top: 1px solid #e2e8f0; display: flex; justify-around: space-around; padding: 10px 0; z-index: 1000; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #64748b; font-size: 11px; cursor: pointer; }
         .nav-item.active { color: var(--primary); font-weight: bold; }
         .nav-item span { font-size: 18px; margin-bottom: 2px; }
-        .container { padding: 15px; }
-        .card { background: var(--card-bg); border-radius: 12px; padding: 16px; margin-bottom: 15px; border: 1px solid var(--border-color); }
-        .card-title { font-size: 15px; font-weight: 700; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .form-group { margin-bottom: 12px; }
-        .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; }
-        input, select { width: 100%; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; background: #fff; outline: none; }
-        .btn { width: 100%; padding: 12px; border-radius: 8px; border: none; font-size: 14px; font-weight: 700; cursor: pointer; text-align: center; }
+        .container { padding: 15px; max-width: 600px; margin: 0 auto; }
+        .view { display: none; }
+        .view.active { display: block; }
+        .card { background: var(--card-bg); border-radius: 12px; padding: 16px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .card-header { font-size: 14px; font-weight: bold; color: #64748b; margin-bottom: 8px; text-transform: uppercase; }
+        .hero-value { font-size: 32px; font-weight: 800; color: #0f172a; margin-bottom: 4px; }
+        .input-group { margin-bottom: 12px; }
+        .input-group label { display: block; font-size: 12px; font-weight: bold; color: #475569; margin-bottom: 4px; }
+        .input-group input, .input-group select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; outline: none; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; text-align: center; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-success { background: var(--success); color: white; }
         .btn-danger { background: var(--danger); color: white; }
-        .btn-warning { background: var(--warning); color: white; }
-        .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-dark); }
-        .btn-sm { padding: 6px 12px; font-size: 12px; width: auto; }
-        .balance-box { text-align: center; padding: 20px; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; border-radius: 12px; margin-bottom: 15px; }
-        .balance-amount { font-size: 32px; font-weight: 800; color: #38bdf8; margin: 8px 0; }
-        .badge { padding: 3px 8px; border-radius: 12px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
-        .badge-success { background: #dcfce7; color: #15803d; }
-        .badge-warning { background: #fef3c7; color: #b45309; }
-        .item-list { display: flex; flex-direction: column; gap: 10px; }
-        .list-item { background: white; border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .list-item-info h4 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
-        .list-item-info p { font-size: 12px; color: var(--text-muted); }
-        .hidden { display: none !important; }
-        .text-success { color: var(--success); font-weight: bold; }
-        .text-danger { color: var(--danger); font-weight: bold; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+        .list-item:last-child { border-bottom: none; }
+        .badge { padding: 4px 8px; border-radius: 12px; font-size: 10px; font-weight: bold; }
+        .badge-pending { background: #fef3c7; color: #d97706; }
+        .badge-paid { background: #dcfce7; color: #15803d; }
     </style>
 </head>
 <body>
     <div id="pin-screen">
-        <div class="pin-title">Ingrese su PIN</div>
-        <div style="font-size: 12px; color: #94a3b8;">Seguridad de la Caja</div>
-        <div class="pin-dots"><div class="pin-dot" id="dot-0"></div><div class="pin-dot" id="dot-1"></div><div class="pin-dot" id="dot-2"></div><div class="pin-dot" id="dot-3"></div></div>
-        <div class="keypad">
-            <button class="key-btn" onclick="pressKey('1')">1</button><button class="key-btn" onclick="pressKey('2')">2</button><button class="key-btn" onclick="pressKey('3')">3</button>
-            <button class="key-btn" onclick="pressKey('4')">4</button><button class="key-btn" onclick="pressKey('5')">5</button><button class="key-btn" onclick="pressKey('6')">6</button>
-            <button class="key-btn" onclick="pressKey('7')">7</button><button class="key-btn" onclick="pressKey('8')">8</button><button class="key-btn" onclick="pressKey('9')">9</button>
-            <button class="key-btn" style="font-size:14px;" onclick="clearPin()">Borrar</button><button class="key-btn" onclick="pressKey('0')">0</button><button class="key-btn" style="font-size:14px;" onclick="deleteKey()">←</button>
+        <div class="pin-title">Ingresa tu PIN</div>
+        <div class="pin-dots">
+            <div class="pin-dot" id="dot-0"></div>
+            <div class="pin-dot" id="dot-1"></div>
+            <div class="pin-dot" id="dot-2"></div>
+            <div class="pin-dot" id="dot-3"></div>
         </div>
-        <div id="pin-error" style="color: #f87171; font-size: 12px; margin-top: 15px;" class="hidden">PIN Incorrecto</div>
+        <div class="keypad">
+            <button class="key-btn" onclick="pressPin('1')">1</button>
+            <button class="key-btn" onclick="pressPin('2')">2</button>
+            <button class="key-btn" onclick="pressPin('3')">3</button>
+            <button class="key-btn" onclick="pressPin('4')">4</button>
+            <button class="key-btn" onclick="pressPin('5')">5</button>
+            <button class="key-btn" onclick="pressPin('6')">6</button>
+            <button class="key-btn" onclick="pressPin('7')">7</button>
+            <button class="key-btn" onclick="pressPin('8')">8</button>
+            <button class="key-btn" onclick="pressPin('9')">9</button>
+            <button class="key-btn" onclick="clearPin()">C</button>
+            <button class="key-btn" onclick="pressPin('0')">0</button>
+            <button class="key-btn" onclick="deletePin()">←</button>
+        </div>
     </div>
     <div class="top-header">
         <h1>Control de Cobros</h1>
         <button class="lock-btn" onclick="lockApp()">🔒 Bloquear</button>
     </div>
     <div class="container">
-        <div id="tab-caja">
-            <div class="balance-box">
-                <div style="font-size: 12px; opacity: 0.8; text-transform: uppercase;">Efectivo en Caja</div>
-                <div class="balance-amount" id="caja-monto">$0</div>
-                <div style="font-size: 12px; color: #94a3b8;">Base activa de trabajo</div>
+        <div id="view-caja" class="view active">
+            <div class="card" style="background: #0f172a; color: white;">
+                <div class="card-header" style="color: #94a3b8;">Efectivo en Caja</div>
+                <div class="hero-value" id="caja-actual" style="color: #38bdf8;">$0</div>
+                <p style="font-size: 11px; color: #64748b;">Base activa de trabajo</p>
             </div>
             <div class="card">
-                <div class="card-title">Ajustar Base de Caja</div>
-                <div class="form-group"><label>Monto de Base ($)</label><input type="number" id="base-input" placeholder="Ej. 500000"></div>
-                <button class="btn btn-primary" onclick="fijarBase()">Actualizar Saldo</button>
-            </div>
-            <div class="card">
-                <div class="card-title">Resumen Financiero</div>
-                <div class="grid-2" style="text-align: center;">
-                    <div style="background: #f1f5f9; padding: 10px; border-radius: 8px;"><div style="font-size: 11px; color: var(--text-muted);">En la Calle</div><div id="total-prestado-calle" style="font-size: 16px; font-weight: bold; color: var(--primary);">$0</div></div>
-                    <div style="background: #f1f5f9; padding: 10px; border-radius: 8px;"><div style="font-size: 11px; color: var(--text-muted);">Cobrado</div><div id="total-ganancias-cobradas" style="font-size: 16px; font-weight: bold; color: var(--success);">$0</div></div>
+                <div class="card-header">Ajustar Base de Caja</div>
+                <div class="input-group">
+                    <label>Monto de Base ($)</label>
+                    <input type="number" id="base-monto" placeholder="Ej. 500000">
                 </div>
+                <button class="btn btn-primary" onclick="setBaseCaja()">Actualizar Saldo</button>
             </div>
-        </div>
-        <div id="tab-cobros" class="hidden">
             <div class="card">
-                <div class="card-title"><span>Ruta de Cobro Diario</span><span id="contador-cobros" class="badge badge-warning">0 pendientes</span></div>
-                <div id="lista-cobros" class="item-list"></div>
-            </div>
-        </div>
-        <div id="tab-clientes" class="hidden">
-            <div class="card">
-                <div class="card-title">Nuevo Crédito</div>
-                <div class="form-group"><label>Nombre del Cliente</label><input type="text" id="cli-nombre" placeholder="Nombre completo"></div>
+                <div class="card-header">Resumen Financiero</div>
                 <div class="grid-2">
-                    <div class="form-group"><label>Teléfono (WhatsApp)</label><input type="tel" id="cli-tel" placeholder="Ej. 3001234567"></div>
-                    <div class="form-group"><label>Dirección / Barrio</label><input type="text" id="cli-dir" placeholder="Ubicación"></div>
+                    <div>
+                        <p style="font-size: 11px; color: #64748b;">En la Calle</p>
+                        <p style="font-size: 18px; font-weight: bold; color: #ef4444;" id="total-prestado">$0</p>
+                    </div>
+                    <div>
+                        <p style="font-size: 11px; color: #64748b;">Cobrado</p>
+                        <p style="font-size: 18px; font-weight: bold; color: #22c55e;" id="total-cobrado">$0</p>
+                    </div>
                 </div>
-                <div class="grid-2">
-                    <div class="form-group"><label>Monto Entregado ($)</label><input type="number" id="cli-monto" placeholder="100000" oninput="calcularTotalPagar()"></div>
-                    <div class="form-group"><label>Tipo de Interés</label><select id="cli-tipo-interes" onchange="calcularTotalPagar()"><option value="porcentaje">Porcentaje (%)</option><option value="fijo">Valor Fijo ($)</option></select></div>
-                </div>
-                <div class="grid-2">
-                    <div class="form-group"><label>Interés (Valor o %)</label><input type="number" id="cli-interes" value="20" oninput="calcularTotalPagar()"></div>
-                    <div class="form-group"><label>Frecuencia Pago</label><select id="cli-frecuencia" onchange="calcularTotalPagar()"><option value="diario">Diario</option><option value="semanal">Semanal</option><option value="quincenal">Quincenal</option><option value="mensual">Mensual</option></select></div>
-                </div>
-                <div class="form-group"><label>Plazo / Cantidad de Días (o Cuotas)</label><input type="number" id="cli-cuotas-num" value="20" placeholder="Ej. 20 días" oninput="calcularTotalPagar()"></div>
-                <div style="background: #e0f2fe; padding: 10px; border-radius: 8px; margin-bottom: 12px; font-size: 12px; color: #0369a1;">Total a cobrar: <span id="summary-total" style="font-weight:bold;">$0</span> | Cuota: <span id="summary-cuota" style="font-weight:bold;">$0</span></div>
-                <button class="btn btn-success" onclick="guardarCliente()">Otorgar Crédito y Restar de Caja</button>
-            </div>
-            <div class="card">
-                <div class="card-title">Directorio de Clientes</div>
-                <div id="lista-clientes" class="item-list"></div>
             </div>
         </div>
-        <div id="tab-gastos" class="hidden">
+                <div id="view-nuevo" class="view">
             <div class="card">
-                <div class="card-title">Registrar Gasto</div>
-                <div class="form-group"><label>Categoría</label><select id="gasto-cat"><option value="Gasolina">⛽ Gasolina</option><option value="Arriendo">🏠 Arriendo</option><option value="Alimentación">🍲 Alimentación</option><option value="Mantenimiento">🔧 Mantenimiento</option><option value="Otros">📦 Otros Gastos</option></select></div>
-                <div class="form-group"><label>Monto ($)</label><input type="number" id="gasto-monto" placeholder="Ej. 15000"></div>
-                <div class="form-group"><label>Descripción</label><input type="text" id="gasto-desc" placeholder="Ej. Tanqueo moto"></div>
-                <button class="btn btn-warning" onclick="registrarGasto()">Descontar Gasto de Caja</button>
+                <div class="card-header">Nuevo Préstamo</div>
+                <div class="input-group">
+                    <label>Nombre del Cliente</label>
+                    <input type="text" id="p-cliente" placeholder="Nombre completo">
+                </div>
+                <div class="input-group">
+                    <label>Monto Prestado ($)</label>
+                    <input type="number" id="p-monto" placeholder="100000">
+                </div>
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label>Tipo Interés</label>
+                        <select id="p-tipo-interes" onchange="toggleInteresInput()">
+                            <option value="porcentaje">Porcentaje (%)</option>
+                            <option value="fijo">Valor Fijo ($)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label id="lbl-interes">Interés (%)</label>
+                        <input type="number" id="p-interes" placeholder="20">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label>Días / Plazo Exacto</label>
+                        <input type="number" id="p-dias" placeholder="Ej. 30">
+                    </div>
+                    <div class="input-group">
+                        <label>Frecuencia de Pago</label>
+                        <select id="p-frecuencia">
+                            <option value="diario">Diario</option>
+                            <option value="semanal">Semanal</option>
+                            <option value="quincenal">Quincenal</option>
+                            <option value="mensual">Mensual</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn btn-success" onclick="crearPrestamo()">Registrar Préstamo</button>
             </div>
         </div>
-        <div id="tab-historial" class="hidden">
+
+        <div id="view-cobros" class="view">
             <div class="card">
-                <div class="card-title">Arqueo por Fecha</div>
-                <div class="form-group"><label>Seleccionar Fecha:</label><input type="date" id="filtro-fecha" onchange="cargarHistorial()"></div>
-                <div class="grid-2" style="text-align: center; margin-top: 10px;">
-                    <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 8px; border-radius: 8px;"><div style="font-size: 11px; color: var(--success);">Cobrado</div><div id="res-cobrado" style="font-weight: bold; color: var(--success);">$0</div></div>
-                    <div style="background: #fef2f2; border: 1px solid #fecaca; padding: 8px; border-radius: 8px;"><div style="font-size: 11px; color: var(--danger);">Salidas</div><div id="res-salidas" style="font-weight: bold; color: var(--danger);">$0</div></div>
+                <div class="card-header">Lista de Cobros</div>
+                <div id="lista-prestamos">
+                    <p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay préstamos activos</p>
                 </div>
-            </div>
-            <div class="card"><div class="card-title">Movimientos del Día</div><div id="lista-historial" class="item-list"></div></div>
-            <div class="card">
-                <div class="card-title">Copias de Seguridad</div>
-                <div class="grid-2"><button class="btn btn-outline" onclick="exportarBackup()">📥 Descargar</button><button class="btn btn-outline" onclick="document.getElementById('import-file').click()">📤 Cargar</button></div>
-                <input type="file" id="import-file" class="hidden" accept=".json" onchange="importarBackup(event)">
             </div>
         </div>
     </div>
+
     <div class="bottom-nav">
-        <button class="nav-item active" onclick="showTab('caja', this)"><span>💵</span>Caja</button>
-        <button class="nav-item" onclick="showTab('cobros', this)"><span>📋</span>Cobrar</button>
-        <button class="nav-item" onclick="showTab('clientes', this)"><span>👥</span>Clientes</button>
-        <button class="nav-item" onclick="showTab('gastos', this)"><span>⛽</span>Gastos</button>
-        <button class="nav-item" onclick="showTab('historial', this)"><span>📊</span>Historial</button>
+        <div class="nav-item active" onclick="switchTab('caja', this)">
+            <span>🏦</span>Caja
+        </div>
+        <div class="nav-item" onclick="switchTab('nuevo', this)">
+            <span>➕</span>Nuevo
+        </div>
+        <div class="nav-item" onclick="switchTab('cobros', this)">
+            <span>📋</span>Cobros
+        </div>
     </div>
-        <script>
-        const PIN_CORRECTO = "1234";
-        let pinIngresado = "";
-        function pressKey(num) { if (pinIngresado.length < 4) { pinIngresado += num; updateDots(); if (pinIngresado.length === 4) setTimeout(checkPin, 100); } }
-        function deleteKey() { pinIngresado = pinIngresado.slice(0, -1); updateDots(); }
-        function clearPin() { pinIngresado = ""; updateDots(); }
-        function updateDots() { for (let i = 0; i < 4; i++) { const dot = document.getElementById(`dot-${i}`); if (i < pinIngresado.length) dot.classList.add('filled'); else dot.classList.remove('filled'); } }
-        function checkPin() { if (pinIngresado === PIN_CORRECTO) { document.getElementById('pin-screen').classList.add('hidden'); document.getElementById('pin-error').classList.add('hidden'); pinIngresado = ""; updateDots(); } else { document.getElementById('pin-error').classList.remove('hidden'); clearPin(); } }
-        function lockApp() { clearPin(); document.getElementById('pin-screen').classList.remove('hidden'); }
 
-        let appData = JSON.parse(localStorage.getItem('control_cobros_v2')) || { caja: 0, clientes: [], movimientos: [] };
-        function guardarData() { localStorage.setItem('control_cobros_v2', JSON.stringify(appData)); render(); }
+    <script>
+        const CORRECT_PIN = "1234";
+        let enteredPin = "";
+        let state = JSON.parse(localStorage.getItem("control_caja_db")) || { caja: 0, prestamos: [] };
 
-        function showTab(tabName, el) {
-            ['caja', 'cobros', 'clientes', 'gastos', 'historial'].forEach(t => document.getElementById('tab-' + t).classList.add('hidden'));
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            document.getElementById('tab-' + tabName).classList.remove('hidden');
-            if (el) el.classList.add('active');
-            if(tabName === 'historial') { document.getElementById('filtro-fecha').value = new Date().toISOString().split('T')[0]; cargarHistorial(); }
+        function saveState() {
+            localStorage.setItem("control_caja_db", JSON.stringify(state));
+            render();
         }
 
-        function fijarBase() {
-            const val = parseFloat(document.getElementById('base-input').value);
-            if(!isNaN(val)) {
-                appData.caja = val;
-                appData.movimientos.push({ fecha: new Date().toISOString().split('T')[0], tipo: 'AJUSTE', detalle: 'Ajuste de base', monto: val, metodo: 'Efectivo' });
-                guardarData(); document.getElementById('base-input').value = ''; alert('Base actualizada');
+        function pressPin(num) {
+            if (enteredPin.length < 4) {
+                enteredPin += num;
+                updateDots();
+                if (enteredPin.length === 4) {
+                    setTimeout(() => {
+                        if (enteredPin === CORRECT_PIN) {
+                            document.getElementById("pin-screen").style.display = "none";
+                            enteredPin = "";
+                            updateDots();
+                        } else {
+                            alert("PIN Incorrecto");
+                            clearPin();
+                        }
+                    }, 200);
+                }
             }
         }
 
-        function calcularTotalPagar() {
-            const monto = parseFloat(document.getElementById('cli-monto').value) || 0;
-            const tipoInteres = document.getElementById('cli-tipo-interes').value;
-            const interesVal = parseFloat(document.getElementById('cli-interes').value) || 0;
-            const cuotas = parseInt(document.getElementById('cli-cuotas-num').value) || 1;
+        function clearPin() { enteredPin = ""; updateDots(); }
+        function deletePin() { enteredPin = enteredPin.slice(0, -1); updateDots(); }
+        function updateDots() {
+            for (let i = 0; i < 4; i++) {
+                const dot = document.getElementById(`dot-${i}`);
+                if (i < enteredPin.length) dot.classList.add("filled");
+                else dot.classList.remove("filled");
+            }
+        }
+        function lockApp() { document.getElementById("pin-screen").style.display = "flex"; }
 
-            let total = monto;
-            if (tipoInteres === 'porcentaje') { total += monto * (interesVal / 100); } 
-            else { total += interesVal; }
-
-            document.getElementById('summary-total').innerText = `$${Math.round(total).toLocaleString()}`;
-            document.getElementById('summary-cuota').innerText = `$${Math.round(total / cuotas).toLocaleString()}`;
+        function switchTab(viewId, el) {
+            document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+            document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+            document.getElementById(`view-${viewId}`).classList.add("active");
+            el.classList.add("active");
         }
 
-        function guardarCliente() {
-            const nombre = document.getElementById('cli-nombre').value;
-            const tel = document.getElementById('cli-tel').value;
-            const dir = document.getElementById('cli-dir').value;
-            const monto = parseFloat(document.getElementById('cli-monto').value);
-            const tipoInteres = document.getElementById('cli-tipo-interes').value;
-            const interesVal = parseFloat(document.getElementById('cli-interes').value) || 0;
-            const frecuencia = document.getElementById('cli-frecuencia').value;
-            const cuotasNum = parseInt(document.getElementById('cli-cuotas-num').value) || 1;
-
-            if(!nombre || isNaN(monto) || monto <= 0) return alert('Completa los campos obligatorios');
-
-            let totalPagar = monto;
-            if (tipoInteres === 'porcentaje') { totalPagar += monto * (interesVal / 100); } 
-            else { totalPagar += interesVal; }
-
-            appData.clientes.push({
-                id: Date.now(), nombre, tel, dir, montoPrestado: monto, tipoInteres, interesVal, totalPagar,
-                saldoPendiente: totalPagar, valorCuota: Math.round(totalPagar / cuotasNum),
-                frecuencia, diasPlazo: cuotasNum, activo: true, pagadoHoy: false
-            });
-
-            appData.caja -= monto;
-            appData.movimientos.push({ fecha: new Date().toISOString().split('T')[0], tipo: 'PRESTAMO', detalle: `Préstamo a ${nombre}`, monto, metodo: 'Efectivo' });
-
-            document.getElementById('cli-nombre').value = '';
-            document.getElementById('cli-tel').value = '';
-            document.getElementById('cli-dir').value = '';
-            document.getElementById('cli-monto').value = '';
-            guardarData();
-            alert('Crédito registrado y restado de caja.');
+        function toggleInteresInput() {
+            const tipo = document.getElementById("p-tipo-interes").value;
+            document.getElementById("lbl-interes").innerText = tipo === "porcentaje" ? "Interés (%)" : "Interés Fijo ($)";
         }
 
-        function cobrar(clienteId) {
-            const cli = appData.clientes.find(c => c.id === clienteId);
-            if(!cli) return;
-            const montoPagoStr = prompt(`Registrar cobro para ${cli.nombre}.\nCuota sugerida: $${cli.valorCuota.toLocaleString()}`, cli.valorCuota);
-            if(!montoPagoStr) return;
-            const pago = parseFloat(montoPagoStr);
-            if(isNaN(pago) || pago <= 0) return;
-            const opcMetodo = prompt("Método:\n1. Efectivo\n2. Transferencia / Nequi", "1");
-            const metodo = opcMetodo === "2" ? "Transferencia" : "Efectivo";
-
-            cli.saldoPendiente -= pago;
-            cli.pagadoHoy = true;
-            if(cli.saldoPendiente <= 0) { cli.saldoPendiente = 0; cli.activo = false; alert(`${cli.nombre} ha pagado la totalidad.`); }
-
-            appData.caja += pago;
-            appData.movimientos.push({ fecha: new Date().toISOString().split('T')[0], tipo: 'COBRO', detalle: `Cobro a ${cli.nombre}`, monto: pago, metodo });
-            guardarData();
-
-            if(cli.tel && confirm('¿Enviar comprobante por WhatsApp?')) {
-                const msj = encodeURIComponent(`Hola ${cli.nombre}, recibimos tu pago de $${pago.toLocaleString()}. Saldo pendiente: $${cli.saldoPendiente.toLocaleString()}. ¡Gracias!`);
-                window.open(`https://wa.me/${cli.tel}?text=${msj}`, '_blank');
+        function setBaseCaja() {
+            const m = parseFloat(document.getElementById("base-monto").value);
+            if (!isNaN(m)) {
+                state.caja = m;
+                document.getElementById("base-monto").value = "";
+                saveState();
             }
         }
 
-        function registrarGasto() {
-            const cat = document.getElementById('gasto-cat').value;
-            const monto = parseFloat(document.getElementById('gasto-monto').value);
-            const desc = document.getElementById('gasto-desc').value;
-            if(isNaN(monto) || monto <= 0) return alert('Ingresa un monto válido');
+        function crearPrestamo() {
+            const cliente = document.getElementById("p-cliente").value;
+            const monto = parseFloat(document.getElementById("p-monto").value);
+            const tipoInteres = document.getElementById("p-tipo-interes").value;
+            const valInteres = parseFloat(document.getElementById("p-interes").value);
+            const dias = parseInt(document.getElementById("p-dias").value);
+            const frecuencia = document.getElementById("p-frecuencia").value;
 
-            appData.caja -= monto;
-            appData.movimientos.push({ fecha: new Date().toISOString().split('T')[0], tipo: 'GASTO', detalle: `[${cat}] ${desc || 'Gasto'}`, monto, metodo: 'Efectivo' });
-            document.getElementById('gasto-monto').value = ''; document.getElementById('gasto-desc').value = '';
-            guardarData(); alert('Gasto registrado');
-        }
+            if (!cliente || isNaN(monto) || isNaN(valInteres) || isNaN(dias)) {
+                alert("Por favor completa todos los campos.");
+                return;
+            }
 
-        function eliminarCliente(id) { if(confirm('¿Eliminar cliente definitivamente?')) { appData.clientes = appData.clientes.filter(c => c.id !== id); guardarData(); } }
+            let ganancia = tipoInteres === "porcentaje" ? (monto * (valInteres / 100)) : valInteres;
+            let totalPagar = monto + ganancia;
 
-        function cargarHistorial() {
-            const fechaSel = document.getElementById('filtro-fecha').value;
-            const movs = appData.movimientos.filter(m => m.fecha === fechaSel);
-            let cobrado = 0, salidas = 0, html = '';
-            movs.forEach(m => {
-                if(m.tipo === 'COBRO') cobrado += m.monto;
-                if(m.tipo === 'PRESTAMO' || m.tipo === 'GASTO') salidas += m.monto;
-                html += `<div class="list-item"><div class="list-item-info"><h4>${m.detalle}</h4><p>${m.tipo} | ${m.metodo}</p></div><div class="${m.tipo==='COBRO'?'text-success':'text-danger'}">${m.tipo==='COBRO'?'+':'-'}$${m.monto.toLocaleString()}</div></div>`;
+            state.prestamos.push({
+                id: Date.now(),
+                cliente,
+                monto,
+                totalPagar,
+                saldoPendiente: totalPagar,
+                dias,
+                frecuencia,
+                fecha: new Date().toLocaleDateString()
             });
-            document.getElementById('res-cobrado').innerText = `$${cobrado.toLocaleString()}`;
-            document.getElementById('res-salidas').innerText = `$${salidas.toLocaleString()}`;
-            document.getElementById('lista-historial').innerHTML = html || '<p style="font-size:12px; color:gray; text-align:center;">Sin movimientos hoy.</p>';
+
+            state.caja -= monto;
+            saveState();
+
+            document.getElementById("p-cliente").value = "";
+            document.getElementById("p-monto").value = "";
+            document.getElementById("p-interes").value = "";
+            document.getElementById("p-dias").value = "";
+
+            alert("Préstamo registrado exitosamente");
+            switchTab("cobros", document.querySelectorAll(".nav-item")[2]);
         }
 
-        function exportarBackup() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData));
-            const downloadAnchor = document.createElement('a'); downloadAnchor.setAttribute("href", dataStr); downloadAnchor.setAttribute("download", `backup_${new Date().toISOString().split('T')[0]}.json`);
-            document.body.appendChild(downloadAnchor); downloadAnchor.click(); downloadAnchor.remove();
-        }
-
-        function importarBackup(event) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const importedData = JSON.parse(e.target.result);
-                    if(importedData.clientes && importedData.movimientos) { appData = importedData; guardarData(); alert('Respaldo restaurado.'); }
-                } catch(err) { alert('Error al leer el archivo'); }
-            };
-            reader.readAsText(event.target.files[0]);
+        function registrarPago(id) {
+            const p = state.prestamos.find(x => x.id === id);
+            if (!p) return;
+            const cuota = prompt(`Saldo actual: $${p.saldoPendiente}\nIngrese monto del pago:`);
+            const val = parseFloat(cuota);
+            if (!isNaN(val) && val > 0) {
+                p.saldoPendiente = Math.max(0, p.saldoPendiente - val);
+                state.caja += val;
+                saveState();
+            }
         }
 
         function render() {
-            document.getElementById('caja-monto').innerText = `$${appData.caja.toLocaleString()}`;
-            let prestadoCalle = 0; appData.clientes.filter(c => c.activo).forEach(c => prestadoCalle += c.saldoPendiente);
-            document.getElementById('total-prestado-calle').innerText = `$${prestadoCalle.toLocaleString()}`;
-            let gananciasCobradas = 0; appData.movimientos.filter(m => m.tipo === 'COBRO').forEach(m => gananciasCobradas += m.monto);
-            document.getElementById('total-ganancias-cobradas').innerText = `$${gananciasCobradas.toLocaleString()}`;
+            document.getElementById("caja-actual").innerText = `$${state.caja.toLocaleString()}`;
+            let prestado = 0, cobrado = 0;
+            const list = document.getElementById("lista-prestamos");
+            list.innerHTML = "";
 
-            const cobrosPendientes = appData.clientes.filter(c => c.activo);
-            document.getElementById('contador-cobros').innerText = `${cobrosPendientes.length} pendientes`;
+            if (state.prestamos.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay préstamos activos</p>';
+            }
 
-            let cobrosHtml = '';
-            cobrosPendientes.forEach(c => {
-                cobrosHtml += `<div class="list-item"><div class="list-item-info"><h4>${c.nombre} ${c.pagadoHoy ? '<span class="badge badge-success">Pagó Hoy</span>' : ''}</h4><p>📍 ${c.dir || 'Sin dir.'} | Saldo: <strong>$${c.saldoPendiente.toLocaleString()}</strong></p><p>Cuota: $${c.valorCuota.toLocaleString()} (${c.frecuencia} - ${c.diasPlazo || 0}d)</p></div><button class="btn btn-success btn-sm" onclick="cobrar(${c.id})">Cobrar</button></div>`;
+            state.prestamos.forEach(p => {
+                prestado += p.monto;
+                cobrado += (p.totalPagar - p.saldoPendiente);
+                const isPaid = p.saldoPendiente === 0;
+                list.innerHTML += `
+                    <div class="list-item">
+                        <div>
+                            <strong>${p.cliente}</strong> <br>
+                            <small style="color: #64748b;">${p.frecuencia} - Plazo: ${p.dias} días</small> <br>
+                            <small style="color: #2563eb;">Total: $${p.totalPagar.toLocaleString()}</small>
+                        </div>
+                        <div style="text-align: right;">
+                            <span class="badge ${isPaid ? 'badge-paid' : 'badge-pending'}">${isPaid ? 'PAGADO' : 'PENDIENTE'}</span><br>
+                            <strong style="color: #ef4444;">$${p.saldoPendiente.toLocaleString()}</strong><br>
+                            ${!isPaid ? `<button class="btn btn-success" style="padding: 4px 8px; font-size: 11px; margin-top: 4px;" onclick="registrarPago(${p.id})">Abonar</button>` : ''}
+                        </div>
+                    </div>
+                `;
             });
-            document.getElementById('lista-cobros').innerHTML = cobrosHtml || '<p style="font-size:12px; color:gray; text-align:center;">No hay cobros pendientes.</p>';
 
-            let cliHtml = '';
-            appData.clientes.forEach(c => {
-                cliHtml += `<div class="list-item"><div class="list-item-info"><h4>${c.nombre} <span class="badge ${c.activo?'badge-warning':'badge-success'}">${c.activo?'Activo':'Saldado'}</span></h4><p>Tel: ${c.tel || 'S/N'} | Saldo: $${c.saldoPendiente.toLocaleString()}</p></div><button class="btn btn-danger btn-sm" onclick="eliminarCliente(${c.id})">🗑️</button></div>`;
-            });
-            document.getElementById('lista-clientes').innerHTML = cliHtml || '<p style="font-size:12px; color:gray; text-align:center;">No hay clientes.</p>';
+            document.getElementById("total-prestado").innerText = `$${prestado.toLocaleString()}`;
+            document.getElementById("total-cobrado").innerText = `$${cobrado.toLocaleString()}`;
         }
 
-        calcularTotalPagar();
         render();
     </script>
 </body>
