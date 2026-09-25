@@ -139,6 +139,14 @@
                 </div>
                 <button class="btn btn-primary" onclick="setBaseCaja()">Actualizar Saldo</button>
             </div>
+
+            <!-- CARD REINICIAR TODO (SOLO ADMIN) -->
+            <div class="card" id="card-reset-system" style="border: 1px dashed #ef4444; background: #fff5f5;">
+                <div class="card-header" style="color: #dc2626;">⚙️ Zona de Peligro</div>
+                <p style="font-size: 11px; color: #7f1d1d; margin-bottom: 10px;">Borra toda la información en la nube para comenzar la app desde cero.</p>
+                <button class="btn btn-danger" onclick="reiniciarTodaLaAplicacion()">⚠️ Reiniciar Todo a Cero</button>
+            </div>
+
             <div class="card">
                 <div class="card-header">Resumen Financiero Global</div>
                 <div class="grid-3">
@@ -274,7 +282,7 @@
             </div>
         </div>
 
-        <!-- VISTA CLIENTES CLAVO (LISTA NEGRA) -->
+        <!-- VISTA CLIENTES CLAVO -->
         <div id="view-clavos" class="view">
             <div class="card" id="card-add-clavo">
                 <div class="card-header">📌 Marcar Cliente Clavo / Bloqueado</div>
@@ -318,7 +326,7 @@
             <span>🚫</span>Clavos
         </div>
     </div>
-        <!-- SDK de Firebase en Tiempo Real -->
+        <!-- SDK Firebase Firestore Realtime -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -444,6 +452,25 @@
             }
         }
 
+        function reiniciarTodaLaAplicacion() {
+            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
+            
+            const confirm1 = confirm("⚠️ ¿ESTÁS SEGURO DE BORRAR TODO?\n\nEsta acción eliminará:\n- Todos los préstamos activos y saldados\n- Todo el historial de transacciones y cierres de día\n- Todos los clientes bloqueados (clavos)\n\n¿Continuar?");
+            if (confirm1) {
+                const confirm2 = confirm("⚠️ ÚLTIMA CONFIRMACIÓN:\n\nSe vaciará completamente la base de datos en la nube. ¿Deseas reiniciar a $0?");
+                if (confirm2) {
+                    window.dbState = {
+                        caja: 0,
+                        prestamos: [],
+                        transacciones: [],
+                        clientesClavos: []
+                    };
+                    window.saveToCloud();
+                    alert("✅ Aplicación reiniciada con éxito. Base de datos a $0.");
+                }
+            }
+        }
+
         function agregarClienteClavo() {
             if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
             const nombre = document.getElementById("clavo-nombre").value.trim();
@@ -486,7 +513,6 @@
                 return;
             }
 
-            // VERIFICACIÓN DE CLIENTE CLAVO
             if (window.dbState.clientesClavos) {
                 const esClavo = window.dbState.clientesClavos.find(c => c.nombre.toLowerCase() === cliente.toLowerCase());
                 if (esClavo) {
@@ -684,7 +710,8 @@
 
             alert("Gasto registrado exitosamente");
         }
-                function setHistFilter(cat, btn) {
+
+        function setHistFilter(cat, btn) {
             currentHistFilter = cat;
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
@@ -821,6 +848,9 @@
             const baseCard = document.querySelectorAll("#view-caja .card")[2];
             if (baseCard) baseCard.style.display = currentUserRole === "admin" ? "block" : "none";
 
+            const resetCard = document.getElementById("card-reset-system");
+            if (resetCard) resetCard.style.display = currentUserRole === "admin" ? "block" : "none";
+
             let prestado = 0, cobrado = 0, totalGastos = 0;
             
             const listActivos = document.getElementById("lista-prestamos-activos");
@@ -878,6 +908,8 @@
             }
 
             if (countActivos === 0) {
+                listActivos.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size:
+                                if (countActivos === 0) {
                 listActivos.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay préstamos activos pendientes</p>';
             }
 
