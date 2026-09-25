@@ -140,7 +140,14 @@
                 <button class="btn btn-primary" onclick="setBaseCaja()">Actualizar Saldo</button>
             </div>
 
-            <!-- CARD REINICIAR TODO (SOLO ADMIN) -->
+            <!-- CARD PARA CAMBIAR PINS (SOLO ADMIN) -->
+            <div class="card" id="card-change-pins" style="border: 1px solid #38bdf8; background: #f0fdf4;">
+                <div class="card-header" style="color: #166534;">🔐 Seguridad y Claves de Acceso</div>
+                <p style="font-size: 11px; color: #15803d; margin-bottom: 10px;">Modifica los PINs de Administrador y Operador guardados en la nube.</p>
+                <button class="btn btn-primary" style="background: #16a34a;" onclick="cambiarPINsAcceso()">🔐 Cambiar PINs de Acceso</button>
+            </div>
+
+            <!-- CARD PARA REINICIAR SISTEMA (SOLO ADMIN) -->
             <div class="card" id="card-reset-system" style="border: 1px dashed #ef4444; background: #fff5f5;">
                 <div class="card-header" style="color: #dc2626;">⚙️ Zona de Peligro</div>
                 <p style="font-size: 11px; color: #7f1d1d; margin-bottom: 10px;">Borra toda la información en la nube para comenzar la app desde cero.</p>
@@ -344,7 +351,7 @@
         const db = getFirestore(app);
         const docRef = doc(db, "control_caja", "general");
 
-        window.dbState = { caja: 0, prestamos: [], transacciones: [], clientesClavos: [] };
+        window.dbState = { caja: 0, prestamos: [], transacciones: [], clientesClavos: [], adminPin: "1234", operatorPin: "0000" };
 
         onSnapshot(docRef, (docSnap) => {
             if (docSnap.exists()) {
@@ -352,6 +359,8 @@
                 if (!window.dbState.transacciones) window.dbState.transacciones = [];
                 if (!window.dbState.prestamos) window.dbState.prestamos = [];
                 if (!window.dbState.clientesClavos) window.dbState.clientesClavos = [];
+                if (!window.dbState.adminPin) window.dbState.adminPin = "1234";
+                if (!window.dbState.operatorPin) window.dbState.operatorPin = "0000";
             } else {
                 saveToCloud();
             }
@@ -364,9 +373,6 @@
     </script>
 
     <script>
-        const ADMIN_PIN = "1234";
-        const OPERATOR_PIN = "0000";
-        
         let currentUserRole = "operator";
         let enteredPin = "";
         let currentHistFilter = "TODOS";
@@ -379,13 +385,16 @@
                 updateDots();
                 if (enteredPin.length === 4) {
                     setTimeout(() => {
-                        if (enteredPin === ADMIN_PIN) {
+                        const currentAdminPin = (window.dbState && window.dbState.adminPin) ? window.dbState.adminPin : "1234";
+                        const currentOperatorPin = (window.dbState && window.dbState.operatorPin) ? window.dbState.operatorPin : "0000";
+
+                        if (enteredPin === currentAdminPin) {
                             currentUserRole = "admin";
                             document.getElementById("pin-screen").style.display = "none";
                             enteredPin = "";
                             updateDots();
                             render();
-                        } else if (enteredPin === OPERATOR_PIN) {
+                        } else if (enteredPin === currentOperatorPin) {
                             currentUserRole = "operator";
                             document.getElementById("pin-screen").style.display = "none";
                             enteredPin = "";
@@ -452,6 +461,33 @@
             }
         }
 
+        function cambiarPINsAcceso() {
+            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
+            
+            const pinAdminActual = window.dbState.adminPin || "1234";
+            const confirmPin = prompt("Para mayor seguridad, ingresa tu PIN de Administrador actual:");
+
+            if (confirmPin !== pinAdminActual) {
+                return alert("PIN actual incorrecto. No se realizaron cambios.");
+            }
+
+            const nuevoAdminPin = prompt("Ingresa el NUEVO PIN de Administrador (4 dígitos):", window.dbState.adminPin || "1234");
+            if (!nuevoAdminPin || nuevoAdminPin.length !== 4 || isNaN(nuevoAdminPin)) {
+                return alert("El PIN de Administrador debe ser exactamente de 4 números.");
+            }
+
+            const nuevoOperatorPin = prompt("Ingresa el NUEVO PIN de Operador/Empleado (4 dígitos):", window.dbState.operatorPin || "0000");
+            if (!nuevoOperatorPin || nuevoOperatorPin.length !== 4 || isNaN(nuevoOperatorPin)) {
+                return alert("El PIN de Operador debe ser exactamente de 4 números.");
+            }
+
+            window.dbState.adminPin = nuevoAdminPin;
+            window.dbState.operatorPin = nuevoOperatorPin;
+            window.saveToCloud();
+
+            alert("✅ PINs actualizados en la nube exitosamente.");
+        }
+
         function reiniciarTodaLaAplicacion() {
             if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
             
@@ -459,19 +495,23 @@
             if (confirm1) {
                 const confirm2 = confirm("⚠️ ÚLTIMA CONFIRMACIÓN:\n\nSe vaciará completamente la base de datos en la nube. ¿Deseas reiniciar a $0?");
                 if (confirm2) {
+                    const currentAdminPin = window.dbState.adminPin || "1234";
+                    const currentOperatorPin = window.dbState.operatorPin || "0000";
+
                     window.dbState = {
                         caja: 0,
                         prestamos: [],
                         transacciones: [],
-                        clientesClavos: []
+                        clientesClavos: [],
+                        adminPin: currentAdminPin,
+                        operatorPin: currentOperatorPin
                     };
                     window.saveToCloud();
                     alert("✅ Aplicación reiniciada con éxito. Base de datos a $0.");
                 }
             }
         }
-
-        function agregarClienteClavo() {
+                function agregarClienteClavo() {
             if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
             const nombre = document.getElementById("clavo-nombre").value.trim();
             const motivo = document.getElementById("clavo-motivo").value.trim();
@@ -500,7 +540,8 @@
                 window.saveToCloud();
             }
         }
-                function crearPrestamo() {
+
+        function crearPrestamo() {
             const cliente = document.getElementById("p-cliente").value.trim();
             const monto = parseFloat(document.getElementById("p-monto").value);
             const tipoInteres = document.getElementById("p-tipo-interes").value;
@@ -709,9 +750,8 @@
             document.getElementById("gasto-motivo").value = "";
 
             alert("Gasto registrado exitosamente");
-        }
-
-        function setHistFilter(cat, btn) {
+                }
+                function setHistFilter(cat, btn) {
             currentHistFilter = cat;
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
@@ -848,6 +888,9 @@
             const baseCard = document.querySelectorAll("#view-caja .card")[2];
             if (baseCard) baseCard.style.display = currentUserRole === "admin" ? "block" : "none";
 
+            const changePinsCard = document.getElementById("card-change-pins");
+            if (changePinsCard) changePinsCard.style.display = currentUserRole === "admin" ? "block" : "none";
+
             const resetCard = document.getElementById("card-reset-system");
             if (resetCard) resetCard.style.display = currentUserRole === "admin" ? "block" : "none";
 
@@ -908,8 +951,6 @@
             }
 
             if (countActivos === 0) {
-                listActivos.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size:
-                                if (countActivos === 0) {
                 listActivos.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay préstamos activos pendientes</p>';
             }
 
