@@ -50,6 +50,7 @@
         .badge { padding: 4px 8px; border-radius: 12px; font-size: 10px; font-weight: bold; }
         .badge-pending { background: #fef3c7; color: #d97706; }
         .badge-paid { background: #dcfce7; color: #15803d; }
+        .summary-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #e2e8f0; font-size: 13px; }
     </style>
 </head>
 <body>
@@ -91,8 +92,43 @@
                 <div class="hero-value" id="caja-actual" style="color: #38bdf8;">$0</div>
                 <p style="font-size: 11px; color: #64748b;">Efectivo real disponible</p>
             </div>
+
+            <!-- TARJETA CIERRE DEL DIA -->
+            <div class="card" style="border: 2px solid #2563eb; background: #f0f9ff;">
+                <div class="card-header" style="color: #1e3a8a; display: flex; justify-content: space-between; align-items: center;">
+                    <span>📊 CIERRE DEL DÍA</span>
+                    <input type="date" id="cierre-fecha" style="font-size: 11px; padding: 4px; border-radius: 4px; border: 1px solid #cbd5e1;" onchange="calcularCierreDiario()">
+                </div>
+                <div style="margin-top: 10px;">
+                    <div class="summary-row">
+                        <span>(+) Total Cobrado:</span>
+                        <strong style="color: #22c55e;" id="cierre-cobrado">$0</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>(-) Total Prestado Nuevos:</span>
+                        <strong style="color: #ef4444;" id="cierre-prestado">$0</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>(-) Total Gastos:</span>
+                        <strong style="color: #f59e0b;" id="cierre-gastos">$0</strong>
+                    </div>
+                    <div class="summary-row" style="border-bottom: 2px solid #0f172a; font-weight: bold; margin-top: 4px; padding-bottom: 8px;">
+                        <span>Flujo Neto del Día:</span>
+                        <span id="cierre-flujo">$0</span>
+                    </div>
+                    <div class="summary-row" style="margin-top: 8px; font-size: 12px; color: #475569;">
+                        <span>Efectivo en Caja Actual:</span>
+                        <strong id="cierre-caja-final" style="color: #2563eb;">$0</strong>
+                    </div>
+                    <div class="summary-row" style="font-size: 12px; color: #475569;">
+                        <span>Total Restante en la Calle:</span>
+                        <strong id="cierre-calle-final" style="color: #ef4444;">$0</strong>
+                    </div>
+                </div>
+            </div>
+
             <div class="card">
-                <div class="card-header">Establecer Nueva Base de Caja</div>
+                <div class="card-header">Establecer Base de Caja</div>
                 <div class="input-group">
                     <label>Monto de Base ($)</label>
                     <input type="number" id="base-monto" placeholder="Ej. 500000">
@@ -100,7 +136,7 @@
                 <button class="btn btn-primary" onclick="setBaseCaja()">Actualizar Saldo</button>
             </div>
             <div class="card">
-                <div class="card-header">Resumen Financiero</div>
+                <div class="card-header">Resumen Financiero Global</div>
                 <div class="grid-3">
                     <div>
                         <p style="font-size: 10px; color: #64748b;">En la Calle</p>
@@ -128,8 +164,8 @@
                 </div>
                 <button class="btn btn-danger" onclick="registrarGasto()">Registrar Gasto</button>
             </div>
-        </div>
-                <!-- VISTA NUEVO PRESTAMO -->
+                </div>
+                        <!-- VISTA NUEVO PRESTAMO -->
         <div id="view-nuevo" class="view">
             <div class="card">
                 <div class="card-header">Nuevo Préstamo</div>
@@ -226,7 +262,7 @@
             </div>
 
             <div class="card">
-                <div class="card-header">Resultados (Toca un ícono para corregir)</div>
+                <div class="card-header">Resultados (Edita o Elimina)</div>
                 <div id="lista-historial">
                     <p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay movimientos registrados</p>
                 </div>
@@ -251,13 +287,15 @@
             <span>📜</span>Historial
         </div>
     </div>
-
-    <script>
+        <script>
         const CORRECT_PIN = "1234";
         let enteredPin = "";
         let currentHistFilter = "TODOS";
         let state = JSON.parse(localStorage.getItem("control_caja_db")) || { caja: 0, prestamos: [], transacciones: [] };
         if (!state.transacciones) state.transacciones = [];
+
+        // Inicializar fecha de cierre al día de hoy
+        document.getElementById("cierre-fecha").value = new Date().toISOString().split('T')[0];
 
         function saveState() {
             localStorage.setItem("control_caja_db", JSON.stringify(state));
@@ -389,6 +427,28 @@
             switchTab("nuevo", document.querySelectorAll(".nav-item")[1]);
         }
 
+        function editarPrestamo(id) {
+            const p = state.prestamos.find(x => x.id === id);
+            if (!p) return;
+
+            const nuevoCliente = prompt("Nombre del Cliente:", p.cliente);
+            if (!nuevoCliente) return;
+
+            const nuevoTotal = prompt("Monto Total a Pagar ($):", p.totalPagar);
+            const nuevoSaldo = prompt("Saldo Pendiente Actual ($):", p.saldoPendiente);
+
+            const numTotal = parseFloat(nuevoTotal);
+            const numSaldo = parseFloat(nuevoSaldo);
+
+            if (!isNaN(numTotal) && !isNaN(numSaldo)) {
+                p.cliente = nuevoCliente;
+                p.totalPagar = numTotal;
+                p.saldoPendiente = numSaldo;
+                saveState();
+                alert("Crédito actualizado correctamente.");
+            }
+        }
+
         function borrarPrestamo(id) {
             if (confirm("¿Estás seguro de que deseas eliminar este cliente/préstamo de la lista permanentemente?")) {
                 state.prestamos = state.prestamos.filter(x => x.id !== id);
@@ -440,10 +500,7 @@
             const diferencia = nuevoValor - t.monto;
 
             if (t.tipo === 'Abono / Pago') {
-                // Ajustar caja
                 state.caja += diferencia;
-                
-                // Ajustar saldo pendiente del crédito asociado si aún existe
                 if (t.prestamoId) {
                     const p = state.prestamos.find(x => x.id === t.prestamoId);
                     if (p) {
@@ -512,6 +569,36 @@
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             renderHistorial();
+        }
+
+        function calcularCierreDiario() {
+            const fechaSel = document.getElementById("cierre-fecha").value;
+            let cobradoDia = 0, prestadoDia = 0, gastosDia = 0;
+
+            state.transacciones.forEach(t => {
+                const tFecha = t.fechaISO || (t.fechaStr ? t.fechaStr.split(',')[0] : '');
+                if (tFecha === fechaSel) {
+                    if (t.tipo === 'Abono / Pago') cobradoDia += t.monto;
+                    if (t.tipo === 'Nuevo Préstamo') prestadoDia += t.monto;
+                    if (t.tipo === 'Gasto') gastosDia += t.monto;
+                }
+            });
+
+            const flujoNeto = cobradoDia - prestadoDia - gastosDia;
+
+            document.getElementById("cierre-cobrado").innerText = `$${cobradoDia.toLocaleString()}`;
+            document.getElementById("cierre-prestado").innerText = `$${prestadoDia.toLocaleString()}`;
+            document.getElementById("cierre-gastos").innerText = `$${gastosDia.toLocaleString()}`;
+            
+            const elFlujo = document.getElementById("cierre-flujo");
+            elFlujo.innerText = `$${flujoNeto.toLocaleString()}`;
+            elFlujo.style.color = flujoNeto >= 0 ? "#22c55e" : "#ef4444";
+
+            document.getElementById("cierre-caja-final").innerText = `$${state.caja.toLocaleString()}`;
+
+            let prestadoTotal = 0;
+            state.prestamos.forEach(p => { prestadoTotal += p.saldoPendiente; });
+            document.getElementById("cierre-calle-final").innerText = `$${prestadoTotal.toLocaleString()}`;
         }
 
         function renderHistorial() {
@@ -592,7 +679,6 @@
                             <div>
                                 <strong>${p.cliente}</strong> <br>
                                 <small style="color: #64748b;">Finalizado - Plazo: ${p.dias} días</small> <br>
-                                    <small style="color: #64748b;">Finalizado - Plazo: ${p.dias} días</small> <br>
                                 <small style="color: #2563eb;">Total Pagado: $${p.totalPagar.toLocaleString()}</small>
                             </div>
                             <div style="text-align: right;">
@@ -616,6 +702,7 @@
                                 <span class="badge badge-pending">PENDIENTE</span><br>
                                 <strong style="color: #ef4444;">$${p.saldoPendiente.toLocaleString()}</strong><br>
                                 <button class="btn btn-success" style="padding: 4px 8px; font-size: 11px; margin-top: 4px;" onclick="registrarPago(${p.id})">Abonar</button>
+                                <button style="background: transparent; border: none; font-size: 11px; color: #2563eb; margin-left: 4px; cursor: pointer;" onclick="editarPrestamo(${p.id})">✏️</button>
                                 <button style="background: transparent; border: none; font-size: 11px; color: #ef4444; margin-left: 4px; cursor: pointer;" onclick="borrarPrestamo(${p.id})">🗑️</button>
                             </div>
                         </div>
@@ -641,6 +728,7 @@
             document.getElementById("total-cobrado").innerText = `$${cobrado.toLocaleString()}`;
             document.getElementById("total-gastos").innerText = `$${totalGastos.toLocaleString()}`;
 
+            calcularCierreDiario();
             renderHistorial();
         }
 
