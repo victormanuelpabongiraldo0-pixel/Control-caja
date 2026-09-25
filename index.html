@@ -84,12 +84,15 @@
         <!-- VISTA CAJA -->
         <div id="view-caja" class="view active">
             <div class="card" style="background: #0f172a; color: white;">
-                <div class="card-header" style="color: #94a3b8;">Efectivo en Caja</div>
+                <div class="card-header" style="color: #94a3b8; display: flex; justify-content: space-between;">
+                    <span>Efectivo en Caja</span>
+                    <button style="background: transparent; border: none; color: #38bdf8; font-size: 11px; cursor: pointer;" onclick="editarValorCajaDirecto()">✏️ Modificar</button>
+                </div>
                 <div class="hero-value" id="caja-actual" style="color: #38bdf8;">$0</div>
-                <p style="font-size: 11px; color: #64748b;">Base activa de trabajo</p>
+                <p style="font-size: 11px; color: #64748b;">Efectivo real disponible</p>
             </div>
             <div class="card">
-                <div class="card-header">Ajustar Base de Caja</div>
+                <div class="card-header">Establecer Nueva Base de Caja</div>
                 <div class="input-group">
                     <label>Monto de Base ($)</label>
                     <input type="number" id="base-monto" placeholder="Ej. 500000">
@@ -223,7 +226,7 @@
             </div>
 
             <div class="card">
-                <div class="card-header">Resultados</div>
+                <div class="card-header">Resultados (Toca un ícono para corregir)</div>
                 <div id="lista-historial">
                     <p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay movimientos registrados</p>
                 </div>
@@ -308,6 +311,7 @@
             if (!isNaN(m)) {
                 state.caja = m;
                 state.transacciones.unshift({
+                    id: Date.now(),
                     tipo: 'Ajuste de Base',
                     monto: m,
                     fechaISO: new Date().toISOString().split('T')[0],
@@ -316,6 +320,16 @@
                 });
                 document.getElementById("base-monto").value = "";
                 saveState();
+            }
+        }
+
+        function editarValorCajaDirecto() {
+            const nuevoVal = prompt("Ingresa el valor exacto actual en caja ($):", state.caja);
+            const val = parseFloat(nuevoVal);
+            if (!isNaN(val) && val >= 0) {
+                state.caja = val;
+                saveState();
+                alert("Valor de caja modificado correctamente.");
             }
         }
 
@@ -335,8 +349,10 @@
             let ganancia = tipoInteres === "porcentaje" ? (monto * (valInteres / 100)) : valInteres;
             let totalPagar = monto + ganancia;
 
+            const prestamoId = Date.now();
+
             state.prestamos.push({
-                id: Date.now(),
+                id: prestamoId,
                 cliente,
                 monto,
                 totalPagar,
@@ -348,6 +364,8 @@
 
             state.caja -= monto;
             state.transacciones.unshift({
+                id: Date.now(),
+                prestamoId: prestamoId,
                 tipo: 'Nuevo Préstamo',
                 monto: monto,
                 fechaISO: new Date().toISOString().split('T')[0],
@@ -371,6 +389,13 @@
             switchTab("nuevo", document.querySelectorAll(".nav-item")[1]);
         }
 
+        function borrarPrestamo(id) {
+            if (confirm("¿Estás seguro de que deseas eliminar este cliente/préstamo de la lista permanentemente?")) {
+                state.prestamos = state.prestamos.filter(x => x.id !== id);
+                saveState();
+            }
+        }
+
         function registrarPago(id) {
             const p = state.prestamos.find(x => x.id === id);
             if (!p) return;
@@ -380,6 +405,9 @@
                 p.saldoPendiente = Math.max(0, p.saldoPendiente - val);
                 state.caja += val;
                 state.transacciones.unshift({
+                    id: Date.now(),
+                    prestamoId: p.id,
+                    clienteNombre: p.cliente,
                     tipo: 'Abono / Pago',
                     monto: val,
                     fechaISO: new Date().toISOString().split('T')[0],
@@ -395,6 +423,63 @@
             }
         }
 
+        function editarTransaccion(tId) {
+            const t = state.transacciones.find(x => x.id === tId);
+            if (!t) return;
+
+            if (t.tipo !== 'Abono / Pago' && t.tipo !== 'Gasto') {
+                alert("Solo se pueden corregir valores de Abonos/Pagos o Gastos.");
+                return;
+            }
+
+            const nuevoValorStr = prompt(`Corregir valor para "${t.detalle}":`, t.monto);
+            const nuevoValor = parseFloat(nuevoValorStr);
+
+            if (isNaN(nuevoValor) || nuevoValor <= 0) return;
+
+            const diferencia = nuevoValor - t.monto;
+
+            if (t.tipo === 'Abono / Pago') {
+                // Ajustar caja
+                state.caja += diferencia;
+                
+                // Ajustar saldo pendiente del crédito asociado si aún existe
+                if (t.prestamoId) {
+                    const p = state.prestamos.find(x => x.id === t.prestamoId);
+                    if (p) {
+                        p.saldoPendiente = Math.max(0, p.saldoPendiente - diferencia);
+                    }
+                }
+            } else if (t.tipo === 'Gasto') {
+                state.caja -= diferencia;
+            }
+
+            t.monto = nuevoValor;
+            saveState();
+            alert("Registro y caja corregidos exitosamente.");
+        }
+
+        function borrarTransaccion(tId) {
+            const tIndex = state.transacciones.findIndex(x => x.id === tId);
+            if (tIndex === -1) return;
+            const t = state.transacciones[tIndex];
+
+            if (confirm(`¿Deseas eliminar esta transacción de $${t.monto.toLocaleString()}? Se revertirá su efecto en caja.`)) {
+                if (t.tipo === 'Abono / Pago') {
+                    state.caja -= t.monto;
+                    if (t.prestamoId) {
+                        const p = state.prestamos.find(x => x.id === t.prestamoId);
+                        if (p) p.saldoPendiente += t.monto;
+                    }
+                } else if (t.tipo === 'Gasto') {
+                    state.caja += t.monto;
+                }
+
+                state.transacciones.splice(tIndex, 1);
+                saveState();
+            }
+        }
+
         function registrarGasto() {
             const monto = parseFloat(document.getElementById("gasto-monto").value);
             const motivo = document.getElementById("gasto-motivo").value.trim();
@@ -406,6 +491,7 @@
 
             state.caja -= monto;
             state.transacciones.unshift({
+                id: Date.now(),
                 tipo: 'Gasto',
                 monto: monto,
                 fechaISO: new Date().toISOString().split('T')[0],
@@ -457,6 +543,8 @@
                 let color = '#22c55e';
                 if (t.tipo === 'Nuevo Préstamo' || t.tipo === 'Gasto') color = '#ef4444';
 
+                const canEdit = (t.tipo === 'Abono / Pago' || t.tipo === 'Gasto');
+
                 histList.innerHTML += `
                     <div class="list-item">
                         <div>
@@ -465,7 +553,11 @@
                             <small style="color: #94a3b8;">${t.fechaStr || t.fechaISO}</small>
                         </div>
                         <div style="text-align: right;">
-                            <strong style="color: ${color};">$${t.monto.toLocaleString()}</strong>
+                            <strong style="color: ${color};">$${t.monto.toLocaleString()}</strong><br>
+                            ${canEdit ? `
+                                <button style="background: none; border: none; font-size: 11px; color: #2563eb; cursor: pointer; margin-top: 4px;" onclick="editarTransaccion(${t.id})">✏️ Editar</button>
+                                <button style="background: none; border: none; font-size: 11px; color: #ef4444; cursor: pointer; margin-left: 6px;" onclick="borrarTransaccion(${t.id})">🗑️</button>
+                            ` : ''}
                         </div>
                     </div>
                 `;
@@ -500,11 +592,13 @@
                             <div>
                                 <strong>${p.cliente}</strong> <br>
                                 <small style="color: #64748b;">Finalizado - Plazo: ${p.dias} días</small> <br>
+                                    <small style="color: #64748b;">Finalizado - Plazo: ${p.dias} días</small> <br>
                                 <small style="color: #2563eb;">Total Pagado: $${p.totalPagar.toLocaleString()}</small>
                             </div>
                             <div style="text-align: right;">
                                 <span class="badge badge-paid">SALDADO</span><br>
-                                <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px; margin-top: 6px;" onclick="rePrestarCliente('${p.cliente}')">🔄 Prestar de nuevo</button>
+                                <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px; margin-top: 6px;" onclick="rePrestarCliente('${p.cliente}')">🔄 Prestar</button>
+                                <button class="btn btn-danger" style="padding: 4px 8px; font-size: 11px; margin-top: 6px; margin-left: 4px;" onclick="borrarPrestamo(${p.id})">🗑️ Borrar</button>
                             </div>
                         </div>
                     `;
@@ -522,6 +616,7 @@
                                 <span class="badge badge-pending">PENDIENTE</span><br>
                                 <strong style="color: #ef4444;">$${p.saldoPendiente.toLocaleString()}</strong><br>
                                 <button class="btn btn-success" style="padding: 4px 8px; font-size: 11px; margin-top: 4px;" onclick="registrarPago(${p.id})">Abonar</button>
+                                <button style="background: transparent; border: none; font-size: 11px; color: #ef4444; margin-left: 4px; cursor: pointer;" onclick="borrarPrestamo(${p.id})">🗑️</button>
                             </div>
                         </div>
                     `;
