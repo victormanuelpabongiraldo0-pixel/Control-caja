@@ -51,6 +51,7 @@
         .badge-pending { background: #fef3c7; color: #d97706; }
         .badge-paid { background: #dcfce7; color: #15803d; }
         .summary-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #e2e8f0; font-size: 13px; }
+        #sync-status { font-size: 10px; text-align: center; padding: 4px; background: #e0f2fe; color: #0369a1; border-radius: 4px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -82,6 +83,8 @@
         <button class="lock-btn" onclick="lockApp()">🔒 Bloquear</button>
     </div>
     <div class="container">
+        <div id="sync-status">☁️ Sincronizado en la Nube en Tiempo Real</div>
+        
         <!-- VISTA CAJA -->
         <div id="view-caja" class="view active">
             <div class="card" style="background: #0f172a; color: white;">
@@ -93,7 +96,6 @@
                 <p style="font-size: 11px; color: #64748b;">Efectivo real disponible</p>
             </div>
 
-            <!-- TARJETA CIERRE DEL DIA -->
             <div class="card" style="border: 2px solid #2563eb; background: #f0f9ff;">
                 <div class="card-header" style="color: #1e3a8a; display: flex; justify-content: space-between; align-items: center;">
                     <span>📊 CIERRE DEL DÍA</span>
@@ -164,8 +166,8 @@
                 </div>
                 <button class="btn btn-danger" onclick="registrarGasto()">Registrar Gasto</button>
             </div>
-                </div>
-                        <!-- VISTA NUEVO PRESTAMO -->
+        </div>
+                <!-- VISTA NUEVO PRESTAMO -->
         <div id="view-nuevo" class="view">
             <div class="card">
                 <div class="card-header">Nuevo Préstamo</div>
@@ -214,17 +216,17 @@
             <div class="card">
                 <div class="card-header">Cobros Pendientes (Activos)</div>
                 <div id="lista-prestamos-activos">
-                    <p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay préstamos pendientes</p>
+                    <p style="text-align: center; color: #94a3b8; font-size: 13px;">Cargando datos de la nube...</p>
                 </div>
             </div>
         </div>
 
-        <!-- VISTA PRESTAMOS FINALIZADOS / SALDADOS -->
+        <!-- VISTA PRESTAMOS FINALIZADOS -->
         <div id="view-finalizados" class="view">
             <div class="card">
                 <div class="card-header">Créditos Finalizados (Pagados 100%)</div>
                 <div id="lista-prestamos-finalizados">
-                    <p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay créditos finalizados aún</p>
+                    <p style="text-align: center; color: #94a3b8; font-size: 13px;">Cargando préstamos saldados...</p>
                 </div>
             </div>
         </div>
@@ -264,7 +266,7 @@
             <div class="card">
                 <div class="card-header">Resultados (Edita o Elimina)</div>
                 <div id="lista-historial">
-                    <p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay movimientos registrados</p>
+                    <p style="text-align: center; color: #94a3b8; font-size: 13px;">Cargando historial...</p>
                 </div>
             </div>
         </div>
@@ -287,20 +289,50 @@
             <span>📜</span>Historial
         </div>
     </div>
-        <script>
+        <!-- SDK de Firebase en Tiempo Real -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // Configuración de tu proyecto Firebase extraída de tus capturas
+        const firebaseConfig = {
+          apiKey: "AIzaSyC0H3HmkRHmAOmC1-qQkDMvpJA2-...", 
+          authDomain: "control-cobro.firebaseapp.com",
+          projectId: "control-cobro",
+          storageBucket: "control-cobro.firebasestorage.app",
+          messagingSenderId: "66451850332",
+          appId: "1:66451850332:web:6f012f83d5287cd..."
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const docRef = doc(db, "control_caja", "general");
+
+        window.dbState = { caja: 0, prestamos: [], transacciones: [] };
+
+        // Escuchar cambios en la Nube en TIEMPO REAL
+        onSnapshot(docRef, (docSnap) => {
+            if (docSnap.exists()) {
+                window.dbState = docSnap.data();
+                if (!window.dbState.transacciones) window.dbState.transacciones = [];
+                if (!window.dbState.prestamos) window.dbState.prestamos = [];
+            } else {
+                saveToCloud(); // Crear documento inicial si está vacío
+            }
+            render();
+        });
+
+        window.saveToCloud = async function() {
+            await setDoc(docRef, window.dbState);
+        };
+    </script>
+
+    <script>
         const CORRECT_PIN = "1234";
         let enteredPin = "";
         let currentHistFilter = "TODOS";
-        let state = JSON.parse(localStorage.getItem("control_caja_db")) || { caja: 0, prestamos: [], transacciones: [] };
-        if (!state.transacciones) state.transacciones = [];
 
-        // Inicializar fecha de cierre al día de hoy
         document.getElementById("cierre-fecha").value = new Date().toISOString().split('T')[0];
-
-        function saveState() {
-            localStorage.setItem("control_caja_db", JSON.stringify(state));
-            render();
-        }
 
         function pressPin(num) {
             if (enteredPin.length < 4) {
@@ -347,8 +379,8 @@
         function setBaseCaja() {
             const m = parseFloat(document.getElementById("base-monto").value);
             if (!isNaN(m)) {
-                state.caja = m;
-                state.transacciones.unshift({
+                window.dbState.caja = m;
+                window.dbState.transacciones.unshift({
                     id: Date.now(),
                     tipo: 'Ajuste de Base',
                     monto: m,
@@ -357,17 +389,17 @@
                     detalle: 'Base de caja actualizada'
                 });
                 document.getElementById("base-monto").value = "";
-                saveState();
+                window.saveToCloud();
             }
         }
 
         function editarValorCajaDirecto() {
-            const nuevoVal = prompt("Ingresa el valor exacto actual en caja ($):", state.caja);
+            const nuevoVal = prompt("Ingresa el valor exacto actual en caja ($):", window.dbState.caja);
             const val = parseFloat(nuevoVal);
             if (!isNaN(val) && val >= 0) {
-                state.caja = val;
-                saveState();
-                alert("Valor de caja modificado correctamente.");
+                window.dbState.caja = val;
+                window.saveToCloud();
+                alert("Valor de caja modificado en la nube.");
             }
         }
 
@@ -386,10 +418,9 @@
 
             let ganancia = tipoInteres === "porcentaje" ? (monto * (valInteres / 100)) : valInteres;
             let totalPagar = monto + ganancia;
-
             const prestamoId = Date.now();
 
-            state.prestamos.push({
+            window.dbState.prestamos.push({
                 id: prestamoId,
                 cliente,
                 monto,
@@ -400,8 +431,8 @@
                 fecha: new Date().toLocaleDateString()
             });
 
-            state.caja -= monto;
-            state.transacciones.unshift({
+            window.dbState.caja -= monto;
+            window.dbState.transacciones.unshift({
                 id: Date.now(),
                 prestamoId: prestamoId,
                 tipo: 'Nuevo Préstamo',
@@ -411,14 +442,14 @@
                 detalle: `Préstamo a ${cliente}`
             });
 
-            saveState();
+            window.saveToCloud();
 
             document.getElementById("p-cliente").value = "";
             document.getElementById("p-monto").value = "";
             document.getElementById("p-interes").value = "";
             document.getElementById("p-dias").value = "";
 
-            alert("Préstamo registrado exitosamente");
+            alert("Préstamo registrado exitosamente en la nube");
             switchTab("cobros", document.querySelectorAll(".nav-item")[2]);
         }
 
@@ -428,7 +459,7 @@
         }
 
         function editarPrestamo(id) {
-            const p = state.prestamos.find(x => x.id === id);
+            const p = window.dbState.prestamos.find(x => x.id === id);
             if (!p) return;
 
             const nuevoCliente = prompt("Nombre del Cliente:", p.cliente);
@@ -444,27 +475,27 @@
                 p.cliente = nuevoCliente;
                 p.totalPagar = numTotal;
                 p.saldoPendiente = numSaldo;
-                saveState();
-                alert("Crédito actualizado correctamente.");
+                window.saveToCloud();
+                alert("Crédito actualizado en la nube.");
             }
         }
 
         function borrarPrestamo(id) {
-            if (confirm("¿Estás seguro de que deseas eliminar este cliente/préstamo de la lista permanentemente?")) {
-                state.prestamos = state.prestamos.filter(x => x.id !== id);
-                saveState();
+            if (confirm("¿Estás seguro de que deseas eliminar este cliente/préstamo permanentemente?")) {
+                window.dbState.prestamos = window.dbState.prestamos.filter(x => x.id !== id);
+                window.saveToCloud();
             }
         }
 
         function registrarPago(id) {
-            const p = state.prestamos.find(x => x.id === id);
+            const p = window.dbState.prestamos.find(x => x.id === id);
             if (!p) return;
             const cuota = prompt(`Saldo pendiente: $${p.saldoPendiente}\nIngrese el monto cobrado:`);
             const val = parseFloat(cuota);
             if (!isNaN(val) && val > 0) {
                 p.saldoPendiente = Math.max(0, p.saldoPendiente - val);
-                state.caja += val;
-                state.transacciones.unshift({
+                window.dbState.caja += val;
+                window.dbState.transacciones.unshift({
                     id: Date.now(),
                     prestamoId: p.id,
                     clienteNombre: p.cliente,
@@ -476,15 +507,15 @@
                 });
                 
                 if (p.saldoPendiente === 0) {
-                    alert(`¡Felicidades! ${p.cliente} ha pagado la totalidad del crédito. Se movió a "Saldados".`);
+                    alert(`¡Felicidades! ${p.cliente} ha pagado la totalidad del crédito.`);
                 }
                 
-                saveState();
+                window.saveToCloud();
             }
         }
 
         function editarTransaccion(tId) {
-            const t = state.transacciones.find(x => x.id === tId);
+            const t = window.dbState.transacciones.find(x => x.id === tId);
             if (!t) return;
 
             if (t.tipo !== 'Abono / Pago' && t.tipo !== 'Gasto') {
@@ -500,40 +531,40 @@
             const diferencia = nuevoValor - t.monto;
 
             if (t.tipo === 'Abono / Pago') {
-                state.caja += diferencia;
+                window.dbState.caja += diferencia;
                 if (t.prestamoId) {
-                    const p = state.prestamos.find(x => x.id === t.prestamoId);
+                    const p = window.dbState.prestamos.find(x => x.id === t.prestamoId);
                     if (p) {
                         p.saldoPendiente = Math.max(0, p.saldoPendiente - diferencia);
                     }
                 }
             } else if (t.tipo === 'Gasto') {
-                state.caja -= diferencia;
+                window.dbState.caja -= diferencia;
             }
 
             t.monto = nuevoValor;
-            saveState();
-            alert("Registro y caja corregidos exitosamente.");
+            window.saveToCloud();
+            alert("Registro corregido en la nube.");
         }
 
         function borrarTransaccion(tId) {
-            const tIndex = state.transacciones.findIndex(x => x.id === tId);
+            const tIndex = window.dbState.transacciones.findIndex(x => x.id === tId);
             if (tIndex === -1) return;
-            const t = state.transacciones[tIndex];
+            const t = window.dbState.transacciones[tIndex];
 
-            if (confirm(`¿Deseas eliminar esta transacción de $${t.monto.toLocaleString()}? Se revertirá su efecto en caja.`)) {
+            if (confirm(`¿Deseas eliminar esta transacción de $${t.monto.toLocaleString()}?`)) {
                 if (t.tipo === 'Abono / Pago') {
-                    state.caja -= t.monto;
+                    window.dbState.caja -= t.monto;
                     if (t.prestamoId) {
-                        const p = state.prestamos.find(x => x.id === t.prestamoId);
+                        const p = window.dbState.prestamos.find(x => x.id === t.prestamoId);
                         if (p) p.saldoPendiente += t.monto;
                     }
                 } else if (t.tipo === 'Gasto') {
-                    state.caja += t.monto;
+                    window.dbState.caja += t.monto;
                 }
 
-                state.transacciones.splice(tIndex, 1);
-                saveState();
+                window.dbState.transacciones.splice(tIndex, 1);
+                window.saveToCloud();
             }
         }
 
@@ -546,8 +577,8 @@
                 return;
             }
 
-            state.caja -= monto;
-            state.transacciones.unshift({
+            window.dbState.caja -= monto;
+            window.dbState.transacciones.unshift({
                 id: Date.now(),
                 tipo: 'Gasto',
                 monto: monto,
@@ -556,7 +587,7 @@
                 detalle: motivo
             });
 
-            saveState();
+            window.saveToCloud();
 
             document.getElementById("gasto-monto").value = "";
             document.getElementById("gasto-motivo").value = "";
@@ -575,14 +606,16 @@
             const fechaSel = document.getElementById("cierre-fecha").value;
             let cobradoDia = 0, prestadoDia = 0, gastosDia = 0;
 
-            state.transacciones.forEach(t => {
-                const tFecha = t.fechaISO || (t.fechaStr ? t.fechaStr.split(',')[0] : '');
-                if (tFecha === fechaSel) {
-                    if (t.tipo === 'Abono / Pago') cobradoDia += t.monto;
-                    if (t.tipo === 'Nuevo Préstamo') prestadoDia += t.monto;
-                    if (t.tipo === 'Gasto') gastosDia += t.monto;
-                }
-            });
+            if (window.dbState.transacciones) {
+                window.dbState.transacciones.forEach(t => {
+                    const tFecha = t.fechaISO || (t.fechaStr ? t.fechaStr.split(',')[0] : '');
+                    if (tFecha === fechaSel) {
+                        if (t.tipo === 'Abono / Pago') cobradoDia += t.monto;
+                        if (t.tipo === 'Nuevo Préstamo') prestadoDia += t.monto;
+                        if (t.tipo === 'Gasto') gastosDia += t.monto;
+                    }
+                });
+            }
 
             const flujoNeto = cobradoDia - prestadoDia - gastosDia;
 
@@ -594,10 +627,12 @@
             elFlujo.innerText = `$${flujoNeto.toLocaleString()}`;
             elFlujo.style.color = flujoNeto >= 0 ? "#22c55e" : "#ef4444";
 
-            document.getElementById("cierre-caja-final").innerText = `$${state.caja.toLocaleString()}`;
+            document.getElementById("cierre-caja-final").innerText = `$${(window.dbState.caja || 0).toLocaleString()}`;
 
             let prestadoTotal = 0;
-            state.prestamos.forEach(p => { prestadoTotal += p.saldoPendiente; });
+            if (window.dbState.prestamos) {
+                window.dbState.prestamos.forEach(p => { prestadoTotal += p.saldoPendiente; });
+            }
             document.getElementById("cierre-calle-final").innerText = `$${prestadoTotal.toLocaleString()}`;
         }
 
@@ -612,43 +647,45 @@
             let totalSum = 0;
             let count = 0;
 
-            state.transacciones.forEach(t => {
-                if (currentHistFilter === 'PAGOS' && t.tipo !== 'Abono / Pago') return;
-                if (currentHistFilter === 'PRESTAMOS' && t.tipo !== 'Nuevo Préstamo') return;
-                if (currentHistFilter === 'GASTOS' && t.tipo !== 'Gasto') return;
+            if (window.dbState.transacciones) {
+                window.dbState.transacciones.forEach(t => {
+                    if (currentHistFilter === 'PAGOS' && t.tipo !== 'Abono / Pago') return;
+                    if (currentHistFilter === 'PRESTAMOS' && t.tipo !== 'Nuevo Préstamo') return;
+                    if (currentHistFilter === 'GASTOS' && t.tipo !== 'Gasto') return;
 
-                const matchSearch = t.tipo.toLowerCase().includes(search) || t.detalle.toLowerCase().includes(search);
-                if (!matchSearch) return;
+                    const matchSearch = t.tipo.toLowerCase().includes(search) || t.detalle.toLowerCase().includes(search);
+                    if (!matchSearch) return;
 
-                const tDate = t.fechaISO || (t.fechaStr ? t.fechaStr.split(',')[0] : '');
-                if (fromDate && tDate < fromDate) return;
-                if (toDate && tDate > toDate) return;
+                    const tDate = t.fechaISO || (t.fechaStr ? t.fechaStr.split(',')[0] : '');
+                    if (fromDate && tDate < fromDate) return;
+                    if (toDate && tDate > toDate) return;
 
-                totalSum += t.monto;
-                count++;
+                    totalSum += t.monto;
+                    count++;
 
-                let color = '#22c55e';
-                if (t.tipo === 'Nuevo Préstamo' || t.tipo === 'Gasto') color = '#ef4444';
+                    let color = '#22c55e';
+                    if (t.tipo === 'Nuevo Préstamo' || t.tipo === 'Gasto') color = '#ef4444';
 
-                const canEdit = (t.tipo === 'Abono / Pago' || t.tipo === 'Gasto');
+                    const canEdit = (t.tipo === 'Abono / Pago' || t.tipo === 'Gasto');
 
-                histList.innerHTML += `
-                    <div class="list-item">
-                        <div>
-                            <strong>${t.tipo}</strong> <br>
-                            <small style="color: #64748b;">${t.detalle}</small> <br>
-                            <small style="color: #94a3b8;">${t.fechaStr || t.fechaISO}</small>
+                    histList.innerHTML += `
+                        <div class="list-item">
+                            <div>
+                                <strong>${t.tipo}</strong> <br>
+                                <small style="color: #64748b;">${t.detalle}</small> <br>
+                                <small style="color: #94a3b8;">${t.fechaStr || t.fechaISO}</small>
+                            </div>
+                            <div style="text-align: right;">
+                                <strong style="color: ${color};">$${t.monto.toLocaleString()}</strong><br>
+                                ${canEdit ? `
+                                    <button style="background: none; border: none; font-size: 11px; color: #2563eb; cursor: pointer; margin-top: 4px;" onclick="editarTransaccion(${t.id})">✏️ Editar</button>
+                                    <button style="background: none; border: none; font-size: 11px; color: #ef4444; cursor: pointer; margin-left: 6px;" onclick="borrarTransaccion(${t.id})">🗑️</button>
+                                ` : ''}
+                            </div>
                         </div>
-                        <div style="text-align: right;">
-                            <strong style="color: ${color};">$${t.monto.toLocaleString()}</strong><br>
-                            ${canEdit ? `
-                                <button style="background: none; border: none; font-size: 11px; color: #2563eb; cursor: pointer; margin-top: 4px;" onclick="editarTransaccion(${t.id})">✏️ Editar</button>
-                                <button style="background: none; border: none; font-size: 11px; color: #ef4444; cursor: pointer; margin-left: 6px;" onclick="borrarTransaccion(${t.id})">🗑️</button>
-                            ` : ''}
-                        </div>
-                    </div>
-                `;
-            });
+                    `;
+                });
+            }
 
             if (count === 0) {
                 histList.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay movimientos con los filtros seleccionados</p>';
@@ -658,7 +695,7 @@
         }
 
         function render() {
-            document.getElementById("caja-actual").innerText = `$${state.caja.toLocaleString()}`;
+            document.getElementById("caja-actual").innerText = `$${(window.dbState.caja || 0).toLocaleString()}`;
             let prestado = 0, cobrado = 0, totalGastos = 0;
             
             const listActivos = document.getElementById("lista-prestamos-activos");
@@ -670,46 +707,49 @@
             let countActivos = 0;
             let countFinalizados = 0;
 
-            state.prestamos.forEach(p => {
-                const isPaid = p.saldoPendiente === 0;
+            if (window.dbState.prestamos) {
+                window.dbState.prestamos.forEach(p => {
+                    const isPaid = p.saldoPendiente === 0;
 
-                if (isPaid) {
-                    listFinalizados.innerHTML += `
-                        <div class="list-item">
-                            <div>
-                                <strong>${p.cliente}</strong> <br>
-                                <small style="color: #64748b;">Finalizado - Plazo: ${p.dias} días</small> <br>
-                                <small style="color: #2563eb;">Total Pagado: $${p.totalPagar.toLocaleString()}</small>
+                    if (isPaid) {
+                        listFinalizados.innerHTML += `
+                            <div class="list-item">
+                                <div>
+                                    <strong>${p.cliente}</strong> <br>
+                                    <small style="color: #64748b;">Finalizado - Plazo: ${p.dias} días</small> <br>
+                                    <small style="color: #2563eb;">Total Pagado: $${p.totalPagar.toLocaleString()}</small>
+                                </div>
+                                <div style="text-align: right;">
+                                    <span class="badge badge-paid">SALDADO</span><br>
+                                    <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px; margin-top: 6px;" onclick="rePrestarCliente('${p.cliente}')">🔄 Prestar</button>
+                                    <button class="btn btn-danger" style="padding: 4px 8px; font-size: 11px; margin-top: 6px; margin-left: 4px;" onclick="borrarPrestamo(${p.id})">🗑️ Borrar</button>
+                                </div>
                             </div>
-                            <div style="text-align: right;">
-                                <span class="badge badge-paid">SALDADO</span><br>
-                                <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px; margin-top: 6px;" onclick="rePrestarCliente('${p.cliente}')">🔄 Prestar</button>
-                                <button class="btn btn-danger" style="padding: 4px 8px; font-size: 11px; margin-top: 6px; margin-left: 4px;" onclick="borrarPrestamo(${p.id})">🗑️ Borrar</button>
+                        `;
+                        countFinalizados++;
+                    } else {
+                        prestado += p.saldoPendiente;
+                        listActivos.innerHTML += `
+                            <div class="list-item">
+                                <div>
+                                    <strong>${p.cliente}</strong> <br>
+                                    <small style="color: #64748b;">${p.frecuencia} - Plazo: ${p.dias} días</small> <br>
+                                    <small style="color: #2563eb;">Monto Total: $${p.totalPagar.toLocaleString()}</small>
+                                </div>
+                                <div style="text-align: right;">
+                                    <span class="badge badge-pending">PENDIENTE</span><br>
+                                                   <span class="badge badge-pending">PENDIENTE</span><br>
+                                    <strong style="color: #ef4444;">$${p.saldoPendiente.toLocaleString()}</strong><br>
+                                    <button class="btn btn-success" style="padding: 4px 8px; font-size: 11px; margin-top: 4px;" onclick="registrarPago(${p.id})">Abonar</button>
+                                    <button style="background: transparent; border: none; font-size: 11px; color: #2563eb; margin-left: 4px; cursor: pointer;" onclick="editarPrestamo(${p.id})">✏️</button>
+                                    <button style="background: transparent; border: none; font-size: 11px; color: #ef4444; margin-left: 4px; cursor: pointer;" onclick="borrarPrestamo(${p.id})">🗑️</button>
+                                </div>
                             </div>
-                        </div>
-                    `;
-                    countFinalizados++;
-                } else {
-                    prestado += p.saldoPendiente;
-                    listActivos.innerHTML += `
-                        <div class="list-item">
-                            <div>
-                                <strong>${p.cliente}</strong> <br>
-                                <small style="color: #64748b;">${p.frecuencia} - Plazo: ${p.dias} días</small> <br>
-                                <small style="color: #2563eb;">Monto Total: $${p.totalPagar.toLocaleString()}</small>
-                            </div>
-                            <div style="text-align: right;">
-                                <span class="badge badge-pending">PENDIENTE</span><br>
-                                <strong style="color: #ef4444;">$${p.saldoPendiente.toLocaleString()}</strong><br>
-                                <button class="btn btn-success" style="padding: 4px 8px; font-size: 11px; margin-top: 4px;" onclick="registrarPago(${p.id})">Abonar</button>
-                                <button style="background: transparent; border: none; font-size: 11px; color: #2563eb; margin-left: 4px; cursor: pointer;" onclick="editarPrestamo(${p.id})">✏️</button>
-                                <button style="background: transparent; border: none; font-size: 11px; color: #ef4444; margin-left: 4px; cursor: pointer;" onclick="borrarPrestamo(${p.id})">🗑️</button>
-                            </div>
-                        </div>
-                    `;
-                    countActivos++;
-                }
-            });
+                        `;
+                        countActivos++;
+                    }
+                });
+            }
 
             if (countActivos === 0) {
                 listActivos.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay préstamos activos pendientes</p>';
@@ -719,10 +759,12 @@
                 listFinalizados.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay préstamos saldados todavía</p>';
             }
 
-            state.transacciones.forEach(t => {
-                if (t.tipo === 'Gasto') totalGastos += t.monto;
-                if (t.tipo === 'Abono / Pago') cobrado += t.monto;
-            });
+            if (window.dbState.transacciones) {
+                window.dbState.transacciones.forEach(t => {
+                    if (t.tipo === 'Gasto') totalGastos += t.monto;
+                    if (t.tipo === 'Abono / Pago') cobrado += t.monto;
+                });
+            }
 
             document.getElementById("total-prestado").innerText = `$${prestado.toLocaleString()}`;
             document.getElementById("total-cobrado").innerText = `$${cobrado.toLocaleString()}`;
@@ -731,8 +773,6 @@
             calcularCierreDiario();
             renderHistorial();
         }
-
-        render();
     </script>
 </body>
 </html>
