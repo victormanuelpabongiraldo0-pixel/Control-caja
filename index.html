@@ -13,7 +13,7 @@
         * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; }
         body { background-color: var(--bg-main); color: #1e293b; padding-bottom: 85px; }
         #pin-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #0f172a; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; }
-        .pin-title { font-size: 22px; font-weight: bold; margin-bottom: 20px; }
+        .pin-title { font-size: 22px; font-weight: bold; margin-bottom: 5px; }
         .pin-dots { display: flex; gap: 15px; margin-bottom: 30px; }
         .pin-dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #38bdf8; }
         .pin-dot.filled { background: #38bdf8; }
@@ -57,6 +57,7 @@
 <body>
     <div id="pin-screen">
         <div class="pin-title">Ingresa tu PIN</div>
+        <p id="role-indicator" style="font-size: 12px; color: #38bdf8; margin-bottom: 20px;">PIN Admin (1234) o Operador (0000)</p>
         <div class="pin-dots">
             <div class="pin-dot" id="dot-0"></div>
             <div class="pin-dot" id="dot-1"></div>
@@ -82,7 +83,7 @@
         <h1>Control de Cobros</h1>
         <button class="lock-btn" onclick="lockApp()">🔒 Bloquear</button>
     </div>
-    <div class="container">
+        <div class="container">
         <div id="sync-status">☁️ Sincronizado en la Nube en Tiempo Real</div>
         
         <!-- VISTA CAJA -->
@@ -167,7 +168,8 @@
                 <button class="btn btn-danger" onclick="registrarGasto()">Registrar Gasto</button>
             </div>
         </div>
-                <!-- VISTA NUEVO PRESTAMO -->
+
+        <!-- VISTA NUEVO PRESTAMO -->
         <div id="view-nuevo" class="view">
             <div class="card">
                 <div class="card-header">Nuevo Préstamo</div>
@@ -294,7 +296,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Configuración de tu proyecto Firebase extraída de tus capturas
         const firebaseConfig = {
           apiKey: "AIzaSyC0H3HmkRHmAOmC1-qQkDMvpJA2-...", 
           authDomain: "control-cobro.firebaseapp.com",
@@ -310,14 +311,13 @@
 
         window.dbState = { caja: 0, prestamos: [], transacciones: [] };
 
-        // Escuchar cambios en la Nube en TIEMPO REAL
         onSnapshot(docRef, (docSnap) => {
             if (docSnap.exists()) {
                 window.dbState = docSnap.data();
                 if (!window.dbState.transacciones) window.dbState.transacciones = [];
                 if (!window.dbState.prestamos) window.dbState.prestamos = [];
             } else {
-                saveToCloud(); // Crear documento inicial si está vacío
+                saveToCloud();
             }
             render();
         });
@@ -328,7 +328,10 @@
     </script>
 
     <script>
-        const CORRECT_PIN = "1234";
+        const ADMIN_PIN = "1234";
+        const OPERATOR_PIN = "0000";
+        
+        let currentUserRole = "operator";
         let enteredPin = "";
         let currentHistFilter = "TODOS";
 
@@ -340,10 +343,18 @@
                 updateDots();
                 if (enteredPin.length === 4) {
                     setTimeout(() => {
-                        if (enteredPin === CORRECT_PIN) {
+                        if (enteredPin === ADMIN_PIN) {
+                            currentUserRole = "admin";
                             document.getElementById("pin-screen").style.display = "none";
                             enteredPin = "";
                             updateDots();
+                            render();
+                        } else if (enteredPin === OPERATOR_PIN) {
+                            currentUserRole = "operator";
+                            document.getElementById("pin-screen").style.display = "none";
+                            enteredPin = "";
+                            updateDots();
+                            render();
                         } else {
                             alert("PIN Incorrecto");
                             clearPin();
@@ -377,6 +388,7 @@
         }
 
         function setBaseCaja() {
+            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
             const m = parseFloat(document.getElementById("base-monto").value);
             if (!isNaN(m)) {
                 window.dbState.caja = m;
@@ -394,6 +406,7 @@
         }
 
         function editarValorCajaDirecto() {
+            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
             const nuevoVal = prompt("Ingresa el valor exacto actual en caja ($):", window.dbState.caja);
             const val = parseFloat(nuevoVal);
             if (!isNaN(val) && val >= 0) {
@@ -402,8 +415,7 @@
                 alert("Valor de caja modificado en la nube.");
             }
         }
-
-        function crearPrestamo() {
+                function crearPrestamo() {
             const cliente = document.getElementById("p-cliente").value;
             const monto = parseFloat(document.getElementById("p-monto").value);
             const tipoInteres = document.getElementById("p-tipo-interes").value;
@@ -459,6 +471,7 @@
         }
 
         function editarPrestamo(id) {
+            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
             const p = window.dbState.prestamos.find(x => x.id === id);
             if (!p) return;
 
@@ -481,6 +494,7 @@
         }
 
         function borrarPrestamo(id) {
+            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
             if (confirm("¿Estás seguro de que deseas eliminar este cliente/préstamo permanentemente?")) {
                 window.dbState.prestamos = window.dbState.prestamos.filter(x => x.id !== id);
                 window.saveToCloud();
@@ -515,6 +529,7 @@
         }
 
         function editarTransaccion(tId) {
+            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
             const t = window.dbState.transacciones.find(x => x.id === tId);
             if (!t) return;
 
@@ -548,6 +563,7 @@
         }
 
         function borrarTransaccion(tId) {
+            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
             const tIndex = window.dbState.transacciones.findIndex(x => x.id === tId);
             if (tIndex === -1) return;
             const t = window.dbState.transacciones[tIndex];
@@ -666,7 +682,7 @@
                     let color = '#22c55e';
                     if (t.tipo === 'Nuevo Préstamo' || t.tipo === 'Gasto') color = '#ef4444';
 
-                    const canEdit = (t.tipo === 'Abono / Pago' || t.tipo === 'Gasto');
+                    const canEdit = (t.tipo === 'Abono / Pago' || t.tipo === 'Gasto') && currentUserRole === 'admin';
 
                     histList.innerHTML += `
                         <div class="list-item">
@@ -696,6 +712,13 @@
 
         function render() {
             document.getElementById("caja-actual").innerText = `$${(window.dbState.caja || 0).toLocaleString()}`;
+            
+            const editCajaBtn = document.querySelector("#view-caja .card-header button");
+            if (editCajaBtn) editCajaBtn.style.display = currentUserRole === "admin" ? "inline" : "none";
+
+            const baseCard = document.querySelectorAll("#view-caja .card")[2];
+            if (baseCard) baseCard.style.display = currentUserRole === "admin" ? "block" : "none";
+
             let prestado = 0, cobrado = 0, totalGastos = 0;
             
             const listActivos = document.getElementById("lista-prestamos-activos");
@@ -722,7 +745,7 @@
                                 <div style="text-align: right;">
                                     <span class="badge badge-paid">SALDADO</span><br>
                                     <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px; margin-top: 6px;" onclick="rePrestarCliente('${p.cliente}')">🔄 Prestar</button>
-                                    <button class="btn btn-danger" style="padding: 4px 8px; font-size: 11px; margin-top: 6px; margin-left: 4px;" onclick="borrarPrestamo(${p.id})">🗑️ Borrar</button>
+                                    ${currentUserRole === 'admin' ? `<button class="btn btn-danger" style="padding: 4px 8px; font-size: 11px; margin-top: 6px; margin-left: 4px;" onclick="borrarPrestamo(${p.id})">🗑️ Borrar</button>` : ''}
                                 </div>
                             </div>
                         `;
@@ -738,11 +761,12 @@
                                 </div>
                                 <div style="text-align: right;">
                                     <span class="badge badge-pending">PENDIENTE</span><br>
-                                                   <span class="badge badge-pending">PENDIENTE</span><br>
                                     <strong style="color: #ef4444;">$${p.saldoPendiente.toLocaleString()}</strong><br>
                                     <button class="btn btn-success" style="padding: 4px 8px; font-size: 11px; margin-top: 4px;" onclick="registrarPago(${p.id})">Abonar</button>
-                                    <button style="background: transparent; border: none; font-size: 11px; color: #2563eb; margin-left: 4px; cursor: pointer;" onclick="editarPrestamo(${p.id})">✏️</button>
-                                    <button style="background: transparent; border: none; font-size: 11px; color: #ef4444; margin-left: 4px; cursor: pointer;" onclick="borrarPrestamo(${p.id})">🗑️</button>
+                                    ${currentUserRole === 'admin' ? `
+                                        <button style="background: transparent; border: none; font-size: 11px; color: #2563eb; margin-left: 4px; cursor: pointer;" onclick="editarPrestamo(${p.id})">✏️</button>
+                                        <button style="background: transparent; border: none; font-size: 11px; color: #ef4444; margin-left: 4px; cursor: pointer;" onclick="borrarPrestamo(${p.id})">🗑️</button>
+                                    ` : ''}
                                 </div>
                             </div>
                         `;
