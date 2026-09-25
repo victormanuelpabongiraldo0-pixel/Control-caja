@@ -50,6 +50,7 @@
         .badge { padding: 4px 8px; border-radius: 12px; font-size: 10px; font-weight: bold; }
         .badge-pending { background: #fef3c7; color: #d97706; }
         .badge-paid { background: #dcfce7; color: #15803d; }
+        .badge-danger { background: #fee2e2; color: #dc2626; }
         .summary-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #e2e8f0; font-size: 13px; }
         #sync-status { font-size: 10px; text-align: center; padding: 4px; background: #e0f2fe; color: #0369a1; border-radius: 4px; margin-bottom: 10px; }
     </style>
@@ -272,6 +273,29 @@
                 </div>
             </div>
         </div>
+
+        <!-- VISTA CLIENTES CLAVO (LISTA NEGRA) -->
+        <div id="view-clavos" class="view">
+            <div class="card" id="card-add-clavo">
+                <div class="card-header">📌 Marcar Cliente Clavo / Bloqueado</div>
+                <div class="input-group">
+                    <label>Nombre del Cliente No Apto</label>
+                    <input type="text" id="clavo-nombre" placeholder="Nombre completo">
+                </div>
+                <div class="input-group">
+                    <label>Motivo del Bloqueo</label>
+                    <input type="text" id="clavo-motivo" placeholder="Ej. Mala paga, agresivo, retrasado">
+                </div>
+                <button class="btn btn-danger" onclick="agregarClienteClavo()">Bloquear Cliente</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">🚫 Lista de Clientes Bloqueados</div>
+                <div id="lista-clientes-clavos">
+                    <p style="text-align: center; color: #94a3b8; font-size: 13px;">Cargando clientes bloqueados...</p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="bottom-nav">
@@ -289,6 +313,9 @@
         </div>
         <div class="nav-item" onclick="switchTab('historial', this)">
             <span>📜</span>Historial
+        </div>
+        <div class="nav-item" onclick="switchTab('clavos', this)">
+            <span>🚫</span>Clavos
         </div>
     </div>
         <!-- SDK de Firebase en Tiempo Real -->
@@ -309,13 +336,14 @@
         const db = getFirestore(app);
         const docRef = doc(db, "control_caja", "general");
 
-        window.dbState = { caja: 0, prestamos: [], transacciones: [] };
+        window.dbState = { caja: 0, prestamos: [], transacciones: [], clientesClavos: [] };
 
         onSnapshot(docRef, (docSnap) => {
             if (docSnap.exists()) {
                 window.dbState = docSnap.data();
                 if (!window.dbState.transacciones) window.dbState.transacciones = [];
                 if (!window.dbState.prestamos) window.dbState.prestamos = [];
+                if (!window.dbState.clientesClavos) window.dbState.clientesClavos = [];
             } else {
                 saveToCloud();
             }
@@ -415,8 +443,38 @@
                 alert("Valor de caja modificado en la nube.");
             }
         }
+
+        function agregarClienteClavo() {
+            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
+            const nombre = document.getElementById("clavo-nombre").value.trim();
+            const motivo = document.getElementById("clavo-motivo").value.trim();
+
+            if (!nombre) return alert("Ingresa el nombre del cliente.");
+
+            if (!window.dbState.clientesClavos) window.dbState.clientesClavos = [];
+            
+            window.dbState.clientesClavos.push({
+                id: Date.now(),
+                nombre: nombre,
+                motivo: motivo || "Sin motivo especificado",
+                fecha: new Date().toLocaleDateString()
+            });
+
+            window.saveToCloud();
+            document.getElementById("clavo-nombre").value = "";
+            document.getElementById("clavo-motivo").value = "";
+            alert(`Cliente ${nombre} bloqueado exitosamente.`);
+        }
+
+        function eliminarClienteClavo(id) {
+            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
+            if (confirm("¿Deseas desbloquear a este cliente para permitirle préstamos de nuevo?")) {
+                window.dbState.clientesClavos = window.dbState.clientesClavos.filter(c => c.id !== id);
+                window.saveToCloud();
+            }
+        }
                 function crearPrestamo() {
-            const cliente = document.getElementById("p-cliente").value;
+            const cliente = document.getElementById("p-cliente").value.trim();
             const monto = parseFloat(document.getElementById("p-monto").value);
             const tipoInteres = document.getElementById("p-tipo-interes").value;
             const valInteres = parseFloat(document.getElementById("p-interes").value);
@@ -426,6 +484,15 @@
             if (!cliente || isNaN(monto) || isNaN(valInteres) || isNaN(dias)) {
                 alert("Por favor completa todos los campos.");
                 return;
+            }
+
+            // VERIFICACIÓN DE CLIENTE CLAVO
+            if (window.dbState.clientesClavos) {
+                const esClavo = window.dbState.clientesClavos.find(c => c.nombre.toLowerCase() === cliente.toLowerCase());
+                if (esClavo) {
+                    alert(`⛔ ATENCIÓN: El cliente "${cliente}" está registrado como CLIENTE CLAVO/BLOQUEADO.\nMotivo: ${esClavo.motivo}\n\nNO se permite realizar préstamos a este cliente.`);
+                    return;
+                }
             }
 
             let ganancia = tipoInteres === "porcentaje" ? (monto * (valInteres / 100)) : valInteres;
@@ -498,18 +565,13 @@
             const p = window.dbState.prestamos.find(x => x.id === id);
             if (!p) return;
 
-            if (confirm(`¿Estás seguro de que deseas eliminar permanentemente el crédito de ${p.cliente}?\n\nSe devolverán $${p.monto.toLocaleString()} a la caja.`)) {
-                // Devolver el dinero prestado originalmente a la caja
+            if (confirm(`¿Estás seguro de que deseas eliminar el crédito de ${p.cliente}?\n\nSe devolverán $${p.monto.toLocaleString()} a la caja y se borrará del Cierre del Día.`)) {
                 window.dbState.caja += p.monto;
-
-                // Eliminar la transacción original asociada si existe
                 window.dbState.transacciones = window.dbState.transacciones.filter(t => t.prestamoId !== id);
-
-                // Eliminar el préstamo
                 window.dbState.prestamos = window.dbState.prestamos.filter(x => x.id !== id);
 
                 window.saveToCloud();
-                alert("Crédito eliminado y dinero devuelto a caja.");
+                alert("Crédito eliminado. Se ajustó la caja y se borró el registro del Cierre del Día.");
             }
         }
 
@@ -622,8 +684,7 @@
 
             alert("Gasto registrado exitosamente");
         }
-
-        function setHistFilter(cat, btn) {
+                function setHistFilter(cat, btn) {
             currentHistFilter = cat;
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
@@ -722,6 +783,35 @@
             document.getElementById("hist-total-sum").innerText = `$${totalSum.toLocaleString()}`;
         }
 
+        function renderClavos() {
+            const listClavos = document.getElementById("lista-clientes-clavos");
+            const cardAddClavo = document.getElementById("card-add-clavo");
+            
+            if (cardAddClavo) cardAddClavo.style.display = currentUserRole === "admin" ? "block" : "none";
+            listClavos.innerHTML = "";
+
+            if (window.dbState.clientesClavos && window.dbState.clientesClavos.length > 0) {
+                window.dbState.clientesClavos.forEach(c => {
+                    listClavos.innerHTML += `
+                        <div class="list-item">
+                            <div>
+                                <strong>🚫 ${c.nombre}</strong> <br>
+                                <small style="color: #ef4444;">Motivo: ${c.motivo}</small> <br>
+                                <small style="color: #94a3b8;">Bloqueado el: ${c.fecha}</small>
+                            </div>
+                            <div>
+                                ${currentUserRole === 'admin' ? `
+                                    <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;" onclick="eliminarClienteClavo(${c.id})">Desbloquear</button>
+                                ` : '<span class="badge badge-danger">BLOQUEADO</span>'}
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                listClavos.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay clientes bloqueados</p>';
+            }
+        }
+
         function render() {
             document.getElementById("caja-actual").innerText = `$${(window.dbState.caja || 0).toLocaleString()}`;
             
@@ -808,6 +898,7 @@
 
             calcularCierreDiario();
             renderHistorial();
+            renderClavos();
         }
     </script>
 </body>
