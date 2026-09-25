@@ -11,7 +11,7 @@
     <style>
         :root { --bg-main: #f8fafc; --card-bg: #ffffff; --primary: #2563eb; --accent: #f59e0b; --danger: #ef4444; --success: #22c55e; }
         * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; }
-        body { background-color: var(--bg-main); color: #1e293b; padding-bottom: 70px; }
+        body { background-color: var(--bg-main); color: #1e293b; padding-bottom: 85px; }
         #pin-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #0f172a; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; }
         .pin-title { font-size: 22px; font-weight: bold; margin-bottom: 20px; }
         .pin-dots { display: flex; gap: 15px; margin-bottom: 30px; }
@@ -22,8 +22,8 @@
         .top-header { background: #0f172a; color: white; padding: 16px; display: flex; justify-content: space-between; align-items: center; }
         .top-header h1 { font-size: 18px; font-weight: 600; }
         .lock-btn { background: #1e293b; border: none; color: #f59e0b; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; }
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: #ffffff; border-top: 1px solid #e2e8f0; display: flex; justify-around: space-around; padding: 10px 0; z-index: 1000; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #64748b; font-size: 11px; cursor: pointer; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; align-items: center; padding: 8px 0; z-index: 1000; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: #64748b; font-size: 10px; cursor: pointer; text-align: center; }
         .nav-item.active { color: var(--primary); font-weight: bold; }
         .nav-item span { font-size: 18px; margin-bottom: 2px; }
         .container { padding: 15px; max-width: 600px; margin: 0 auto; }
@@ -39,6 +39,7 @@
         .btn-primary { background: var(--primary); color: white; }
         .btn-success { background: var(--success); color: white; }
         .btn-danger { background: var(--danger); color: white; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
         .list-item:last-child { border-bottom: none; }
@@ -76,6 +77,7 @@
         <button class="lock-btn" onclick="lockApp()">🔒 Bloquear</button>
     </div>
     <div class="container">
+        <!-- VISTA CAJA -->
         <div id="view-caja" class="view active">
             <div class="card" style="background: #0f172a; color: white;">
                 <div class="card-header" style="color: #94a3b8;">Efectivo en Caja</div>
@@ -92,19 +94,24 @@
             </div>
             <div class="card">
                 <div class="card-header">Resumen Financiero</div>
-                <div class="grid-2">
+                <div class="grid-3">
                     <div>
-                        <p style="font-size: 11px; color: #64748b;">En la Calle</p>
-                        <p style="font-size: 18px; font-weight: bold; color: #ef4444;" id="total-prestado">$0</p>
+                        <p style="font-size: 10px; color: #64748b;">En la Calle</p>
+                        <p style="font-size: 15px; font-weight: bold; color: #ef4444;" id="total-prestado">$0</p>
                     </div>
                     <div>
-                        <p style="font-size: 11px; color: #64748b;">Cobrado</p>
-                        <p style="font-size: 18px; font-weight: bold; color: #22c55e;" id="total-cobrado">$0</p>
+                        <p style="font-size: 10px; color: #64748b;">Cobrado</p>
+                        <p style="font-size: 15px; font-weight: bold; color: #22c55e;" id="total-cobrado">$0</p>
+                    </div>
+                    <div>
+                        <p style="font-size: 10px; color: #64748b;">Gastos</p>
+                        <p style="font-size: 15px; font-weight: bold; color: #f59e0b;" id="total-gastos">$0</p>
                     </div>
                 </div>
             </div>
         </div>
-                <div id="view-nuevo" class="view">
+                <!-- VISTA NUEVO PRESTAMO -->
+        <div id="view-nuevo" class="view">
             <div class="card">
                 <div class="card-header">Nuevo Préstamo</div>
                 <div class="input-group">
@@ -147,11 +154,38 @@
             </div>
         </div>
 
+        <!-- VISTA COBROS -->
         <div id="view-cobros" class="view">
             <div class="card">
                 <div class="card-header">Lista de Cobros</div>
                 <div id="lista-prestamos">
                     <p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay préstamos activos</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- VISTA GASTOS -->
+        <div id="view-gastos" class="view">
+            <div class="card">
+                <div class="card-header">Registrar Nuevo Gasto</div>
+                <div class="input-group">
+                    <label>Valor del Gasto ($)</label>
+                    <input type="number" id="gasto-monto" placeholder="Ej. 15000">
+                </div>
+                <div class="input-group">
+                    <label>Motivo / Concepto del Gasto</label>
+                    <input type="text" id="gasto-motivo" placeholder="Ej. Gasolina, Almuerzo, Papelería">
+                </div>
+                <button class="btn btn-danger" onclick="registrarGasto()">Registrar y Descontar de Caja</button>
+            </div>
+        </div>
+
+        <!-- VISTA HISTORIAL -->
+        <div id="view-historial" class="view">
+            <div class="card">
+                <div class="card-header">Historial de Transacciones</div>
+                <div id="lista-historial">
+                    <p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay movimientos registrados</p>
                 </div>
             </div>
         </div>
@@ -167,12 +201,19 @@
         <div class="nav-item" onclick="switchTab('cobros', this)">
             <span>📋</span>Cobros
         </div>
+        <div class="nav-item" onclick="switchTab('gastos', this)">
+            <span>💸</span>Gastos
+        </div>
+        <div class="nav-item" onclick="switchTab('historial', this)">
+            <span>📜</span>Historial
+        </div>
     </div>
 
     <script>
         const CORRECT_PIN = "1234";
         let enteredPin = "";
-        let state = JSON.parse(localStorage.getItem("control_caja_db")) || { caja: 0, prestamos: [] };
+        let state = JSON.parse(localStorage.getItem("control_caja_db")) || { caja: 0, prestamos: [], transacciones: [] };
+        if (!state.transacciones) state.transacciones = [];
 
         function saveState() {
             localStorage.setItem("control_caja_db", JSON.stringify(state));
@@ -225,6 +266,12 @@
             const m = parseFloat(document.getElementById("base-monto").value);
             if (!isNaN(m)) {
                 state.caja = m;
+                state.transacciones.unshift({
+                    tipo: 'Ajuste de Base',
+                    monto: m,
+                    fecha: new Date().toLocaleString(),
+                    detalle: 'Base de caja actualizada'
+                });
                 document.getElementById("base-monto").value = "";
                 saveState();
             }
@@ -258,6 +305,13 @@
             });
 
             state.caja -= monto;
+            state.transacciones.unshift({
+                tipo: 'Nuevo Préstamo',
+                monto: monto,
+                fecha: new Date().toLocaleString(),
+                detalle: `Préstamo a ${cliente}`
+            });
+
             saveState();
 
             document.getElementById("p-cliente").value = "";
@@ -277,13 +331,45 @@
             if (!isNaN(val) && val > 0) {
                 p.saldoPendiente = Math.max(0, p.saldoPendiente - val);
                 state.caja += val;
+                state.transacciones.unshift({
+                    tipo: 'Abono / Pago',
+                    monto: val,
+                    fecha: new Date().toLocaleString(),
+                    detalle: `Cobro a ${p.cliente}`
+                });
                 saveState();
             }
         }
 
+        function registrarGasto() {
+            const monto = parseFloat(document.getElementById("gasto-monto").value);
+            const motivo = document.getElementById("gasto-motivo").value.trim();
+
+            if (isNaN(monto) || monto <= 0 || !motivo) {
+                alert("Ingresa un valor válido y el motivo del gasto.");
+                return;
+            }
+
+            state.caja -= monto;
+            state.transacciones.unshift({
+                tipo: 'Gasto',
+                monto: monto,
+                fecha: new Date().toLocaleString(),
+                detalle: motivo
+            });
+
+            saveState();
+
+            document.getElementById("gasto-monto").value = "";
+            document.getElementById("gasto-motivo").value = "";
+
+            alert("Gasto registrado y descontado de la caja");
+            switchTab("caja", document.querySelectorAll(".nav-item")[0]);
+        }
+
         function render() {
             document.getElementById("caja-actual").innerText = `$${state.caja.toLocaleString()}`;
-            let prestado = 0, cobrado = 0;
+            let prestado = 0, cobrado = 0, totalGastos = 0;
             const list = document.getElementById("lista-prestamos");
             list.innerHTML = "";
 
@@ -311,8 +397,38 @@
                 `;
             });
 
+            // Calcule total de gastos
+            state.transacciones.forEach(t => {
+                if (t.tipo === 'Gasto') totalGastos += t.monto;
+            });
+
             document.getElementById("total-prestado").innerText = `$${prestado.toLocaleString()}`;
             document.getElementById("total-cobrado").innerText = `$${cobrado.toLocaleString()}`;
+            document.getElementById("total-gastos").innerText = `$${totalGastos.toLocaleString()}`;
+
+            // Render Historial
+            const histList = document.getElementById("lista-historial");
+            histList.innerHTML = "";
+            if (state.transacciones.length === 0) {
+                histList.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay movimientos registrados</p>';
+            } else {
+                state.transacciones.forEach(t => {
+                    let color = '#22c55e';
+                    if (t.tipo === 'Nuevo Préstamo' || t.tipo === 'Gasto') color = '#ef4444';
+                    histList.innerHTML += `
+                        <div class="list-item">
+                            <div>
+                                <strong>${t.tipo}</strong> <br>
+                                <small style="color: #64748b;">${t.detalle}</small> <br>
+                                <small style="color: #94a3b8;">${t.fecha}</small>
+                            </div>
+                            <div style="text-align: right;">
+                                <strong style="color: ${color};">$${t.monto.toLocaleString()}</strong>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
         }
 
         render();
