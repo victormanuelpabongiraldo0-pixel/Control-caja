@@ -53,6 +53,9 @@
         .badge-danger { background: #fee2e2; color: #dc2626; }
         .summary-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #e2e8f0; font-size: 13px; }
         #sync-status { font-size: 10px; text-align: center; padding: 4px; background: #e0f2fe; color: #0369a1; border-radius: 4px; margin-bottom: 10px; }
+        /* Modal Estilos */
+        #modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 99999; padding: 15px; }
+        .modal-box { background: white; width: 100%; max-width: 500px; border-radius: 12px; padding: 20px; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
@@ -103,13 +106,20 @@
                 </div>
             </div>
 
+            <!-- BOTÓN APARTE PARA ABRIR EL CIERRE DEL DÍA -->
+            <div class="card" style="background: #eff6ff; border: 1px solid #bfdbfe;">
+                <div class="card-header" style="color: #1e3a8a;">📊 Panel de Cierre de Caja</div>
+                <p style="font-size: 11px; color: #1e40af; margin-bottom: 10px;">Consulta el resumen diario de cobros, préstamos y flujo neto.</p>
+                <button class="btn btn-primary" onclick="abrirModalCierre()">📊 Abrir Cierre del Día</button>
+            </div>
+
             <!-- CARD PRESTAMOS PROPIOS / RETIRO DE SOCIOS -->
             <div class="card admin-only-card" style="border: 2px solid #f59e0b; background: #fffbebf5;">
                 <div class="card-header" style="color: #b45309; display: flex; justify-content: space-between; align-items: center;">
                     <span>🤝 Préstamos Propios / Retiro de Socios</span>
                     <span id="total-prestamos-internos-badge" style="font-size: 12px; font-weight: bold; color: #b45309;">HACE FALTA: $0</span>
                 </div>
-                <p style="font-size: 11px; color: #78350f; margin-bottom: 10px;">Dinero retirado de caja por socios. Se descontará de caja y regresará al reembolsarlo.</p>
+                <p style="font-size: 11px; color: #78350f; margin-bottom: 10px;">Dinero retirado de caja por socios.</p>
                 
                 <div class="grid-2">
                     <div class="input-group">
@@ -126,39 +136,6 @@
                 </div>
             </div>
 
-            <div class="card" style="border: 2px solid #2563eb; background: #f0f9ff;">
-                <div class="card-header" style="color: #1e3a8a; display: flex; justify-content: space-between; align-items: center;">
-                    <span>📊 CIERRE DEL DÍA</span>
-                    <input type="date" id="cierre-fecha" style="font-size: 11px; padding: 4px; border-radius: 4px; border: 1px solid #cbd5e1;" onchange="calcularCierreDiario()">
-                </div>
-                <div style="margin-top: 10px;">
-                    <div class="summary-row">
-                        <span>(+) Total Cobrado Efectivo:</span>
-                        <strong style="color: #22c55e;" id="cierre-cobrado-efectivo">$0</strong>
-                    </div>
-                    <div class="summary-row">
-                        <span>(+) Total Cobrado Transferencia:</span>
-                        <strong style="color: #0284c7;" id="cierre-cobrado-transf">$0</strong>
-                    </div>
-                    <div class="summary-row">
-                        <span>(-) Total Prestado Nuevos:</span>
-                        <strong style="color: #ef4444;" id="cierre-prestado">$0</strong>
-                    </div>
-                    <div class="summary-row">
-                        <span>(-) Total Gastos:</span>
-                        <strong style="color: #f59e0b;" id="cierre-gastos">$0</strong>
-                    </div>
-                    <div class="summary-row" style="border-bottom: 2px solid #0f172a; font-weight: bold; margin-top: 4px; padding-bottom: 8px;">
-                        <span>Flujo Neto del Día:</span>
-                        <span id="cierre-flujo">$0</span>
-                    </div>
-                    <div class="summary-row" style="margin-top: 8px; font-size: 12px; color: #475569;">
-                        <span>Total Restante en la Calle:</span>
-                        <strong id="cierre-calle-final" style="color: #ef4444;">$0</strong>
-                    </div>
-                </div>
-            </div>
-
             <div class="card admin-only-card">
                 <div class="card-header">Establecer Base de Caja (Efectivo)</div>
                 <div class="input-group">
@@ -168,15 +145,22 @@
                 <button class="btn btn-primary" onclick="setBaseCaja()">Actualizar Saldo Efectivo</button>
             </div>
 
+            <!-- BOTÓN EXPORTAR A EXCEL / CSV (SOLO ADMIN) -->
+            <div class="card admin-only-card" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
+                <div class="card-header" style="color: #166534;">📁 Reportes y Exportación</div>
+                <p style="font-size: 11px; color: #15803d; margin-bottom: 10px;">Descarga el historial completo de movimientos para Excel o WhatsApp.</p>
+                <button class="btn btn-success" onclick="exportarExcelCSV()">📥 Descargar Reporte CSV/Excel</button>
+            </div>
+
             <div class="card admin-only-card" id="card-change-pins" style="border: 1px solid #38bdf8; background: #f0fdf4;">
                 <div class="card-header" style="color: #166534;">🔐 Seguridad y Claves de Acceso</div>
-                <p style="font-size: 11px; color: #15803d; margin-bottom: 10px;">Modifica los PINs de Administrador y Operador guardados en la nube.</p>
+                <p style="font-size: 11px; color: #15803d; margin-bottom: 10px;">Modifica los PINs de Administrador y Operador.</p>
                 <button class="btn btn-primary" style="background: #16a34a;" onclick="cambiarPINsAcceso()">🔐 Cambiar PINs de Acceso</button>
             </div>
 
             <div class="card admin-only-card" id="card-reset-system" style="border: 1px dashed #ef4444; background: #fff5f5;">
                 <div class="card-header" style="color: #dc2626;">⚙️ Zona de Peligro</div>
-                <p style="font-size: 11px; color: #7f1d1d; margin-bottom: 10px;">Borra toda la información en la nube para comenzar la app desde cero.</p>
+                <p style="font-size: 11px; color: #7f1d1d; margin-bottom: 10px;">Borra toda la información para comenzar desde cero.</p>
                 <button class="btn btn-danger" onclick="reiniciarTodaLaAplicacion()">⚠️ Reiniciar Todo a Cero</button>
             </div>
 
@@ -196,7 +180,13 @@
                         <p style="font-size: 15px; font-weight: bold; color: #f59e0b;" id="total-gastos">$0</p>
                     </div>
                 </div>
+                <!-- GANANCIAS PROYECTADAS -->
+                <div style="margin-top: 10px; padding: 8px; background: #f1f5f9; border-radius: 6px; display: flex; justify-content: space-between; font-size: 12px;">
+                    <span style="color: #475569; font-weight: bold;">💰 Ganancia Proyectada en Calle:</span>
+                    <strong style="color: #16a34a;" id="ganancia-proyectada">$0</strong>
+                </div>
             </div>
+
             <div class="card">
                 <div class="card-header">Registrar Gasto Rápido</div>
                 <div class="grid-2">
@@ -339,6 +329,57 @@
         </div>
     </div>
 
+    <!-- MODAL CIERRE DE CAJA -->
+    <div id="modal-overlay">
+        <div class="modal-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h3 style="font-size: 16px; color: #1e3a8a;">📊 Cierre del Día</h3>
+                <button class="btn btn-danger" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="cerrarModalCierre()">✕ Cerrar</button>
+            </div>
+            <div class="input-group">
+                <label>Seleccionar Fecha</label>
+                <input type="date" id="cierre-fecha" onchange="calcularCierreDiario()">
+            </div>
+            <div class="summary-row">
+                <span>(+) Total Cobrado Efectivo:</span>
+                <strong style="color: #22c55e;" id="cierre-cobrado-efectivo">$0</strong>
+            </div>
+            <div class="summary-row">
+                <span>(+) Total Cobrado Transferencia:</span>
+                <strong style="color: #0284c7;" id="cierre-cobrado-transf">$0</strong>
+            </div>
+            <div class="summary-row">
+                <span>(-) Total Prestado Nuevos:</span>
+                <strong style="color: #ef4444;" id="cierre-prestado">$0</strong>
+            </div>
+            <div class="summary-row">
+                <span>(-) Total Gastos:</span>
+                <strong style="color: #f59e0b;" id="cierre-gastos">$0</strong>
+            </div>
+            <div class="summary-row" style="border-bottom: 2px solid #0f172a; font-weight: bold; margin-top: 4px; padding-bottom: 8px;">
+                <span>Flujo Neto del Día:</span>
+                <span id="cierre-flujo">$0</span>
+            </div>
+            <div class="summary-row" style="margin-top: 8px; font-size: 12px; color: #475569;">
+                <span>Total Restante en la Calle:</span>
+                <strong id="cierre-calle-final" style="color: #ef4444;">$0</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL ESTADO DE CUENTA INDIVIDUAL -->
+    <div id="modal-cliente-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 99999; padding: 15px;">
+        <div class="modal-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h3 id="modal-cliente-titulo" style="font-size: 16px; color: #1e3a8a;">Estado de Cuenta</h3>
+                <button class="btn btn-danger" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="cerrarModalCliente()">✕ Cerrar</button>
+            </div>
+            <div id="modal-cliente-detalle" style="font-size: 13px; color: #475569; margin-bottom: 12px;"></div>
+            <div class="card-header" style="font-size: 12px; margin-bottom: 6px;">Historial de Abonos de este Cliente</div>
+            <div id="modal-cliente-historial" style="max-height: 250px; overflow-y: auto;"></div>
+        </div>
+    </div>
+
     <div class="bottom-nav">
         <div class="nav-item active" onclick="switchTab('caja', this)">
             <span>🏦</span>Caja
@@ -358,8 +399,8 @@
         <div class="nav-item" onclick="switchTab('clavos', this)">
             <span>🚫</span>Clavos
         </div>
-    </div>
-        <!-- SDK Firebase Firestore Realtime -->
+                </div>
+                  <!-- SDK Firebase Firestore Realtime -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -459,6 +500,10 @@
             if (el) el.classList.add("active");
         }
 
+        function abrirModalCierre() { document.getElementById("modal-overlay").style.display = "flex"; calcularCierreDiario(); }
+        function cerrarModalCierre() { document.getElementById("modal-overlay").style.display = "none"; }
+        function cerrarModalCliente() { document.getElementById("modal-cliente-overlay").style.display = "none"; }
+
         function toggleInteresInput() {
             const tipo = document.getElementById("p-tipo-interes").value;
             document.getElementById("lbl-interes").innerText = tipo === "porcentaje" ? "Interés (%)" : "Interés Fijo ($)";
@@ -496,7 +541,7 @@
 
             document.getElementById("p-interno-nombre").value = "";
             document.getElementById("p-interno-monto").value = "";
-            alert(`Retiro de $${monto.toLocaleString()} (${metodo}) asignado a ${nombre} registrado. Se descontó de caja.`);
+            alert(`Retiro de $${monto.toLocaleString()} (${metodo}) asignado a ${nombre} registrado.`);
         }
 
         function devolverPrestamoInterno(id) {
@@ -612,7 +657,62 @@
                 }
             }
         }
-                function agregarClienteClavo() {
+                      function exportarExcelCSV() {
+            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
+            let csv = "Tipo,Detalle,Metodo,Monto,Fecha\n";
+            if (window.dbState.transacciones) {
+                window.dbState.transacciones.forEach(t => {
+                    csv += `"${t.tipo}","${t.detalle}","${t.metodo || 'Efectivo'}",${t.monto},"${t.fechaStr || t.fechaISO}"\n`;
+                });
+            }
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('href', url);
+            a.setAttribute('download', `reporte_caja_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        function verEstadoCuentaCliente(prestamoId) {
+            const p = window.dbState.prestamos.find(x => x.id === prestamoId);
+            if (!p) return;
+
+            document.getElementById("modal-cliente-titulo").innerText = `Cliente: ${p.cliente}`;
+            document.getElementById("modal-cliente-detalle").innerHTML = `
+                <b>Monto Original:</b> $${p.monto.toLocaleString()} <br>
+                <b>Total a Pagar:</b> $${p.totalPagar.toLocaleString()} <br>
+                <b>Saldo Pendiente:</b> <span style="color: #ef4444; font-weight: bold;">$${p.saldoPendiente.toLocaleString()}</span> <br>
+                <b>Plazo:</b> ${p.dias} días (${p.frecuencia}) | <b>Fecha:</b> ${p.fecha}
+            `;
+
+            const histDiv = document.getElementById("modal-cliente-historial");
+            histDiv.innerHTML = "";
+
+            let abonosCount = 0;
+            if (window.dbState.transacciones) {
+                window.dbState.transacciones.forEach(t => {
+                    if (t.prestamoId === p.id && t.tipo === 'Abono / Pago') {
+                        abonosCount++;
+                        histDiv.innerHTML += `
+                            <div class="list-item" style="padding: 6px 0;">
+                                <div><small style="color: #64748b;">${t.fechaStr || t.fechaISO}</small></div>
+                                <div><strong style="color: #22c55e;">+$${t.monto.toLocaleString()}</strong> <small>(${t.metodo || 'Efectivo'})</small></div>
+                            </div>
+                        `;
+                    }
+                });
+            }
+
+            if (abonosCount === 0) {
+                histDiv.innerHTML = '<p style="font-size: 12px; color: #94a3b8; text-align: center; padding: 10px;">No hay abonos registrados todavía.</p>';
+            }
+
+            document.getElementById("modal-cliente-overlay").style.display = "flex";
+        }
+
+        function agregarClienteClavo() {
             if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
             const nombre = document.getElementById("clavo-nombre").value.trim();
             const motivo = document.getElementById("clavo-motivo").value.trim();
@@ -675,7 +775,8 @@
                 saldoPendiente: totalPagar,
                 dias,
                 frecuencia,
-                fecha: new Date().toLocaleDateString()
+                fecha: new Date().toLocaleDateString(),
+                fechaCreacionMs: Date.now()
             });
 
             window.dbState.cajaEfectivo = (window.dbState.cajaEfectivo || 0) - monto;
@@ -871,8 +972,8 @@
             document.getElementById("gasto-motivo").value = "";
 
             alert("Gasto registrado exitosamente");
-                }
-                function setHistFilter(cat, btn) {
+                    }
+                        function setHistFilter(cat, btn) {
             currentHistFilter = cat;
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
@@ -1053,7 +1154,7 @@
                 card.style.display = currentUserRole === "admin" ? "block" : "none";
             });
 
-            let prestado = 0, cobrado = 0, totalGastos = 0;
+            let prestado = 0, cobrado = 0, totalGastos = 0, gananciaProyectadaTotal = 0;
             
             const listActivos = document.getElementById("lista-prestamos-activos");
             const listFinalizados = document.getElementById("lista-prestamos-finalizados");
@@ -1063,20 +1164,33 @@
 
             let countActivos = 0;
             let countFinalizados = 0;
+            const ahoraMs = Date.now();
 
             if (window.dbState.prestamos) {
                 window.dbState.prestamos.forEach(p => {
                     const isPaid = p.saldoPendiente === 0;
 
+                    if (!isPaid) {
+                        gananciaProyectadaTotal += (p.totalPagar - p.monto);
+                    }
+
+                    // Cálculo de días en mora
+                    let diasTranscurridos = 0;
+                    if (p.fechaCreacionMs) {
+                        diasTranscurridos = Math.floor((ahoraMs - p.fechaCreacionMs) / (1000 * 60 * 60 * 24));
+                    }
+                    let limiteDias = p.dias || 30;
+                    let enMora = !isPaid && diasTranscurridos > limiteDias;
+
                     if (isPaid) {
                         listFinalizados.innerHTML += `
-                            <div class="list-item">
+                            <div class="list-item" onclick="verEstadoCuentaCliente(${p.id})" style="cursor: pointer;">
                                 <div>
-                                    <strong>${p.cliente}</strong> <br>
+                                    <strong>${p.cliente}</strong> 🔍<br>
                                     <small style="color: #64748b;">Finalizado - Plazo: ${p.dias} días</small> <br>
                                     <small style="color: #2563eb;">Total Pagado: $${p.totalPagar.toLocaleString()}</small>
                                 </div>
-                                <div style="text-align: right;">
+                                <div style="text-align: right;" onclick="event.stopPropagation()">
                                     <span class="badge badge-paid">SALDADO</span><br>
                                     <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px; margin-top: 6px;" onclick="rePrestarCliente('${p.cliente}')">🔄 Prestar</button>
                                     ${currentUserRole === 'admin' ? `<button class="btn btn-danger" style="padding: 4px 8px; font-size: 11px; margin-top: 6px; margin-left: 4px;" onclick="borrarPrestamo(${p.id})">🗑️ Borrar</button>` : ''}
@@ -1087,13 +1201,13 @@
                     } else {
                         prestado += p.saldoPendiente;
                         listActivos.innerHTML += `
-                            <div class="list-item">
+                            <div class="list-item" onclick="verEstadoCuentaCliente(${p.id})" style="cursor: pointer;">
                                 <div>
-                                    <strong>${p.cliente}</strong> <br>
+                                    <strong>${p.cliente}</strong> 🔍 ${enMora ? '<span class="badge badge-danger">EN MORA</span>' : ''}<br>
                                     <small style="color: #64748b;">${p.frecuencia} - Plazo: ${p.dias} días</small> <br>
                                     <small style="color: #2563eb;">Monto Total: $${p.totalPagar.toLocaleString()}</small>
                                 </div>
-                                <div style="text-align: right;">
+                                <div style="text-align: right;" onclick="event.stopPropagation()">
                                     <span class="badge badge-pending">PENDIENTE</span><br>
                                     <strong style="color: #ef4444;">$${p.saldoPendiente.toLocaleString()}</strong><br>
                                     <button class="btn btn-success" style="padding: 4px 8px; font-size: 11px; margin-top: 4px;" onclick="registrarPago(${p.id})">Abonar</button>
@@ -1127,6 +1241,7 @@
             document.getElementById("total-prestado").innerText = `$${prestado.toLocaleString()}`;
             document.getElementById("total-cobrado").innerText = `$${cobrado.toLocaleString()}`;
             document.getElementById("total-gastos").innerText = `$${totalGastos.toLocaleString()}`;
+            document.getElementById("ganancia-proyectada").innerText = `$${gananciaProyectadaTotal.toLocaleString()}`;
 
             calcularCierreDiario();
             renderHistorial();
