@@ -53,7 +53,6 @@
         .badge-danger { background: #fee2e2; color: #dc2626; }
         .summary-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #e2e8f0; font-size: 13px; }
         #sync-status { font-size: 10px; text-align: center; padding: 4px; background: #e0f2fe; color: #0369a1; border-radius: 4px; margin-bottom: 10px; }
-        /* Modal Estilos */
         #modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 99999; padding: 15px; }
         .modal-box { background: white; width: 100%; max-width: 500px; border-radius: 12px; padding: 20px; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
     </style>
@@ -106,14 +105,12 @@
                 </div>
             </div>
 
-            <!-- BOTÓN APARTE PARA ABRIR EL CIERRE DEL DÍA -->
             <div class="card" style="background: #eff6ff; border: 1px solid #bfdbfe;">
                 <div class="card-header" style="color: #1e3a8a;">📊 Panel de Cierre de Caja</div>
                 <p style="font-size: 11px; color: #1e40af; margin-bottom: 10px;">Consulta el resumen diario de cobros, préstamos y flujo neto.</p>
                 <button class="btn btn-primary" onclick="abrirModalCierre()">📊 Abrir Cierre del Día</button>
             </div>
 
-            <!-- CARD PRESTAMOS PROPIOS / RETIRO DE SOCIOS -->
             <div class="card admin-only-card" style="border: 2px solid #f59e0b; background: #fffbebf5;">
                 <div class="card-header" style="color: #b45309; display: flex; justify-content: space-between; align-items: center;">
                     <span>🤝 Préstamos Propios / Retiro de Socios</span>
@@ -145,7 +142,6 @@
                 <button class="btn btn-primary" onclick="setBaseCaja()">Actualizar Saldo Efectivo</button>
             </div>
 
-            <!-- BOTÓN EXPORTAR A EXCEL / CSV (SOLO ADMIN) -->
             <div class="card admin-only-card" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
                 <div class="card-header" style="color: #166534;">📁 Reportes y Exportación</div>
                 <p style="font-size: 11px; color: #15803d; margin-bottom: 10px;">Descarga el historial completo de movimientos para Excel o WhatsApp.</p>
@@ -180,7 +176,6 @@
                         <p style="font-size: 15px; font-weight: bold; color: #f59e0b;" id="total-gastos">$0</p>
                     </div>
                 </div>
-                <!-- GANANCIAS PROYECTADAS -->
                 <div style="margin-top: 10px; padding: 8px; background: #f1f5f9; border-radius: 6px; display: flex; justify-content: space-between; font-size: 12px;">
                     <span style="color: #475569; font-weight: bold;">💰 Ganancia Proyectada en Calle:</span>
                     <strong style="color: #16a34a;" id="ganancia-proyectada">$0</strong>
@@ -399,8 +394,8 @@
         <div class="nav-item" onclick="switchTab('clavos', this)">
             <span>🚫</span>Clavos
         </div>
-                </div>
-                  <!-- SDK Firebase Firestore Realtime -->
+    </div>
+        <!-- SDK Firebase Firestore Realtime -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -657,7 +652,7 @@
                 }
             }
         }
-                      function exportarExcelCSV() {
+                function exportarExcelCSV() {
             if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
             let csv = "Tipo,Detalle,Metodo,Monto,Fecha\n";
             if (window.dbState.transacciones) {
@@ -835,13 +830,17 @@
             const p = window.dbState.prestamos.find(x => x.id === id);
             if (!p) return;
 
-            if (confirm(`¿Estás seguro de que deseas eliminar el crédito de ${p.cliente}?\n\nSe devolverán $${p.monto.toLocaleString()} al saldo en efectivo.`)) {
-                window.dbState.cajaEfectivo = (window.dbState.cajaEfectivo || 0) + p.monto;
+            // Corrección: Solo se devuelve a caja el saldo pendiente real que faltaba por cobrar, 
+            // evitando duplicar los abonos que ya habían ingresado a caja previamente.
+            const devolucionCaja = p.saldoPendiente;
+
+            if (confirm(`¿Estás seguro de que deseas eliminar el crédito de ${p.cliente}?\n\nSe devolverán $${devolucionCaja.toLocaleString()} (saldo pendiente) a la caja.`)) {
+                window.dbState.cajaEfectivo = (window.dbState.cajaEfectivo || 0) + devolucionCaja;
                 window.dbState.transacciones = window.dbState.transacciones.filter(t => t.prestamoId !== id);
                 window.dbState.prestamos = window.dbState.prestamos.filter(x => x.id !== id);
 
                 window.saveToCloud();
-                alert("Crédito eliminado.");
+                alert("Crédito eliminado y caja ajustada correctamente.");
             }
         }
 
@@ -972,8 +971,8 @@
             document.getElementById("gasto-motivo").value = "";
 
             alert("Gasto registrado exitosamente");
-                    }
-                        function setHistFilter(cat, btn) {
+        }
+                function setHistFilter(cat, btn) {
             currentHistFilter = cat;
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
@@ -1174,7 +1173,6 @@
                         gananciaProyectadaTotal += (p.totalPagar - p.monto);
                     }
 
-                    // Cálculo de días en mora
                     let diasTranscurridos = 0;
                     if (p.fechaCreacionMs) {
                         diasTranscurridos = Math.floor((ahoraMs - p.fechaCreacionMs) / (1000 * 60 * 60 * 24));
