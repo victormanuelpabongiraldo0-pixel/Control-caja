@@ -23,7 +23,7 @@
         .top-header h1 { font-size: 18px; font-weight: 600; }
         .lock-btn { background: #1e293b; border: none; color: #f59e0b; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; }
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; align-items: center; padding: 8px 0; z-index: 1000; }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: #64748b; font-size: 10px; cursor: pointer; text-align: center; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: #64748b; font-size: 9px; cursor: pointer; text-align: center; }
         .nav-item.active { color: var(--primary); font-weight: bold; }
         .nav-item span { font-size: 18px; margin-bottom: 2px; }
         .container { padding: 15px; max-width: 600px; margin: 0 auto; }
@@ -39,8 +39,12 @@
         .btn-primary { background: var(--primary); color: white; }
         .btn-success { background: var(--success); color: white; }
         .btn-danger { background: var(--danger); color: white; }
+        .btn-secondary { background: #64748b; color: white; }
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .filter-tabs { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 12px; padding-bottom: 4px; }
+        .filter-btn { padding: 6px 12px; border: 1px solid #cbd5e1; background: #f1f5f9; border-radius: 20px; font-size: 11px; font-weight: bold; color: #475569; cursor: pointer; white-space: nowrap; }
+        .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
         .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
         .list-item:last-child { border-bottom: none; }
         .badge { padding: 4px 8px; border-radius: 12px; font-size: 10px; font-weight: bold; }
@@ -109,6 +113,18 @@
                     </div>
                 </div>
             </div>
+            <div class="card">
+                <div class="card-header">Registrar Gasto Rápido</div>
+                <div class="grid-2">
+                    <div class="input-group">
+                        <input type="number" id="gasto-monto" placeholder="Valor $">
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="gasto-motivo" placeholder="Motivo (Ej. Gasolina)">
+                    </div>
+                </div>
+                <button class="btn btn-danger" onclick="registrarGasto()">Registrar Gasto</button>
+            </div>
         </div>
                 <!-- VISTA NUEVO PRESTAMO -->
         <div id="view-nuevo" class="view">
@@ -154,36 +170,60 @@
             </div>
         </div>
 
-        <!-- VISTA COBROS -->
+        <!-- VISTA COBROS ACTIVOS -->
         <div id="view-cobros" class="view">
             <div class="card">
-                <div class="card-header">Lista de Cobros</div>
-                <div id="lista-prestamos">
-                    <p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay préstamos activos</p>
+                <div class="card-header">Cobros Pendientes (Activos)</div>
+                <div id="lista-prestamos-activos">
+                    <p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay préstamos pendientes</p>
                 </div>
             </div>
         </div>
 
-        <!-- VISTA GASTOS -->
-        <div id="view-gastos" class="view">
+        <!-- VISTA PRESTAMOS FINALIZADOS / SALDADOS -->
+        <div id="view-finalizados" class="view">
             <div class="card">
-                <div class="card-header">Registrar Nuevo Gasto</div>
-                <div class="input-group">
-                    <label>Valor del Gasto ($)</label>
-                    <input type="number" id="gasto-monto" placeholder="Ej. 15000">
+                <div class="card-header">Créditos Finalizados (Pagados 100%)</div>
+                <div id="lista-prestamos-finalizados">
+                    <p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay créditos finalizados aún</p>
                 </div>
-                <div class="input-group">
-                    <label>Motivo / Concepto del Gasto</label>
-                    <input type="text" id="gasto-motivo" placeholder="Ej. Gasolina, Almuerzo, Papelería">
-                </div>
-                <button class="btn btn-danger" onclick="registrarGasto()">Registrar y Descontar de Caja</button>
             </div>
         </div>
 
         <!-- VISTA HISTORIAL -->
         <div id="view-historial" class="view">
             <div class="card">
-                <div class="card-header">Historial de Transacciones</div>
+                <div class="card-header">Filtros de Búsqueda</div>
+                <div class="input-group">
+                    <label>Buscar Cliente / Concepto</label>
+                    <input type="text" id="hist-search" placeholder="Ej. Juan, Gasolina, Abono..." oninput="renderHistorial()">
+                </div>
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label>Desde Fecha</label>
+                        <input type="date" id="hist-date-from" onchange="renderHistorial()">
+                    </div>
+                    <div class="input-group">
+                        <label>Hasta Fecha</label>
+                        <input type="date" id="hist-date-to" onchange="renderHistorial()">
+                    </div>
+                </div>
+                
+                <div class="filter-tabs">
+                    <button class="filter-btn active" onclick="setHistFilter('TODOS', this)">Todos</button>
+                    <button class="filter-btn" onclick="setHistFilter('PAGOS', this)">Abonos / Pagos</button>
+                    <button class="filter-btn" onclick="setHistFilter('PRESTAMOS', this)">Préstamos</button>
+                    <button class="filter-btn" onclick="setHistFilter('GASTOS', this)">Gastos</button>
+                </div>
+
+                <div style="background: #f1f5f9; padding: 10px; border-radius: 8px; margin-top: 5px; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 12px; font-weight: bold; color: #475569;">Total Filtrado:</span>
+                    <strong style="font-size: 16px; color: #0f172a;" id="hist-total-sum">$0</strong>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Resultados</div>
                 <div id="lista-historial">
                     <p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay movimientos registrados</p>
                 </div>
@@ -201,8 +241,8 @@
         <div class="nav-item" onclick="switchTab('cobros', this)">
             <span>📋</span>Cobros
         </div>
-        <div class="nav-item" onclick="switchTab('gastos', this)">
-            <span>💸</span>Gastos
+        <div class="nav-item" onclick="switchTab('finalizados', this)">
+            <span>🏁</span>Saldados
         </div>
         <div class="nav-item" onclick="switchTab('historial', this)">
             <span>📜</span>Historial
@@ -212,6 +252,7 @@
     <script>
         const CORRECT_PIN = "1234";
         let enteredPin = "";
+        let currentHistFilter = "TODOS";
         let state = JSON.parse(localStorage.getItem("control_caja_db")) || { caja: 0, prestamos: [], transacciones: [] };
         if (!state.transacciones) state.transacciones = [];
 
@@ -254,7 +295,7 @@
             document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
             document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
             document.getElementById(`view-${viewId}`).classList.add("active");
-            el.classList.add("active");
+            if (el) el.classList.add("active");
         }
 
         function toggleInteresInput() {
@@ -269,7 +310,8 @@
                 state.transacciones.unshift({
                     tipo: 'Ajuste de Base',
                     monto: m,
-                    fecha: new Date().toLocaleString(),
+                    fechaISO: new Date().toISOString().split('T')[0],
+                    fechaStr: new Date().toLocaleString(),
                     detalle: 'Base de caja actualizada'
                 });
                 document.getElementById("base-monto").value = "";
@@ -308,7 +350,8 @@
             state.transacciones.unshift({
                 tipo: 'Nuevo Préstamo',
                 monto: monto,
-                fecha: new Date().toLocaleString(),
+                fechaISO: new Date().toISOString().split('T')[0],
+                fechaStr: new Date().toLocaleString(),
                 detalle: `Préstamo a ${cliente}`
             });
 
@@ -323,10 +366,15 @@
             switchTab("cobros", document.querySelectorAll(".nav-item")[2]);
         }
 
+        function rePrestarCliente(nombre) {
+            document.getElementById("p-cliente").value = nombre;
+            switchTab("nuevo", document.querySelectorAll(".nav-item")[1]);
+        }
+
         function registrarPago(id) {
             const p = state.prestamos.find(x => x.id === id);
             if (!p) return;
-            const cuota = prompt(`Saldo actual: $${p.saldoPendiente}\nIngrese monto del pago:`);
+            const cuota = prompt(`Saldo pendiente: $${p.saldoPendiente}\nIngrese el monto cobrado:`);
             const val = parseFloat(cuota);
             if (!isNaN(val) && val > 0) {
                 p.saldoPendiente = Math.max(0, p.saldoPendiente - val);
@@ -334,9 +382,15 @@
                 state.transacciones.unshift({
                     tipo: 'Abono / Pago',
                     monto: val,
-                    fecha: new Date().toLocaleString(),
+                    fechaISO: new Date().toISOString().split('T')[0],
+                    fechaStr: new Date().toLocaleString(),
                     detalle: `Cobro a ${p.cliente}`
                 });
+                
+                if (p.saldoPendiente === 0) {
+                    alert(`¡Felicidades! ${p.cliente} ha pagado la totalidad del crédito. Se movió a "Saldados".`);
+                }
+                
                 saveState();
             }
         }
@@ -354,7 +408,8 @@
             state.transacciones.unshift({
                 tipo: 'Gasto',
                 monto: monto,
-                fecha: new Date().toLocaleString(),
+                fechaISO: new Date().toISOString().split('T')[0],
+                fechaStr: new Date().toLocaleString(),
                 detalle: motivo
             });
 
@@ -363,72 +418,135 @@
             document.getElementById("gasto-monto").value = "";
             document.getElementById("gasto-motivo").value = "";
 
-            alert("Gasto registrado y descontado de la caja");
-            switchTab("caja", document.querySelectorAll(".nav-item")[0]);
+            alert("Gasto registrado exitosamente");
         }
 
-        function render() {
-            document.getElementById("caja-actual").innerText = `$${state.caja.toLocaleString()}`;
-            let prestado = 0, cobrado = 0, totalGastos = 0;
-            const list = document.getElementById("lista-prestamos");
-            list.innerHTML = "";
+        function setHistFilter(cat, btn) {
+            currentHistFilter = cat;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderHistorial();
+        }
 
-            if (state.prestamos.length === 0) {
-                list.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay préstamos activos</p>';
-            }
+        function renderHistorial() {
+            const search = document.getElementById("hist-search").value.toLowerCase();
+            const fromDate = document.getElementById("hist-date-from").value;
+            const toDate = document.getElementById("hist-date-to").value;
 
-            state.prestamos.forEach(p => {
-                prestado += p.monto;
-                cobrado += (p.totalPagar - p.saldoPendiente);
-                const isPaid = p.saldoPendiente === 0;
-                list.innerHTML += `
+            const histList = document.getElementById("lista-historial");
+            histList.innerHTML = "";
+
+            let totalSum = 0;
+            let count = 0;
+
+            state.transacciones.forEach(t => {
+                if (currentHistFilter === 'PAGOS' && t.tipo !== 'Abono / Pago') return;
+                if (currentHistFilter === 'PRESTAMOS' && t.tipo !== 'Nuevo Préstamo') return;
+                if (currentHistFilter === 'GASTOS' && t.tipo !== 'Gasto') return;
+
+                const matchSearch = t.tipo.toLowerCase().includes(search) || t.detalle.toLowerCase().includes(search);
+                if (!matchSearch) return;
+
+                const tDate = t.fechaISO || (t.fechaStr ? t.fechaStr.split(',')[0] : '');
+                if (fromDate && tDate < fromDate) return;
+                if (toDate && tDate > toDate) return;
+
+                totalSum += t.monto;
+                count++;
+
+                let color = '#22c55e';
+                if (t.tipo === 'Nuevo Préstamo' || t.tipo === 'Gasto') color = '#ef4444';
+
+                histList.innerHTML += `
                     <div class="list-item">
                         <div>
-                            <strong>${p.cliente}</strong> <br>
-                            <small style="color: #64748b;">${p.frecuencia} - Plazo: ${p.dias} días</small> <br>
-                            <small style="color: #2563eb;">Total: $${p.totalPagar.toLocaleString()}</small>
+                            <strong>${t.tipo}</strong> <br>
+                            <small style="color: #64748b;">${t.detalle}</small> <br>
+                            <small style="color: #94a3b8;">${t.fechaStr || t.fechaISO}</small>
                         </div>
                         <div style="text-align: right;">
-                            <span class="badge ${isPaid ? 'badge-paid' : 'badge-pending'}">${isPaid ? 'PAGADO' : 'PENDIENTE'}</span><br>
-                            <strong style="color: #ef4444;">$${p.saldoPendiente.toLocaleString()}</strong><br>
-                            ${!isPaid ? `<button class="btn btn-success" style="padding: 4px 8px; font-size: 11px; margin-top: 4px;" onclick="registrarPago(${p.id})">Abonar</button>` : ''}
+                            <strong style="color: ${color};">$${t.monto.toLocaleString()}</strong>
                         </div>
                     </div>
                 `;
             });
 
-            // Calcule total de gastos
+            if (count === 0) {
+                histList.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay movimientos con los filtros seleccionados</p>';
+            }
+
+            document.getElementById("hist-total-sum").innerText = `$${totalSum.toLocaleString()}`;
+        }
+
+        function render() {
+            document.getElementById("caja-actual").innerText = `$${state.caja.toLocaleString()}`;
+            let prestado = 0, cobrado = 0, totalGastos = 0;
+            
+            const listActivos = document.getElementById("lista-prestamos-activos");
+            const listFinalizados = document.getElementById("lista-prestamos-finalizados");
+            
+            listActivos.innerHTML = "";
+            listFinalizados.innerHTML = "";
+
+            let countActivos = 0;
+            let countFinalizados = 0;
+
+            state.prestamos.forEach(p => {
+                const isPaid = p.saldoPendiente === 0;
+
+                if (isPaid) {
+                    listFinalizados.innerHTML += `
+                        <div class="list-item">
+                            <div>
+                                <strong>${p.cliente}</strong> <br>
+                                <small style="color: #64748b;">Finalizado - Plazo: ${p.dias} días</small> <br>
+                                <small style="color: #2563eb;">Total Pagado: $${p.totalPagar.toLocaleString()}</small>
+                            </div>
+                            <div style="text-align: right;">
+                                <span class="badge badge-paid">SALDADO</span><br>
+                                <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px; margin-top: 6px;" onclick="rePrestarCliente('${p.cliente}')">🔄 Prestar de nuevo</button>
+                            </div>
+                        </div>
+                    `;
+                    countFinalizados++;
+                } else {
+                    prestado += p.saldoPendiente;
+                    listActivos.innerHTML += `
+                        <div class="list-item">
+                            <div>
+                                <strong>${p.cliente}</strong> <br>
+                                <small style="color: #64748b;">${p.frecuencia} - Plazo: ${p.dias} días</small> <br>
+                                <small style="color: #2563eb;">Monto Total: $${p.totalPagar.toLocaleString()}</small>
+                            </div>
+                            <div style="text-align: right;">
+                                <span class="badge badge-pending">PENDIENTE</span><br>
+                                <strong style="color: #ef4444;">$${p.saldoPendiente.toLocaleString()}</strong><br>
+                                <button class="btn btn-success" style="padding: 4px 8px; font-size: 11px; margin-top: 4px;" onclick="registrarPago(${p.id})">Abonar</button>
+                            </div>
+                        </div>
+                    `;
+                    countActivos++;
+                }
+            });
+
+            if (countActivos === 0) {
+                listActivos.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay préstamos activos pendientes</p>';
+            }
+
+            if (countFinalizados === 0) {
+                listFinalizados.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay préstamos saldados todavía</p>';
+            }
+
             state.transacciones.forEach(t => {
                 if (t.tipo === 'Gasto') totalGastos += t.monto;
+                if (t.tipo === 'Abono / Pago') cobrado += t.monto;
             });
 
             document.getElementById("total-prestado").innerText = `$${prestado.toLocaleString()}`;
             document.getElementById("total-cobrado").innerText = `$${cobrado.toLocaleString()}`;
             document.getElementById("total-gastos").innerText = `$${totalGastos.toLocaleString()}`;
 
-            // Render Historial
-            const histList = document.getElementById("lista-historial");
-            histList.innerHTML = "";
-            if (state.transacciones.length === 0) {
-                histList.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay movimientos registrados</p>';
-            } else {
-                state.transacciones.forEach(t => {
-                    let color = '#22c55e';
-                    if (t.tipo === 'Nuevo Préstamo' || t.tipo === 'Gasto') color = '#ef4444';
-                    histList.innerHTML += `
-                        <div class="list-item">
-                            <div>
-                                <strong>${t.tipo}</strong> <br>
-                                <small style="color: #64748b;">${t.detalle}</small> <br>
-                                <small style="color: #94a3b8;">${t.fecha}</small>
-                            </div>
-                            <div style="text-align: right;">
-                                <strong style="color: ${color};">$${t.monto.toLocaleString()}</strong>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
+            renderHistorial();
         }
 
         render();
