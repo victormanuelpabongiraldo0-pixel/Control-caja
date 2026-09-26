@@ -8,7 +8,7 @@
     <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='110' fill='%230f172a'/><circle cx='256' cy='266' r='64' fill='%23f59e0b'/><text x='256' y='292' font-family='sans-serif' font-size='76' font-weight='900' fill='%230f172a' text-anchor='middle'>$</text></svg>">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f172a">
-    <style>
+<style>
 :root {
     --bg-main: #020408; 
     --bg-card: #0a1628;
@@ -26,50 +26,72 @@ body {
     background-color: var(--bg-main);
     color: var(--text-main);
     font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 12px;
     padding-bottom: 85px; 
+    padding-top: 10px; /* Sin espacio forzado arriba para que el header y el PIN fluyan bien */
 }
+    
 
-/* Pantalla de PIN Futurista */
-#pin-screen { background: var(--bg-main); color: var(--text-main); }
-.pin-dot { border: 2px solid var(--primary); box-shadow: 0 0 5px var(--primary); }
+/* Pantalla de PIN / Bloqueo (Ocultable) */
+#pin-screen {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--bg-main);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+.pin-title { font-size: 20px; font-weight: bold; color: var(--primary); margin-bottom: 15px; }
+.pin-dots { display: flex; gap: 15px; margin-bottom: 25px; }
+.pin-dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--primary); box-shadow: 0 0 8px var(--primary); }
 .pin-dot.filled { background: var(--primary); box-shadow: 0 0 15px var(--primary); }
-.key-btn { background: var(--bg-card); border: 1px solid var(--border-input); color: var(--text-main); transition: 0.2s; }
+
+.keypad { display: grid; grid-template-columns: repeat(3, 75px); gap: 12px; }
+.key-btn { 
+    height: 55px; background: var(--bg-card); border: 1px solid var(--border-input); 
+    color: var(--text-main); font-size: 20px; font-weight: bold; border-radius: 10px; cursor: pointer;
+}
 .key-btn:active { transform: scale(0.95); background: var(--border-input); }
 
-/* Encabezado */
-.top-header { background: #010306; border-bottom: 1px solid var(--border-input); }
-.top-header h1 { color: var(--primary); text-shadow: 0 0 10px rgba(0, 243, 255, 0.3); }
-.lock-btn { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
+/* Encabezado Principal */
+.top-header {
+    position: fixed; top: 0; left: 0; right: 0;
+    background: #010306; border-bottom: 1px solid var(--border-input);
+    padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; z-index: 1000;
+}
+.top-header h1 { font-size: 16px; color: var(--primary); margin: 0; text-shadow: 0 0 10px rgba(0, 243, 255, 0.3); }
+.lock-btn { background: transparent; border: 1px solid var(--accent); color: var(--accent); padding: 4px 10px; border-radius: 6px; font-size: 11px; cursor: pointer; }
 
 /* Tarjetas HUD con efecto Neón */
 .card {
     background: linear-gradient(145deg, #0a1628 0%, #060e1a 100%);
     border: 1px solid rgba(0, 243, 255, 0.2);
     border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+    padding: 14px;
+    margin-bottom: 14px;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
 }
-/* Línea de luz lateral para las tarjetas */
 .card::before {
     content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
     background-color: var(--primary); box-shadow: 0 0 10px var(--primary);
 }
 
 /* Inputs y Formularios */
-.input-group label { color: var(--text-muted); }
-.input-group input, .input-group select {
-    background-color: var(--bg-input);
-    border: 1px solid var(--border-input);
-    color: var(--text-main);
+input, select {
+    width: 100%; background-color: var(--bg-input); border: 1px solid var(--border-input);
+    color: var(--text-main); padding: 10px; border-radius: 8px; box-sizing: border-box;
+    margin-top: 4px; margin-bottom: 10px; outline: none; font-size: 13px;
 }
-.input-group input:focus, .input-group select:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
-}
+input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(0, 243, 255, 0.3); }
 
 /* Botones Luminosos */
-.btn { transition: 0.2s; border: none; font-weight: bold; }
+.btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: #fff; margin-top: 5px; }
 .btn:active { transform: scale(0.98); }
 .btn-primary { background: linear-gradient(90deg, #0891b2, #00f3ff); color: #000; box-shadow: 0 4px 12px rgba(0, 243, 255, 0.3); }
 .btn-success { background: linear-gradient(90deg, #047857, #10b981); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
@@ -77,19 +99,33 @@ body {
 .btn-secondary { background: #1e3a8a; border: 1px solid #3b82f6; }
 
 /* Listas y Elementos */
-.list-item { border-bottom: 1px solid var(--border-input); }
-.hero-value { color: var(--primary); text-shadow: 0 0 15px rgba(0, 243, 255, 0.4); }
+.list-item { 
+    background: var(--bg-input); border: 1px solid var(--border-input); 
+    border-radius: 8px; padding: 10px; margin-bottom: 8px; 
+    display: flex; justify-content: space-between; align-items: center; 
+}
 
 /* Navegación Inferior */
-.bottom-nav { background: #010306; border-top: 1px solid var(--border-input); box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
-.nav-item { color: var(--text-muted); }
+.bottom-nav {
+    position: fixed; bottom: 0; left: 0; right: 0; background: #010306;
+    border-top: 1px solid var(--border-input); display: flex; justify-content: space-around;
+    padding: 10px 0; z-index: 1000; box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+}
+.nav-item { color: var(--text-muted); text-align: center; font-size: 11px; cursor: pointer; }
 .nav-item.active { color: var(--primary); text-shadow: 0 0 10px rgba(0, 243, 255, 0.5); }
 
 /* Modales */
-#modal-overlay, #modal-cliente-overlay { background: rgba(2, 4, 8, 0.85); backdrop-filter: blur(5px); }
-.modal-box { background: var(--bg-card); border: 1px solid var(--primary); box-shadow: 0 0 25px rgba(0, 243, 255, 0.15); }
-    </style>
-    
+.modal-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(2, 4, 8, 0.85); backdrop-filter: blur(5px);
+    display: none; justify-content: center; align-items: center; z-index: 2000; padding: 15px;
+}
+.modal-content { background: var(--bg-card); border: 1px solid var(--primary); border-radius: 12px; padding: 16px; width: 100%; max-height: 90vh; overflow-y: auto; }
+
+.view-section { display: none; }
+.view-section.active { display: block; }
+</style>
+     
 </head>
 <body>
     <div id="pin-screen">
