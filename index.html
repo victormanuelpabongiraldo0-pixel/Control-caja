@@ -144,8 +144,7 @@
         }
 
         .pin-dots {
-            gap: 13px !important;
-            margin-bottom: 28px !important;
+            gap: 13px !important;            margin-bottom: 28px !important;
             z-index: 1;
         }
 
@@ -166,7 +165,9 @@
             gap: 12px !important;
             width: min(300px, 88vw) !important;
             z-index: 1;
-        }        .key-btn {
+        }
+
+        .key-btn {
             min-height: 64px;
             background: rgba(14, 26, 48, 0.88) !important;
             color: #ecfeff !important;            border: 1px solid rgba(56,189,248,0.17) !important;
@@ -289,8 +290,7 @@
             text-shadow: 0 0 24px rgba(34,211,238,0.20);
         }
 
-        .input-group {
-            margin-bottom: 12px !important;
+        .input-group {            margin-bottom: 12px !important;
         }
 
         .input-group label {
@@ -333,7 +333,8 @@
 
         .btn {
             width: 100%;
-            padding: 12px !important;            border: 1px solid transparent !important;
+            padding: 12px !important;
+            border: 1px solid transparent !important;
             border-radius: 12px !important;
             font-size: 13px !important;
             font-weight: 800 !important;
@@ -434,9 +435,7 @@
 
         .list-item small {
             line-height: 1.45;
-        }
-
-        .badge {
+        }        .badge {
             padding: 5px 9px !important;
             border-radius: 12px !important;
             font-size: 9px !important;
@@ -501,7 +500,8 @@
             color: var(--text) !important;
             border: 1px solid rgba(56,189,248,0.18) !important;
             width: 100%;
-            max-width: 540px;            border-radius: 20px !important;
+            max-width: 540px;
+            border-radius: 20px !important;
             padding: 19px !important;
             max-height: 86vh;
             overflow-y: auto;
@@ -581,8 +581,7 @@
 
         .nav-item span {
             font-size: 18px !important;
-            margin-bottom: 3px;
-            filter: drop-shadow(0 0 7px rgba(56,189,248,0.08));
+            margin-bottom: 3px;            filter: drop-shadow(0 0 7px rgba(56,189,248,0.08));
         }
 
         .nav-item.active {
@@ -625,431 +624,87 @@
             .nav-item { font-size: 8px !important; }
             .nav-item span { font-size: 17px !important; }
         }
-    
 
         /* =========================================================
-           🚀 DISEÑO FUTURISTA FINTECH — SOLO APARIENCIA
-           No modifica HTML funcional, JavaScript, PIN, Firebase,
-           préstamos, cobros, historial ni datos.
+           DISEÑO FINAL — inspirado exactamente en la referencia enviada
+           SOLO capa visual + elementos decorativos. La lógica existente
+           (PIN, Firebase, préstamos, cobros, historial y botones) se conserva.
            ========================================================= */
-
-        :root {
-            --bg-main: #020817;
-            --neon-blue: #00c8ff;
-            --neon-cyan: #22d3ee;
-            --neon-purple: #7c3aed;
-            --neon-green: #00e59b;
-            --neon-pink: #ff477e;
-            --neon-yellow: #ffc400;
-            --futuristic-panel: rgba(7, 18, 38, 0.92);
-            --futuristic-border: rgba(0, 200, 255, 0.22);
-        }
-
-        html, body {
-            background:
-                radial-gradient(circle at 50% -12%, rgba(0, 200, 255, 0.18), transparent 30%),
-                radial-gradient(circle at 100% 42%, rgba(76, 29, 149, 0.14), transparent 30%),
-                radial-gradient(circle at 0% 72%, rgba(0, 229, 155, 0.08), transparent 28%),
-                #020817 !important;
-        }
-
-        body {
-            color: #e8f7ff !important;
-        }
-
-        body::before {
-            opacity: 0.24 !important;
-            background-image:
-                linear-gradient(rgba(0, 200, 255, 0.045) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 200, 255, 0.045) 1px, transparent 1px) !important;
-            background-size: 30px 30px !important;
-        }
-
-        /* ===== ENCABEZADO ===== */
         .top-header {
-            background: linear-gradient(180deg, rgba(2, 8, 23, 0.98), rgba(2, 12, 28, 0.90)) !important;
-            border-bottom: 1px solid rgba(0, 200, 255, 0.16) !important;
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.32) !important;        }
-
-        .top-header h1 {
-            font-size: 21px !important;
-            font-weight: 900 !important;
-            color: #f1faff !important;
-            letter-spacing: -0.3px !important;
-            text-shadow: 0 0 18px rgba(0, 200, 255, 0.14) !important;
-        }
-
-        .lock-btn {
-            background: linear-gradient(135deg, rgba(27, 38, 59, 0.96), rgba(8, 17, 34, 0.96)) !important;
-            border: 1px solid rgba(255, 196, 0, 0.36) !important;
-            color: #ffd84d !important;
-            border-radius: 14px !important;
-            padding: 10px 15px !important;
-            font-weight: 800 !important;
-            box-shadow: 0 0 20px rgba(255, 196, 0, 0.08) !important;
-        }
-
-        /* ===== ESTADO FIREBASE ===== */
-        #sync-status {
-            background: linear-gradient(90deg, rgba(0, 200, 255, 0.09), rgba(0, 229, 155, 0.07)) !important;
-            border: 1px solid rgba(0, 200, 255, 0.23) !important;
-            color: #71e8ff !important;
-            border-radius: 17px !important;
-            padding: 11px 15px !important;
-            font-size: 11px !important;
-            font-weight: 700 !important;
-            box-shadow: 0 0 24px rgba(0, 200, 255, 0.06) !important;
-        }
-
-        #btn-config-firebase {
-            background: linear-gradient(135deg, #2c3c55, #17243b) !important;
-            border: 1px solid rgba(148, 163, 184, 0.25) !important;
-            color: #e4edf8 !important;
-            border-radius: 16px !important;
-            min-height: 54px !important;
-            font-size: 14px !important;
-            box-shadow: 0 12px 28px rgba(0,0,0,0.22) !important;
-        }
-
-        /* ===== ORGANIZACIÓN VISUAL DE LA CAJA ===== */
-        #view-caja {
+            min-height: 92px !important;
+            padding: 16px 18px !important;
             display: flex !important;
-            flex-direction: column !important;
-            gap: 14px !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            gap: 12px !important;
+            background: linear-gradient(180deg, rgba(2,8,23,.98), rgba(2,10,25,.88)) !important;
+            border-bottom: 1px solid rgba(0,204,255,.10) !important;
         }
-
-        #view-caja > .card {
-            margin-bottom: 0 !important;
-        }
-
-        /* Orden visual nuevo. Las funciones siguen siendo las mismas. */
-        #view-caja > .card:nth-of-type(1) { order: 1; }
-        #view-caja > .card:nth-of-type(2) { order: 2; }
-        #view-caja > .card:nth-of-type(3) { order: 5; }
-        #view-caja > .card:nth-of-type(4) { order: 7; }
-        #view-caja > .card:nth-of-type(5) { order: 8; }
-        #view-caja > .card:nth-of-type(6) { order: 9; }
-        #view-caja > .card:nth-of-type(7) { order: 10; }
-        #view-caja > .card:nth-of-type(8) { order: 3; }
-        #view-caja > .card:nth-of-type(9) { order: 4; }
-
-        /* ===== TARJETAS ===== */
-        .card {
-            background: linear-gradient(145deg, rgba(9, 24, 48, 0.95), rgba(3, 11, 27, 0.97)) !important;
-            border: 1px solid rgba(0, 200, 255, 0.16) !important;
-            border-radius: 24px !important;
-            padding: 18px !important;
-            box-shadow:
-                0 18px 45px rgba(0,0,0,0.27),
-                inset 0 1px 0 rgba(255,255,255,0.035) !important;
-        }
-
-        .card::before {
-            height: 2px !important;
-            background: linear-gradient(90deg, transparent, rgba(0, 200, 255, 0.60), rgba(124, 58, 237, 0.55), transparent) !important;
-        }
-
-        .card-header {
-            color: #abc2da !important;
-            font-size: 13px !important;
-            font-weight: 900 !important;
-            letter-spacing: 0.5px !important;
-        }
-
-        /* ===== BALANCE PRINCIPAL ===== */
-        #view-caja > .card:nth-of-type(1) {
-            min-height: 245px;
-            background:
-                radial-gradient(circle at 92% 30%, rgba(0, 200, 255, 0.20), transparent 31%),
-                radial-gradient(circle at 8% 100%, rgba(37, 99, 235, 0.14), transparent 35%),
-                linear-gradient(145deg, #081b38, #020a19) !important;
-            border: 1px solid rgba(0, 200, 255, 0.35) !important;
-            border-radius: 27px !important;
-            box-shadow:
-                0 20px 55px rgba(0,0,0,0.35),
-                0 0 35px rgba(0, 200, 255, 0.07),
-                inset 0 1px 0 rgba(255,255,255,0.05) !important;
-        }
-
-        #view-caja > .card:nth-of-type(1) .card-header {
-            font-size: 13px !important;
-            color: #a9c4dd !important;
-        }
-
-        #caja-actual {
-            font-size: clamp(42px, 11vw, 58px) !important;
-            line-height: 1.05 !important;
-            margin-top: 8px !important;
-            color: #ecfbff !important;
-            text-shadow: 0 0 25px rgba(34, 211, 238, 0.20) !important;
-        }
-
-        #caja-efectivo { color: #00e59b !important; }
-        #caja-transferencia { color: #35cfff !important; }
-
-        /* ===== CIERRE ===== */
-        #view-caja > .card:nth-of-type(2) {
-            background: linear-gradient(145deg, rgba(11, 29, 57, 0.97), rgba(5, 15, 31, 0.97)) !important;
-            border: 1px solid rgba(0, 200, 255, 0.23) !important;
-        }
-
-        /* ===== BOTONES ===== */
-        .btn {
-            border-radius: 15px !important;
-            min-height: 48px;
-            font-weight: 900 !important;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.18) !important;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #10b7e9, #2855e8) !important;
-            border: 1px solid rgba(100, 220, 255, 0.35) !important;
-            box-shadow: 0 10px 30px rgba(0, 115, 255, 0.22) !important;
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #00d69b, #009e75) !important;
-            border: 1px solid rgba(72, 255, 191, 0.25) !important;
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, #ff527d, #d91e54) !important;
-            border: 1px solid rgba(255, 120, 150, 0.30) !important;
-        }
-
-        .btn-secondary {
-            background: linear-gradient(135deg, #34445d, #202e46) !important;
-            border: 1px solid rgba(148, 163, 184, 0.18) !important;
-        }
-
-        /* ===== FORMULARIOS ===== */
-        .input-group label {
-            color: #8fa9c2 !important;
-            font-weight: 800 !important;
-        }
-
-        .input-group input,
-        .input-group select {
-            background: linear-gradient(145deg, rgba(3, 12, 28, 0.97), rgba(6, 17, 35, 0.93)) !important;
-            border: 1px solid rgba(90, 130, 170, 0.22) !important;
-            color: #eaf8ff !important;
-            border-radius: 15px !important;
-            min-height: 50px !important;
-        }
-
-        .input-group input:focus,            border-color: rgba(0, 200, 255, 0.65) !important;
-            box-shadow: 0 0 0 3px rgba(0, 200, 255, 0.08), 0 0 25px rgba(0, 200, 255, 0.08) !important;
-        }
-
-        /* ===== RESUMEN FINANCIERO ===== */
-        #view-caja > .card:nth-of-type(8) {
-            background: linear-gradient(145deg, rgba(8, 22, 44, 0.97), rgba(4, 12, 27, 0.96)) !important;
-        }
-
-        #view-caja > .card:nth-of-type(8) .grid-3 {
-            gap: 8px !important;
-        }
-
-        #view-caja > .card:nth-of-type(8) .grid-3 > div {
-            background: rgba(7, 19, 38, 0.82) !important;
-            border: 1px solid rgba(95, 135, 175, 0.13) !important;
-            border-radius: 15px !important;
-            padding: 12px 9px !important;
-        }
-
-        #total-prestado { color: #ff668d !important; }
-        #total-cobrado { color: #00e59b !important; }
-        #total-gastos { color: #ffc400 !important; }
-        #ganancia-proyectada { color: #a66cff !important; }
-
-        /* ===== GASTO RÁPIDO ===== */
-        #view-caja > .card:nth-of-type(9) {
-            border-color: rgba(0, 200, 255, 0.22) !important;
-        }
-
-        /* ===== PRÉSTAMOS PROPIOS ===== */
-        #view-caja > .card:nth-of-type(3) {
-            background:
-                radial-gradient(circle at 90% 0%, rgba(255, 196, 0, 0.11), transparent 32%),
-                linear-gradient(145deg, rgba(36, 29, 10, 0.94), rgba(13, 18, 29, 0.97)) !important;
-            border: 1px solid rgba(255, 196, 0, 0.28) !important;
-        }
-
-        #total-prestamos-internos-badge {
-            color: #ffc400 !important;
-        }
-
-        /* ===== BASE DE CAJA ===== */
-        #view-caja > .card:nth-of-type(4) {
-            background: linear-gradient(145deg, rgba(8, 26, 49, 0.95), rgba(4, 12, 27, 0.96)) !important;
-        }
-
-        /* ===== REPORTES ===== */
-        #view-caja > .card:nth-of-type(5) {
-            border-color: rgba(0, 229, 155, 0.20) !important;
-        }
-
-        /* ===== PIN ===== */
-        #view-caja > .card:nth-of-type(6) {
-            border-color: rgba(124, 58, 237, 0.35) !important;
-            background: linear-gradient(145deg, rgba(27, 20, 57, 0.92), rgba(8, 13, 30, 0.97)) !important;
-        }
-
-        /* ===== ZONA DE PELIGRO ===== */
-        #view-caja > .card:nth-of-type(7) {
-            border-color: rgba(255, 71, 126, 0.28) !important;
-            background: linear-gradient(145deg, rgba(44, 13, 29, 0.80), rgba(13, 10, 22, 0.97)) !important;
-        }
-
-        /* ===== LISTAS Y BADGES ===== */
-        .list-item {
-            border-bottom: 1px solid rgba(100, 150, 190, 0.10) !important;
-            padding: 14px 4px !important;
-        }
-
-        .list-item strong { color: #e5f5ff !important; }
-        .list-item small { color: #8099b4 !important; }
-
-        .badge {
-            border-radius: 9px !important;
-            font-weight: 900 !important;
-        }
-
-        .badge-pending {
-            background: rgba(255, 196, 0, 0.11) !important;
-            color: #ffd34e !important;
-            border-color: rgba(255,196,0,0.22) !important;
-        }
-
-        .badge-paid {
-            background: rgba(0, 229, 155, 0.10) !important;
-            color: #50f0ba !important;
-            border-color: rgba(0,229,155,0.22) !important;
-        }
-
-        .badge-danger {
-            background: rgba(255, 71, 126, 0.11) !important;
-            color: #ff6d96 !important;
-            border-color: rgba(255,71,126,0.22) !important;
-        }
-
-        /* ===== NAVEGACIÓN INFERIOR ===== */
-        .bottom-nav {
-            background: linear-gradient(180deg, rgba(2, 9, 22, 0.96), rgba(1, 6, 17, 0.99)) !important;
-            border-top: 1px solid rgba(0, 200, 255, 0.17) !important;
-            box-shadow: 0 -15px 40px rgba(0,0,0,0.35) !important;
-            padding-top: 7px !important;
-        }
-
-        .nav-item {
-            color: #6d829c !important;
-            border-radius: 16px !important;
-            margin: 2px 3px !important;
-        }
-
-        .nav-item span {
-            font-size: 20px !important;
-            margin-bottom: 4px !important;
-        }
-
-        .nav-item.active {
-            color: #62e5ff !important;
-            background: linear-gradient(180deg, rgba(0, 200, 255, 0.12), rgba(0, 100, 180, 0.05)) !important;
-            box-shadow: inset 0 0 0 1px rgba(0, 200, 255, 0.12), 0 0 20px rgba(0, 200, 255, 0.05) !important;
-        }
-
-        /* ===== MODALES ===== */
-        #modal-overlay,
-        #modal-cliente-overlay {
-            background: rgba(0, 3, 12, 0.80) !important;
-            backdrop-filter: blur(12px) !important;
-            -webkit-backdrop-filter: blur(12px) !important;
-        }
-
-        .modal-box {
-            background: linear-gradient(145deg, rgba(8, 22, 43, 0.98), rgba(3, 10, 24, 0.99)) !important;
-            border: 1px solid rgba(0, 200, 255, 0.22) !important;
-            border-radius: 23px !important;
-            box-shadow: 0 30px 90px rgba(0,0,0,0.55), 0 0 40px rgba(0,200,255,0.07) !important;
-        }
-
-        /* ===== PANTALLA PIN ===== */
-        #pin-screen {
-            background:
-                radial-gradient(circle at 50% 15%, rgba(0, 200, 255, 0.18), transparent 30%),
-                radial-gradient(circle at 15% 90%, rgba(124, 58, 237, 0.13), transparent 30%),
-                linear-gradient(180deg, #020817, #061326 70%, #01050c) !important;
-        }
-
-        #pin-screen::before {
-            width: 250px !important;
-            height: 250px !important;
-            border-color: rgba(0, 200, 255, 0.25) !important;
-            box-shadow: 0 0 45px rgba(0, 200, 255, 0.10), inset 0 0 45px rgba(0, 200, 255, 0.05) !important;
-        }
-
-        .pin-title {
-            font-size: 26px !important;
-            font-weight: 900 !important;
-            color: #eafaff !important;
-        }
-
-        .pin-dot {
-            border-color: #00c8ff !important;
-            box-shadow: 0 0 15px rgba(0,200,255,0.18) !important;
-        }
-
-        .pin-dot.filled {
-            background: #00c8ff !important;
-            box-shadow: 0 0 20px rgba(0,200,255,0.70) !important;
-        }
-
-        .key-btn {            background: linear-gradient(145deg, rgba(13, 30, 56, 0.95), rgba(5, 15, 31, 0.96)) !important;
-            border: 1px solid rgba(0, 200, 255, 0.18) !important;
-            border-radius: 18px !important;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.04) !important;
-        }
-
-        .key-btn:active {
-            border-color: rgba(0,200,255,0.65) !important;
-            box-shadow: 0 0 25px rgba(0,200,255,0.16) !important;
-        }
-
-        /* ===== MÓVIL ===== */
-        @media (max-width: 430px) {
-            .container {
-                padding: 11px !important;
-            }
-
-            #view-caja {
-                gap: 11px !important;
-            }
-
-            .card {
-                border-radius: 20px !important;
-                padding: 15px !important;
-            }
-
-            #view-caja > .card:nth-of-type(1) {
-                border-radius: 23px !important;
-            }
-
-            #caja-actual {
-                font-size: 39px !important;
-            }
-
-            .top-header h1 {
-                font-size: 19px !important;
-            }
-
-            .nav-item {
-                margin: 2px 1px !important;
-            }
-
-            .nav-item span {
-                font-size: 18px !important;
-            }
-        }
+        .brand-left,.header-actions{display:flex;align-items:center;gap:12px;min-width:0}
+        .menu-deco,.notification-deco{width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;flex:none}
+        .menu-deco{background:linear-gradient(145deg,#082847,#07172b);border:1px solid rgba(0,200,255,.10);color:#66dcff;font-size:28px;line-height:1;cursor:default}
+        .notification-deco{position:relative;background:linear-gradient(145deg,#091b35,#061020);border:1px solid rgba(255,255,255,.04);font-size:25px}
+        .notification-deco i{position:absolute;width:9px;height:9px;border-radius:50%;background:#ff527d;right:11px;top:9px;box-shadow:0 0 12px rgba(255,82,125,.7)}
+        .brand-icon{width:54px;height:54px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:31px;background:linear-gradient(145deg,#17254b,#0a1531);border:2px solid #1ed8ff;box-shadow:0 0 18px rgba(0,200,255,.45),inset 0 0 18px rgba(124,58,237,.25)}
+        .brand-copy{min-width:0}.brand-copy h1{margin:0!important;font-size:24px!important;line-height:1.05!important;color:#f3fbff!important;font-weight:900!important;white-space:nowrap}.brand-copy small{display:block;color:#7890ad;font-size:12px;margin-top:4px;font-weight:600;white-space:nowrap}
+        .header-actions{gap:10px}.header-actions .lock-btn{height:54px!important;border-radius:17px!important;padding:0 18px!important;font-size:13px!important;white-space:nowrap}
+        .status-row{display:grid;grid-template-columns:1fr 92px;gap:12px;align-items:stretch;margin:16px 0 18px}
+        #sync-status{margin:0!important;min-height:76px;display:grid;grid-template-columns:45px 1fr auto;grid-template-rows:1fr 1fr;align-items:center;column-gap:9px;padding:12px 16px!important;border-radius:20px!important;background:linear-gradient(145deg,rgba(4,35,58,.95),rgba(4,23,42,.90))!important;border:1px solid rgba(0,200,255,.20)!important;text-align:left!important}
+        #sync-status::before{content:'☁';grid-row:1/3;display:flex;align-items:center;justify-content:center;font-size:28px;color:#68dfff;filter:drop-shadow(0 0 8px rgba(0,200,255,.35))}
+        #sync-status .sync-main{font-size:13px;color:#62f0bd;font-weight:900;align-self:end}
+        #sync-status .sync-sub{font-size:10px;color:#7c96b1;align-self:start;margin-top:2px}
+        #sync-status .sync-online{grid-column:3;grid-row:1/3;color:#54efad;font-size:11px;font-weight:900;display:flex;align-items:center;gap:7px;white-space:nowrap}.sync-online i{width:9px;height:9px;border-radius:50%;background:#18e68f;box-shadow:0 0 12px rgba(24,230,143,.65)}
+        #btn-config-firebase{height:76px!important;width:92px!important;margin:0!important;padding:8px!important;border-radius:20px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important;font-size:10px!important;background:linear-gradient(145deg,#12345a,#071a32)!important;border:1px solid rgba(0,200,255,.20)!important;color:#b6d5ee!important;box-shadow:none!important}
+        #btn-config-firebase .config-icon{font-size:25px;line-height:1}.container{max-width:760px!important;padding:0 17px 100px!important}
+        /* Importante: solo Caja activa usa grid. Las demás vistas siguen ocultándose. */
+        #view-caja{display:none!important;flex-direction:column!important;gap:0!important}
+        #view-caja.active{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px!important;align-items:stretch}
+        #view-caja>.card{margin:0!important;min-width:0}
+        #view-caja>.card:nth-of-type(1){grid-column:1/-1;order:1;min-height:235px!important;position:relative;overflow:hidden;padding:22px 26px!important;background:radial-gradient(circle at 92% 45%,rgba(42,67,255,.55),transparent 26%),radial-gradient(circle at 76% 90%,rgba(0,216,255,.20),transparent 30%),linear-gradient(145deg,#071d3a,#041027 65%,#02091a)!important;border:1px solid rgba(0,200,255,.55)!important;border-radius:24px!important}
+        #view-caja>.card:nth-of-type(1)::after{content:'🔐';position:absolute;right:30px;top:27px;width:170px;height:150px;display:flex;align-items:center;justify-content:center;font-size:105px;border-radius:38% 45% 38% 45%;background:linear-gradient(145deg,rgba(15,36,78,.9),rgba(4,11,29,.82));border:2px solid rgba(41,119,255,.8);box-shadow:0 0 32px rgba(0,200,255,.25),inset 0 0 25px rgba(0,200,255,.10);filter:saturate(1.1)}
+        #view-caja>.card:nth-of-type(1) .card-header{font-size:15px!important;color:#9fc3df!important;position:relative;z-index:2}
+        #view-caja>.card:nth-of-type(1) .card-header::before{content:'▰';color:#63ddff;margin-right:10px}
+        #caja-actual{font-size:58px!important;font-weight:900!important;color:#f1fbff!important;line-height:1.05!important;position:relative;z-index:2;margin-top:10px!important;text-shadow:0 0 22px rgba(0,200,255,.13)!important}
+        #view-caja>.card:nth-of-type(1) hr{width:61%;position:relative;z-index:2;border-color:rgba(148,163,184,.18)!important}
+        #view-caja>.card:nth-of-type(1)>div[style*="justify-content: space-between"]{position:relative;z-index:3;width:61%;margin:6px 0!important;padding:11px 15px;border:1px solid rgba(0,200,255,.17);border-radius:14px;background:rgba(2,16,37,.55)}
+        #view-caja>.card:nth-of-type(1)>div[style*="justify-content: space-between"] span{font-size:13px!important}.admin-only-btn{font-weight:800}        #view-caja>.card:nth-of-type(2),#view-caja>.card:nth-of-type(5),#view-caja>.card:nth-of-type(6),#view-caja>.card:nth-of-type(7){order:2;min-height:136px!important;padding:16px!important;border-radius:20px!important;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(145deg,#092a54,#07172e)!important;border:1px solid rgba(0,200,255,.35)!important}
+        #view-caja>.card:nth-of-type(5){order:3;background:linear-gradient(145deg,#063c3a,#052c31)!important;border-color:rgba(0,229,155,.55)!important}
+        #view-caja>.card:nth-of-type(6){order:4;background:linear-gradient(145deg,#3212a0,#1a0c55)!important;border-color:rgba(145,92,255,.58)!important}
+        #view-caja>.card:nth-of-type(7){order:5;background:linear-gradient(145deg,#5c142e,#34101f)!important;border-color:rgba(255,82,125,.58)!important}
+        #view-caja>.card:nth-of-type(2) .card-header,#view-caja>.card:nth-of-type(5) .card-header,#view-caja>.card:nth-of-type(6) .card-header,#view-caja>.card:nth-of-type(7) .card-header{font-size:13px!important;color:#f2f8ff!important;text-transform:none!important;letter-spacing:0!important}
+        #view-caja>.card:nth-of-type(2) .card-header::first-letter,#view-caja>.card:nth-of-type(5) .card-header::first-letter,#view-caja>.card:nth-of-type(6) .card-header::first-letter,#view-caja>.card:nth-of-type(7) .card-header::first-letter{font-size:24px}
+        #view-caja>.card:nth-of-type(2) p,#view-caja>.card:nth-of-type(5) p,#view-caja>.card:nth-of-type(6) p,#view-caja>.card:nth-of-type(7) p{display:none!important}
+        #view-caja>.card:nth-of-type(2) .btn,#view-caja>.card:nth-of-type(5) .btn,#view-caja>.card:nth-of-type(6) .btn,#view-caja>.card:nth-of-type(7) .btn{min-height:42px!important;margin-top:auto!important;font-size:11px!important;border-radius:13px!important}
+        #view-caja>.card:nth-of-type(2) .btn{background:linear-gradient(135deg,#159cf0,#2754ff)!important}
+        #view-caja>.card:nth-of-type(5) .btn{background:linear-gradient(135deg,#00cda1,#007f79)!important}
+        #view-caja>.card:nth-of-type(6) .btn{background:linear-gradient(135deg,#6d2fff,#4320c5)!important}
+        #view-caja>.card:nth-of-type(7) .btn{background:linear-gradient(135deg,#f04b73,#a9194b)!important}
+        #view-caja>.card:nth-of-type(8){order:6;grid-column:1/-1;padding:17px!important;border-radius:21px!important;background:linear-gradient(145deg,#06172f,#040b1d)!important;border-color:rgba(0,200,255,.25)!important}
+        #view-caja>.card:nth-of-type(8) .card-header{font-size:14px!important;color:#eaf6ff!important;text-transform:none!important;letter-spacing:0!important}
+        #view-caja>.card:nth-of-type(8) .grid-3{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:9px!important}
+        #view-caja>.card:nth-of-type(8) .grid-3>div{background:rgba(9,25,52,.84)!important;border:1px solid rgba(70,115,170,.14)!important;border-radius:13px!important;padding:12px!important}
+        #view-caja>.card:nth-of-type(8) .grid-3>div:nth-child(1){background:linear-gradient(145deg,rgba(83,14,58,.32),rgba(7,19,42,.85))!important} #view-caja>.card:nth-of-type(8) .grid-3>div:nth-child(2){background:linear-gradient(145deg,rgba(0,123,101,.28),rgba(7,19,42,.85))!important}
+        #view-caja>.card:nth-of-type(8) .grid-3>div:nth-child(3){background:linear-gradient(145deg,rgba(108,78,13,.28),rgba(7,19,42,.85))!important}
+        #view-caja>.card:nth-of-type(8)::before{content:'▥  ';color:#53dcff}
+        #view-caja>.card:nth-of-type(8) .grid-3 p:first-child{color:#9fb1c6!important} #total-prestado{color:#ff5d91!important}#total-cobrado{color:#39efad!important}#total-gastos{color:#ffd25a!important}#ganancia-proyectada{color:#b27aff!important}
+        #view-caja>.card:nth-of-type(8)>div:last-child{background:linear-gradient(90deg,#f2f5fa,#e7ebf2)!important;color:#4a5568!important;border-radius:8px!important}
+        #view-caja>.card:nth-of-type(9){order:7;grid-column:1/-1;padding:16px 17px!important;background:linear-gradient(145deg,#07152b,#030b1b)!important;border-color:rgba(0,200,255,.23)!important}
+        #view-caja>.card:nth-of-type(9) .card-header{font-size:14px!important;text-transform:none!important;letter-spacing:0!important;color:#eef8ff!important}
+        #view-caja>.card:nth-of-type(9) .grid-2{grid-template-columns:1fr 1fr 175px!important;gap:10px!important;align-items:end}
+        #view-caja>.card:nth-of-type(9) .input-group{margin:0!important} #view-caja>.card:nth-of-type(9) .btn{min-height:48px!important;background:linear-gradient(135deg,#ff557d,#e82d59)!important;border:1px solid rgba(255,140,165,.38)!important}
+        #view-caja>.card:nth-of-type(9) .btn{position:absolute;right:17px;bottom:17px;width:175px} #view-caja>.card:nth-of-type(9){position:relative;padding-right:205px!important}
+        #view-caja>.card:nth-of-type(3){order:8;grid-column:1/-1;background:linear-gradient(145deg,rgba(76,50,5,.86),rgba(30,22,10,.96))!important;border:1px solid rgba(255,196,0,.40)!important;border-radius:21px!important;padding:18px!important}
+        #view-caja>.card:nth-of-type(3) .card-header{color:#fff!important;font-size:14px!important;text-transform:none!important;letter-spacing:0!important} #view-caja>.card:nth-of-type(3) p{color:#bca66c!important}
+        #view-caja>.card:nth-of-type(3) .grid-2{grid-template-columns:1fr 1fr 190px!important;align-items:end} #view-caja>.card:nth-of-type(3) .btn{background:linear-gradient(135deg,#ffc21c,#ec9200)!important;color:#fff!important;box-shadow:0 8px 25px rgba(255,168,0,.18)!important}
+        #view-caja>.card:nth-of-type(3) .btn{position:absolute;right:18px;top:68px;width:190px} #view-caja>.card:nth-of-type(3){position:relative;padding-right:220px!important}
+        #view-caja>.card:nth-of-type(3) #lista-prestamos-internos{margin-top:10px!important;border-color:rgba(255,196,0,.32)!important}
+        #view-caja>.card:nth-of-type(4){order:9;grid-column:1/3;padding:17px!important;background:linear-gradient(145deg,#07335c,#051b35)!important;border-color:rgba(0,200,255,.26)!important}
+        #view-caja>.card:nth-of-type(4) .btn{background:linear-gradient(135deg,#218fff,#3045f2)!important}
+        #view-caja>.quick-access-card{order:10;grid-column:3/5;padding:17px!important;border-radius:21px!important;background:linear-gradient(145deg,#062b50,#05152d)!important;border:1px solid rgba(0,200,255,.25)!important}
+        .quick-access-title{font-size:14px;font-weight:900;color:#ecf8ff;margin-bottom:11px}.quick-access-title span{color:#4fdcff;font-size:21px;margin-right:8px}.quick-access-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.quick-access-btn{min-height:60px;border-radius:13px;color:#eafaff;border:1px solid rgba(255,255,255,.10);display:flex;align-items:center;gap:9px;padding:8px 10px;text-align:left;cursor:pointer;font-size:11px}.quick-access-btn span{font-size:20px}.quick-blue{background:linear-gradient(135deg,#0c71df,#164bc4)}.quick-green{background:linear-gradient(135deg,#008c82,#006a62)}.quick-pink{background:linear-gradient(135deg,#8f214e,#59152f)}.quick-purple{background:linear-gradient(135deg,#5a22d4,#3c1596)}
+        .bottom-nav{height:82px!important;padding:7px 7px 10px!important;background:linear-gradient(180deg,rgba(2,10,24,.98),rgba(1,6,17,1))!important;border-top:1px solid rgba(0,200,255,.12)!important}.nav-item{font-size:10px!important;min-height:62px!important;border-radius:16px!important;color:#7589a4!important}.nav-item span{font-size:25px!important}.nav-item.active{background:linear-gradient(180deg,rgba(0,200,255,.15),rgba(0,94,180,.06))!important;color:#63e5ff!important;border:1px solid rgba(0,200,255,.30)!important;box-shadow:0 0 18px rgba(0,200,255,.12),inset 0 0 18px rgba(0,200,255,.05)!important}
+        .input-group input,.input-group select{border-radius:13px!important;background:rgba(2,14,31,.80)!important;border-color:rgba(71,115,165,.30)!important}.modal-box{border-radius:22px!important;background:linear-gradient(145deg,#081b36,#030a19)!important}
+        @media(max-width:620px){.brand-copy small{display:none}.menu-deco,.brand-icon,.notification-deco{width:45px;height:45px}.brand-copy h1{font-size:19px!important}.header-actions .lock-btn{height:45px!important;padding:0 11px!important}.status-row{grid-template-columns:1fr 70px}#sync-status{min-height:68px;grid-template-columns:32px 1fr;}#sync-status::before{font-size:22px}#sync-status .sync-online{display:none}#btn-config-firebase{width:70px!important;height:68px!important} #view-caja.active{grid-template-columns:1fr 1fr;gap:10px!important} #view-caja>.card:nth-of-type(1),#view-caja>.card:nth-of-type(8),#view-caja>.card:nth-of-type(9),#view-caja>.card:nth-of-type(3){grid-column:1/-1} #view-caja>.card:nth-of-type(1)::after{right:-15px;opacity:.42;transform:scale(.72)}#caja-actual{font-size:45px!important}#view-caja>.card:nth-of-type(1)>div[style*="justify-content: space-between"]{width:72%}#view-caja>.card:nth-of-type(9){padding-right:17px!important} #view-caja>.card:nth-of-type(9) .grid-2{grid-template-columns:1fr 1fr!important} #view-caja>.card:nth-of-type(9) .btn{position:static;width:100%;grid-column:1/-1} #view-caja>.card:nth-of-type(3){padding-right:17px!important} #view-caja>.card:nth-of-type(3) .grid-2{grid-template-columns:1fr 1fr!important} #view-caja>.card:nth-of-type(3) .btn{position:static;width:100%} #view-caja>.card:nth-of-type(4),#view-caja>.quick-access-card{grid-column:1/-1!important} #view-caja>.card:nth-of-type(8) .grid-3{grid-template-columns:repeat(2,1fr)!important}}
 
     </style>
 </head>
@@ -1079,12 +734,24 @@
         </div>
     </div>
     <div class="top-header">
-        <h1>Control de Cobros</h1>
-        <button class="lock-btn" onclick="lockApp()">🔒 Bloquear</button>
+        <div class="brand-left">
+            <button class="menu-deco" type="button" aria-label="Menú">☰</button>
+            <div class="brand-icon">💰</div>
+            <div class="brand-copy">
+                <h1>Control de Cobros</h1>
+                <small>Tu negocio siempre bajo control</small>
+            </div>
+        </div>
+        <div class="header-actions">
+            <div class="notification-deco">🔔<i></i></div>
+            <button class="lock-btn" onclick="lockApp()">🔒 Bloquear</button>
+        </div>
     </div>
         <div class="container">
-        <div id="sync-status">☁️ Sincronizado en la Nube en Tiempo Real</div>
-        <button id="btn-config-firebase" class="btn btn-secondary admin-only-btn" style="display:none; margin-bottom:12px;" onclick="configurarFirebase()">⚙️ Configurar conexión con Firebase</button>
+        <div class="status-row">
+            <div id="sync-status"><span class="sync-main">☁️ Firebase conectado y sincronizado</span><span class="sync-sub">Datos en tiempo real en todos tus dispositivos</span><span class="sync-online"><i></i> Online</span></div>
+            <button id="btn-config-firebase" class="btn btn-secondary admin-only-btn" style="display:none; margin-bottom:0;" onclick="configurarFirebase()"><span class="config-icon">⚙️</span><span>Configurar</span></button>
+        </div>
         
         <!-- VISTA CAJA -->
         <div id="view-caja" class="view active">
@@ -1137,6 +804,16 @@
                 <button class="btn btn-primary" onclick="setBaseCaja()">Actualizar Saldo Efectivo</button>
             </div>
 
+            <div class="quick-access-card admin-only-card">
+                <div class="quick-access-title"><span>⚡</span> Accesos Rápidos</div>
+                <div class="quick-access-grid">
+                    <button class="quick-access-btn quick-blue" onclick="switchTab('nuevo', document.querySelectorAll('.nav-item')[1])"><span>👥</span><b>Nuevo<br>Préstamo</b></button>
+                    <button class="quick-access-btn quick-green" onclick="switchTab('cobros', document.querySelectorAll('.nav-item')[2])"><span>▤</span><b>Cobros<br>Activos</b></button>
+                    <button class="quick-access-btn quick-pink" onclick="switchTab('clavos', document.querySelectorAll('.nav-item')[5])"><span>🚫</span><b>Clientes<br>Clavo</b></button>
+                    <button class="quick-access-btn quick-purple" onclick="switchTab('historial', document.querySelectorAll('.nav-item')[4])"><span>◷</span><b>Historial</b></button>
+                </div>
+            </div>
+
             <div class="card admin-only-card" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
                 <div class="card-header" style="color: #166534;">📁 Reportes y Exportación</div>
                 <p style="font-size: 11px; color: #15803d; margin-bottom: 10px;">Descarga el historial completo de movimientos para Excel o WhatsApp.</p>
@@ -1172,7 +849,8 @@
                     </div>
                 </div>
                 <div style="margin-top: 10px; padding: 8px; background: #f1f5f9; border-radius: 6px; display: flex; justify-content: space-between; font-size: 12px;">
-                    <span style="color: #475569; font-weight: bold;">💰 Ganancia Proyectada en Calle:</span>                    <strong style="color: #16a34a;" id="ganancia-proyectada">$0</strong>
+                    <span style="color: #475569; font-weight: bold;">💰 Ganancia Proyectada en Calle:</span>
+                    <strong style="color: #16a34a;" id="ganancia-proyectada">$0</strong>
                 </div>
             </div>
 
@@ -1186,17 +864,7 @@
                         <input type="text" id="gasto-motivo" placeholder="Motivo (Ej. Gasolina)">
                     </div>
                 </div>
-                <button class="btn btn-danger" onclick="registrarGasto()">Registrar Gasto</button>
-            </div>
-        </div>
-
-        <!-- VISTA NUEVO PRESTAMO -->
-        <div id="view-nuevo" class="view">
-            <div class="card">
-                <div class="card-header">Nuevo Préstamo a Cliente</div>
-                <div class="input-group">
-                    <label>Nombre del Cliente</label>
-                    <input type="text" id="p-cliente" placeholder="Nombre completo">
+                               <input type="text" id="p-cliente" placeholder="Nombre completo">
                 </div>
                 <div class="input-group">
                     <label>Monto Prestado ($)</label>
@@ -1340,9 +1008,9 @@
                 <strong style="color: #22c55e;" id="cierre-cobrado-efectivo">$0</strong>
             </div>
             <div class="summary-row">
-                <span>(+) Total Cobrado Transferencia:</span>                <strong style="color: #0284c7;" id="cierre-cobrado-transf">$0</strong>
-            </div>
-            <div class="summary-row">
+                <span>(+) Total Cobrado Transferencia:</span>
+                <strong style="color: #0284c7;" id="cierre-cobrado-transf">$0</strong>
+            </div>            <div class="summary-row">
                 <span>(-) Total Prestado Nuevos:</span>
                 <strong style="color: #ef4444;" id="cierre-prestado">$0</strong>
             </div>
@@ -1488,8 +1156,7 @@
                 window.firebaseDocRef = doc(db, "control_caja", "general");
                 onSnapshot(window.firebaseDocRef, async (docSnap) => {
                     if (docSnap.exists()) {
-                        window.dbState = normalizarEstado(docSnap.data());
-                        localStorage.setItem(STORAGE_KEY, JSON.stringify(window.dbState));
+                        window.dbState = normalizarEstado(docSnap.data());                        localStorage.setItem(STORAGE_KEY, JSON.stringify(window.dbState));
                     } else {
                         window.dbState = normalizarEstado(window.dbState);
                         await setDoc(window.firebaseDocRef, window.dbState);
@@ -1508,7 +1175,8 @@
                 });
             } catch (error) {
                 console.error("Firebase initialization error:", error);
-                const status = document.getElementById("sync-status");                if (status) status.innerText = "📱 Modo local activo";
+                const status = document.getElementById("sync-status");
+                if (status) status.innerText = "📱 Modo local activo";
             }
         } else {
             const status = document.getElementById("sync-status");
@@ -1634,8 +1302,7 @@
             const tipoRetiroOpt = prompt(`Escriba el método de donde sale el dinero para ${nombre}:\n\n1: EFECTIVO\n2: TRANSFERENCIA`, "1");
             const metodo = tipoRetiroOpt === "2" ? "Transferencia" : "Efectivo";
 
-            if (metodo === "Transferencia") {
-                window.dbState.cajaTransferencia = (window.dbState.cajaTransferencia || 0) - monto;
+            if (metodo === "Transferencia") {                window.dbState.cajaTransferencia = (window.dbState.cajaTransferencia || 0) - monto;
             } else {
                 window.dbState.cajaEfectivo = (window.dbState.cajaEfectivo || 0) - monto;
             }
@@ -1675,7 +1342,9 @@
             window.dbState.prestamosInternos = window.dbState.prestamosInternos.filter(x => x.id !== id);
             window.saveToCloud();
             alert("Devolución completada exitosamente.");
-        }        function setBaseCaja() {
+        }
+
+        function setBaseCaja() {
             if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
             const m = parseFloat(document.getElementById("base-monto").value);
             if (!isNaN(m)) {
@@ -1779,8 +1448,7 @@
         function reiniciarTodaLaAplicacion() {
             if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
             
-            const confirm1 = confirm("⚠️ ¿ESTÁS SEGURO DE BORRAR TODO?\n\nEsta acción eliminará:\n- Todos los préstamos activos y saldados\n- Todo el historial de transacciones y cierres de día\n- Todos los clientes bloqueados (clavos)\n\n¿Continuar?");
-            if (confirm1) {
+            const confirm1 = confirm("⚠️ ¿ESTÁS SEGURO DE BORRAR TODO?\n\nEsta acción eliminará:\n- Todos los préstamos activos y saldados\n- Todo el historial de transacciones y cierres de día\n- Todos los clientes bloqueados (clavos)\n\n¿Continuar?");            if (confirm1) {
                 const confirm2 = confirm("⚠️ ÚLTIMA CONFIRMACIÓN:\n\nSe vaciará completamente la base de datos en la nube. ¿Deseas reiniciar a $0?");
                 if (confirm2) {
                     const currentAdminPin = window.dbState.adminPin || "1234";
@@ -1842,7 +1510,8 @@
                             <div class="list-item" style="padding: 6px 0;">
                                 <div><small style="color: #64748b;">${t.fechaStr || t.fechaISO}</small></div>
                                 <div><strong style="color: #22c55e;">+$${t.monto.toLocaleString()}</strong> <small>(${t.metodo || 'Efectivo'})</small></div>
-                            </div>                        `;
+                            </div>
+                        `;
                     }
                 });
             }
@@ -1925,8 +1594,7 @@
                 saldoPendiente: totalPagar,
                 dias,
                 frecuencia,
-                metodoEntrega: metodo,
-                fecha: new Date().toLocaleDateString(),
+                metodoEntrega: metodo,                fecha: new Date().toLocaleDateString(),
                 fechaCreacionMs: Date.now()
             });
 
@@ -2008,7 +1676,9 @@
                 window.saveToCloud();
                 alert("Crédito eliminado y caja ajustada correctamente.");
             }
-        }        function registrarPago(id) {
+        }
+
+        function registrarPago(id) {
             const p = window.dbState.prestamos.find(x => x.id === id);
             if (!p) return;
 
@@ -2069,9 +1739,7 @@ Ingrese el monto cobrado:`
                 window.dbState.cajaTransferencia = (window.dbState.cajaTransferencia || 0) + val;
             } else {
                 window.dbState.cajaEfectivo = (window.dbState.cajaEfectivo || 0) + val;
-            }
-
-            window.dbState.transacciones.unshift({
+        }            window.dbState.transacciones.unshift({
                 id: Date.now(),
                 prestamoId: p.id,
                 clienteNombre: p.cliente,
@@ -2175,7 +1843,8 @@ Ingrese el monto cobrado:`
 
             t.monto = nuevoValor;
             window.saveToCloud();
-            alert("✅ Registro corregido en la nube.");        }
+            alert("✅ Registro corregido en la nube.");
+        }
 
         function borrarTransaccion(tId) {
             if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
@@ -2216,8 +1885,7 @@ Ingrese el monto cobrado:`
             window.dbState.transacciones.unshift({
                 id: Date.now(),
                 tipo: 'Gasto',
-                metodo: 'Efectivo',
-                monto: monto,
+                metodo: 'Efectivo',                monto: monto,
                 fechaISO: new Date().toISOString().split('T')[0],
                 fechaStr: new Date().toLocaleString(),
                 detalle: motivo
@@ -2342,7 +2010,8 @@ Ingrese el monto cobrado:`
                     listClavos.innerHTML += `
                         <div class="list-item">
                             <div>
-                                <strong>🚫 ${c.nombre}</strong> <br>                                <small style="color: #ef4444;">Motivo: ${c.motivo}</small> <br>
+                                <strong>🚫 ${c.nombre}</strong> <br>
+                                <small style="color: #ef4444;">Motivo: ${c.motivo}</small> <br>
                                 <small style="color: #94a3b8;">Bloqueado el: ${c.fecha}</small>
                             </div>
                             <div>
@@ -2362,8 +2031,7 @@ Ingrese el monto cobrado:`
             const listInternos = document.getElementById("lista-prestamos-internos");
             const badgeInternos = document.getElementById("total-prestamos-internos-badge");
             
-            if (!listInternos) return;
-            listInternos.innerHTML = "";
+            if (!listInternos) return;            listInternos.innerHTML = "";
 
             let totalInterno = 0;
 
