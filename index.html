@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="es">
     <head>
     <meta charset="UTF-8">
@@ -23,6 +23,48 @@
             --accent: #f59e0b;
             --danger: #fb7185;
             --success: #34d399;
+        }
+
+        /* ===== ESTRUCTURA BASE RESTAURADA ===== */
+        #pin-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .pin-title {
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .pin-dots {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            justify-items: stretch;
+            align-items: center;
+        }
+
+        .key-btn {
+            cursor: pointer;
+        }
+
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         * {
@@ -129,8 +171,7 @@
         .key-btn {
             min-height: 64px;
             background: rgba(14, 26, 48, 0.88) !important;
-            color: #ecfeff !important;
-            border: 1px solid rgba(56,189,248,0.17) !important;
+            color: #ecfeff !important;            border: 1px solid rgba(56,189,248,0.17) !important;
             padding: 17px !important;
             font-size: 20px !important;
             border-radius: 18px !important;
@@ -204,7 +245,8 @@
             color: #7dd3fc !important;
             border: 1px solid rgba(56,189,248,0.16);
             border-radius: 10px !important;
-            margin-bottom: 12px !important;            box-shadow: 0 0 22px rgba(56,189,248,0.05);
+            margin-bottom: 12px !important;
+            box-shadow: 0 0 22px rgba(56,189,248,0.05);
         }
 
         .card {
@@ -301,9 +343,7 @@
             cursor: pointer;
             text-align: center;
             transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
-        }
-
-        .btn:active {
+        }        .btn:active {
             transform: scale(0.985);
         }
 
@@ -410,7 +450,8 @@
 
         .badge-pending {
             background: rgba(245,158,11,0.12) !important;
-            color: #fbbf24 !important;            border-color: rgba(245,158,11,0.18) !important;
+            color: #fbbf24 !important;
+            border-color: rgba(245,158,11,0.18) !important;
         }
 
         .badge-paid {
@@ -475,8 +516,7 @@
             color: #93a8bd !important;
         }
 
-        .card small {
-            color: #7f94aa !important;
+        .card small {            color: #7f94aa !important;
         }
 
         .list-item small {
@@ -617,7 +657,8 @@
                     <span>💵 Efectivo: <strong id="caja-efectivo" style="color: #22c55e;">$0</strong></span>
                     <button class="admin-only-btn" style="background: transparent; border: none; color: #38bdf8; font-size: 11px; cursor: pointer;" onclick="editarEfectivoDirecto()">✏️ Modificar</button>
                 </div>
-                <div style="display: flex; justify-content: space-between; font-size: 13px;">                    <span>💳 Transferencia: <strong id="caja-transferencia" style="color: #38bdf8;">$0</strong></span>
+                <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                    <span>💳 Transferencia: <strong id="caja-transferencia" style="color: #38bdf8;">$0</strong></span>
                     <button class="admin-only-btn" style="background: transparent; border: none; color: #38bdf8; font-size: 11px; cursor: pointer;" onclick="editarTransferenciaDirecto()">✏️ Modificar</button>
                 </div>
             </div>
@@ -648,9 +689,7 @@
                 <div id="lista-prestamos-internos" style="margin-top: 12px; border-top: 1px dashed #fcd34d; padding-top: 8px;">
                     <p style="font-size: 11px; color: #92400e; text-align: center;">Cargando retiros pendientes...</p>
                 </div>
-            </div>
-
-            <div class="card admin-only-card">
+            </div>            <div class="card admin-only-card">
                 <div class="card-header">Establecer Base de Caja (Efectivo)</div>
                 <div class="input-group">
                     <label>Monto de Base ($)</label>
@@ -822,8 +861,8 @@
             <div class="card" id="card-add-clavo">
                 <div class="card-header">📌 Marcar Cliente Clavo / Bloqueado</div>
                 <div class="input-group">
-                    <label>Nombre del Cliente No Apto</label>
-                    <input type="text" id="clavo-nombre" placeholder="Nombre completo">                </div>
+                    <label>Nombre del Cliente No Apto</label>                    <input type="text" id="clavo-nombre" placeholder="Nombre completo">
+                </div>
                 <div class="input-group">
                     <label>Motivo del Bloqueo</label>
                     <input type="text" id="clavo-motivo" placeholder="Ej. Mala paga, agresivo, retrasado">
@@ -995,8 +1034,7 @@
 
         function clearPin() { enteredPin = ""; updateDots(); }
         function deletePin() { enteredPin = enteredPin.slice(0, -1); updateDots(); }
-        function updateDots() {
-            for (let i = 0; i < 4; i++) {
+        function updateDots() {            for (let i = 0; i < 4; i++) {
                 const dot = document.getElementById(`dot-${i}`);
                 if (i < enteredPin.length) dot.classList.add("filled");
                 else dot.classList.remove("filled");
@@ -1030,7 +1068,9 @@
             }
 
             const tipoRetiroOpt = prompt(`Escriba el método de donde sale el dinero para ${nombre}:\n\n1: EFECTIVO\n2: TRANSFERENCIA`, "1");
-            const metodo = tipoRetiroOpt === "2" ? "Transferencia" : "Efectivo";            if (metodo === "Transferencia") {
+            const metodo = tipoRetiroOpt === "2" ? "Transferencia" : "Efectivo";
+
+            if (metodo === "Transferencia") {
                 window.dbState.cajaTransferencia = (window.dbState.cajaTransferencia || 0) - monto;
             } else {
                 window.dbState.cajaEfectivo = (window.dbState.cajaEfectivo || 0) - monto;
@@ -1166,8 +1206,7 @@
                 }
             }
         }
-                function exportarExcelCSV() {
-            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
+                function exportarExcelCSV() {            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
             let csv = "Tipo,Detalle,Metodo,Monto,Fecha\n";
             if (window.dbState.transacciones) {
                 window.dbState.transacciones.forEach(t => {
@@ -1235,7 +1274,9 @@
                 nombre: nombre,
                 motivo: motivo || "Sin motivo especificado",
                 fecha: new Date().toLocaleDateString()
-            });            window.saveToCloud();
+            });
+
+            window.saveToCloud();
             document.getElementById("clavo-nombre").value = "";
             document.getElementById("clavo-motivo").value = "";
             alert(`Cliente ${nombre} bloqueado exitosamente.`);
@@ -1337,8 +1378,7 @@
             }
         }
 
-        function borrarPrestamo(id) {
-            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
+        function borrarPrestamo(id) {            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
             const p = window.dbState.prestamos.find(x => x.id === id);
             if (!p) return;
 
@@ -1441,7 +1481,8 @@ Ingrese el monto cobrado:`
                     `Abono: $${val.toLocaleString()}
 ` +
                     `Saldo restante: $${p.saldoPendiente.toLocaleString()}`
-                );            }
+                );
+            }
 
             window.saveToCloud();
         }
@@ -1509,8 +1550,7 @@ Ingrese el monto cobrado:`
                 }
 
                 if (t.prestamoId) {
-                    const p = window.dbState.prestamos.find(x => x.id === t.prestamoId);
-                    if (p) {
+                    const p = window.dbState.prestamos.find(x => x.id === t.prestamoId);                    if (p) {
                         p.saldoPendiente = (Number(p.saldoPendiente) || 0) - diferencia;
 
                         /* Protección adicional contra saldo negativo. */
@@ -1647,7 +1687,9 @@ Ingrese el monto cobrado:`
                     if (toDate && tDate > toDate) return;
 
                     totalSum += t.monto;
-                    count++;                    let color = '#22c55e';
+                    count++;
+
+                    let color = '#22c55e';
                     if (t.tipo === 'Nuevo Préstamo' || t.tipo === 'Gasto') color = '#ef4444';
 
                     const canEdit = (t.tipo === 'Abono / Pago' || t.tipo === 'Gasto') && currentUserRole === 'admin';
@@ -1680,8 +1722,7 @@ Ingrese el monto cobrado:`
 
         function renderClavos() {
             const listClavos = document.getElementById("lista-clientes-clavos");
-            const cardAddClavo = document.getElementById("card-add-clavo");
-            
+            const cardAddClavo = document.getElementById("card-add-clavo");            
             if (cardAddClavo) cardAddClavo.style.display = currentUserRole === "admin" ? "block" : "none";
             listClavos.innerHTML = "";
 
