@@ -9,52 +9,570 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f172a">
     <style>
-        :root { --bg-main: #f8fafc; --card-bg: #ffffff; --primary: #2563eb; --accent: #f59e0b; --danger: #ef4444; --success: #22c55e; }
-        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; }
-        body { background-color: var(--bg-main); color: #1e293b; padding-bottom: 85px; }
-        #pin-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #0f172a; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; }
-        .pin-title { font-size: 22px; font-weight: bold; margin-bottom: 5px; }
-        .pin-dots { display: flex; gap: 15px; margin-bottom: 30px; }
-        .pin-dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #38bdf8; }
-        .pin-dot.filled { background: #38bdf8; }
-        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 260px; }
-        .key-btn { background: #1e293b; color: white; border: none; padding: 18px; font-size: 20px; border-radius: 12px; cursor: pointer; }
-        .top-header { background: #0f172a; color: white; padding: 16px; display: flex; justify-content: space-between; align-items: center; }
-        .top-header h1 { font-size: 18px; font-weight: 600; }
-        .lock-btn { background: #1e293b; border: none; color: #f59e0b; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; align-items: center; padding: 8px 0; z-index: 1000; }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: #64748b; font-size: 9px; cursor: pointer; text-align: center; }
-        .nav-item.active { color: var(--primary); font-weight: bold; }
-        .nav-item span { font-size: 18px; margin-bottom: 2px; }
-        .container { padding: 15px; max-width: 600px; margin: 0 auto; }
-        .view { display: none; }
-        .view.active { display: block; }
-        .card { background: var(--card-bg); border-radius: 12px; padding: 16px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .card-header { font-size: 14px; font-weight: bold; color: #64748b; margin-bottom: 8px; text-transform: uppercase; }
-        .hero-value { font-size: 32px; font-weight: 800; color: #0f172a; margin-bottom: 4px; }
-        .input-group { margin-bottom: 12px; }
-        .input-group label { display: block; font-size: 12px; font-weight: bold; color: #475569; margin-bottom: 4px; }
-        .input-group input, .input-group select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; outline: none; }
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; text-align: center; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-success { background: var(--success); color: white; }
-        .btn-danger { background: var(--danger); color: white; }
-        .btn-secondary { background: #64748b; color: white; }
-        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .filter-tabs { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 12px; padding-bottom: 4px; }
-        .filter-btn { padding: 6px 12px; border: 1px solid #cbd5e1; background: #f1f5f9; border-radius: 20px; font-size: 11px; font-weight: bold; color: #475569; cursor: pointer; white-space: nowrap; }
-        .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
-        .list-item:last-child { border-bottom: none; }
-        .badge { padding: 4px 8px; border-radius: 12px; font-size: 10px; font-weight: bold; }
-        .badge-pending { background: #fef3c7; color: #d97706; }
-        .badge-paid { background: #dcfce7; color: #15803d; }
-        .badge-danger { background: #fee2e2; color: #dc2626; }
-        .summary-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #e2e8f0; font-size: 13px; }
-        #sync-status { font-size: 10px; text-align: center; padding: 4px; background: #e0f2fe; color: #0369a1; border-radius: 4px; margin-bottom: 10px; }
-        #modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 99999; padding: 15px; }
-        .modal-box { background: white; width: 100%; max-width: 500px; border-radius: 12px; padding: 20px; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        /* ===== FUTURISTIC UI — VISUAL LAYER ONLY ===== */
+        :root {
+            --bg-main: #050816;
+            --bg-panel: rgba(10, 18, 36, 0.78);
+            --bg-panel-strong: rgba(12, 22, 44, 0.94);
+            --line: rgba(96, 165, 250, 0.18);
+            --line-strong: rgba(56, 189, 248, 0.45);
+            --text: #e5f3ff;
+            --muted: #8ea4bf;
+            --primary: #38bdf8;
+            --primary-2: #2563eb;
+            --accent: #f59e0b;
+            --danger: #fb7185;
+            --success: #34d399;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            background: #050816 !important;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 15% 0%, rgba(14, 165, 233, 0.16), transparent 30%),
+                radial-gradient(circle at 100% 20%, rgba(37, 99, 235, 0.14), transparent 28%),
+                radial-gradient(circle at 50% 100%, rgba(16, 185, 129, 0.08), transparent 32%),
+                linear-gradient(180deg, #050816 0%, #07101f 48%, #030610 100%) !important;
+            color: var(--text) !important;
+            padding-bottom: 92px;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.24;
+            background-image:
+                linear-gradient(rgba(56,189,248,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(56,189,248,0.05) 1px, transparent 1px);
+            background-size: 28px 28px;
+            mask-image: linear-gradient(to bottom, black, transparent 88%);
+        }
+
+        #pin-screen {
+            background:
+                radial-gradient(circle at 50% 20%, rgba(56,189,248,0.18), transparent 32%),
+                radial-gradient(circle at 20% 90%, rgba(37,99,235,0.16), transparent 28%),
+                linear-gradient(180deg, #030610, #07111f 65%, #02040a) !important;
+            color: #fff !important;
+        }
+
+        #pin-screen::before {
+            content: "";
+            width: 240px;
+            height: 240px;
+            border: 1px solid rgba(56,189,248,0.28);
+            border-radius: 50%;
+            position: absolute;
+            top: 11%;
+            box-shadow:
+                0 0 35px rgba(56,189,248,0.12),
+                inset 0 0 35px rgba(56,189,248,0.06);
+            pointer-events: none;
+        }
+
+        #pin-screen::after {
+            content: "CONTROL • CAJA";
+            position: absolute;
+            top: 8%;
+            color: rgba(125,211,252,0.45);
+            font-size: 10px;
+            letter-spacing: 4px;
+            font-weight: 800;
+        }
+
+        .pin-title {
+            font-size: 25px !important;
+            font-weight: 800 !important;
+            letter-spacing: 0.5px;
+            z-index: 1;
+        }
+
+        .pin-dots {
+            gap: 13px !important;
+            margin-bottom: 28px !important;
+            z-index: 1;
+        }
+
+        .pin-dot {
+            width: 15px !important;
+            height: 15px !important;
+            border-radius: 50%;
+            border: 2px solid #38bdf8 !important;
+            box-shadow: 0 0 14px rgba(56,189,248,0.18);
+        }
+
+        .pin-dot.filled {
+            background: #38bdf8 !important;
+            box-shadow: 0 0 18px rgba(56,189,248,0.65);
+        }
+
+        .keypad {
+            gap: 12px !important;
+            width: min(300px, 88vw) !important;
+            z-index: 1;
+        }
+
+        .key-btn {
+            min-height: 64px;
+            background: rgba(14, 26, 48, 0.88) !important;
+            color: #ecfeff !important;
+            border: 1px solid rgba(56,189,248,0.17) !important;
+            padding: 17px !important;
+            font-size: 20px !important;
+            border-radius: 18px !important;
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.04),
+                0 10px 30px rgba(0,0,0,0.18);
+            transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .key-btn:active {
+            transform: scale(0.96);
+            border-color: rgba(56,189,248,0.6) !important;
+            box-shadow: 0 0 24px rgba(56,189,248,0.14);
+        }
+
+        .top-header {
+            position: sticky;
+            top: 0;
+            z-index: 1100;
+            padding: 15px 15px 14px !important;
+            background: rgba(3, 8, 20, 0.84) !important;
+            border-bottom: 1px solid rgba(56,189,248,0.12);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.16);
+        }
+
+        .top-header h1 {
+            font-size: 18px !important;
+            font-weight: 800 !important;
+            letter-spacing: 0.3px;
+            color: #e0f2fe !important;
+            text-shadow: 0 0 16px rgba(56,189,248,0.18);
+        }
+
+        .lock-btn {
+            background: rgba(15,23,42,0.82) !important;
+            border: 1px solid rgba(245,158,11,0.25) !important;
+            color: #fbbf24 !important;
+            padding: 8px 12px !important;
+            border-radius: 10px !important;
+            font-size: 11px !important;
+            box-shadow: 0 0 16px rgba(245,158,11,0.08);
+        }
+
+        .container {
+            padding: 14px !important;
+            max-width: 680px !important;
+            margin: 0 auto;
+        }
+
+        .view {
+            display: none;
+            animation: viewIn 0.22s ease;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        @keyframes viewIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #sync-status {
+            font-size: 10px !important;
+            text-align: center;
+            padding: 7px 10px !important;
+            background: rgba(14,165,233,0.10) !important;
+            color: #7dd3fc !important;
+            border: 1px solid rgba(56,189,248,0.16);
+            border-radius: 10px !important;
+            margin-bottom: 12px !important;            box-shadow: 0 0 22px rgba(56,189,248,0.05);
+        }
+
+        .card {
+            position: relative;
+            background: linear-gradient(145deg, rgba(12,24,47,0.90), rgba(6,13,28,0.78)) !important;
+            color: var(--text) !important;
+            border: 1px solid var(--line) !important;
+            border-radius: 20px !important;
+            padding: 17px !important;
+            margin-bottom: 14px !important;
+            box-shadow:
+                0 16px 38px rgba(0,0,0,0.20),
+                inset 0 1px 0 rgba(255,255,255,0.025);
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(56,189,248,0.45), transparent);
+            pointer-events: none;
+        }
+
+        .card-header {
+            font-size: 12px !important;
+            font-weight: 800 !important;
+            color: #a9c1db !important;
+            margin-bottom: 8px !important;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+        }
+
+        .hero-value {
+            font-size: clamp(30px, 8vw, 42px) !important;
+            font-weight: 900 !important;
+            color: #67e8f9 !important;
+            margin-bottom: 4px;
+            text-shadow: 0 0 24px rgba(34,211,238,0.20);
+        }
+
+        .input-group {
+            margin-bottom: 12px !important;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 11px !important;
+            font-weight: 700 !important;
+            color: #8ea4bf !important;
+            margin-bottom: 5px !important;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 12px 13px !important;
+            border: 1px solid rgba(148,163,184,0.16) !important;
+            border-radius: 12px !important;
+            font-size: 14px !important;
+            outline: none;
+            color: #e6f7ff !important;
+            background: rgba(4, 10, 23, 0.72) !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+        }
+
+        .input-group input::placeholder {
+            color: #60758f !important;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            border-color: rgba(56,189,248,0.62) !important;
+            box-shadow:
+                0 0 0 3px rgba(56,189,248,0.08),
+                0 0 18px rgba(56,189,248,0.06);
+        }
+
+        .input-group select option {
+            background: #08111f;
+            color: #e6f7ff;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px !important;
+            border: 1px solid transparent !important;
+            border-radius: 12px !important;
+            font-size: 13px !important;
+            font-weight: 800 !important;
+            cursor: pointer;
+            text-align: center;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+        }
+
+        .btn:active {
+            transform: scale(0.985);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0ea5e9, #2563eb) !important;
+            color: #fff !important;
+            border-color: rgba(125,211,252,0.28) !important;
+            box-shadow: 0 10px 26px rgba(37,99,235,0.18);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669) !important;
+            color: #ecfdf5 !important;
+            border-color: rgba(110,231,183,0.24) !important;
+            box-shadow: 0 10px 26px rgba(16,185,129,0.14);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #be123c) !important;
+            color: #fff !important;
+            border-color: rgba(251,113,133,0.22) !important;
+            box-shadow: 0 10px 26px rgba(239,68,68,0.12);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #334155, #1e293b) !important;
+            color: #e2e8f0 !important;
+            border-color: rgba(148,163,184,0.18) !important;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 7px;
+            overflow-x: auto;
+            margin-bottom: 12px;
+            padding-bottom: 4px;
+            scrollbar-width: none;
+        }
+
+        .filter-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-btn {
+            padding: 7px 12px !important;
+            border: 1px solid rgba(148,163,184,0.18) !important;
+            background: rgba(15,23,42,0.72) !important;
+            border-radius: 20px !important;
+            font-size: 10px !important;
+            font-weight: 800 !important;
+            color: #90a4ba !important;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #0ea5e9, #2563eb) !important;
+            color: #fff !important;
+            border-color: rgba(125,211,252,0.30) !important;
+        }
+
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0 !important;
+            border-bottom: 1px solid rgba(148,163,184,0.09) !important;
+            color: #dbeafe !important;
+        }
+
+        .list-item:last-child {
+            border-bottom: none !important;
+        }
+
+        .list-item strong {
+            color: #e0f2fe;
+        }
+
+        .list-item small {
+            line-height: 1.45;
+        }
+
+        .badge {
+            padding: 5px 9px !important;
+            border-radius: 12px !important;
+            font-size: 9px !important;
+            font-weight: 900 !important;
+            letter-spacing: 0.4px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .badge-pending {
+            background: rgba(245,158,11,0.12) !important;
+            color: #fbbf24 !important;            border-color: rgba(245,158,11,0.18) !important;
+        }
+
+        .badge-paid {
+            background: rgba(16,185,129,0.12) !important;
+            color: #6ee7b7 !important;
+            border-color: rgba(16,185,129,0.18) !important;
+        }
+
+        .badge-danger {
+            background: rgba(244,63,94,0.12) !important;
+            color: #fb7185 !important;
+            border-color: rgba(244,63,94,0.18) !important;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 7px 0 !important;
+            border-bottom: 1px dashed rgba(148,163,184,0.14) !important;
+            font-size: 12px !important;
+            color: #9fb3c9 !important;
+        }
+
+        #modal-overlay,
+        #modal-cliente-overlay {
+            background: rgba(0, 0, 0, 0.76) !important;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .modal-box {
+            background: linear-gradient(145deg, rgba(10, 22, 42, 0.98), rgba(5, 12, 26, 0.98)) !important;
+            color: var(--text) !important;
+            border: 1px solid rgba(56,189,248,0.18) !important;
+            width: 100%;
+            max-width: 540px;
+            border-radius: 20px !important;
+            padding: 19px !important;
+            max-height: 86vh;
+            overflow-y: auto;
+            box-shadow:
+                0 30px 80px rgba(0,0,0,0.45),
+                0 0 40px rgba(56,189,248,0.05);
+        }
+
+        .modal-box h3 {
+            color: #dff7ff !important;
+        }
+
+        .modal-box .card-header {
+            color: #9fc2df !important;
+        }
+
+        .modal-box hr {
+            border-color: rgba(148,163,184,0.13) !important;
+        }
+
+        /* Improve readability of descriptive text while preserving
+           dynamic numeric values and role/status colors. */
+        .card p {
+            color: #93a8bd !important;
+        }
+
+        .card small {
+            color: #7f94aa !important;
+        }
+
+        .list-item small {
+            color: #8096ae !important;
+        }
+
+        .card p,
+        .card span,
+        .card small,
+        .card div {
+            text-shadow: none;
+        }
+
+        #modal-cliente-detalle {
+            color: #b8cadc !important;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(3, 8, 20, 0.92) !important;
+            border-top: 1px solid rgba(56,189,248,0.14) !important;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 8px 4px calc(8px + env(safe-area-inset-bottom)) !important;
+            z-index: 1000;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            box-shadow: 0 -12px 28px rgba(0,0,0,0.22);
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #60758f !important;
+            font-size: 9px !important;
+            cursor: pointer;
+            text-align: center;
+            min-height: 48px;
+            border-radius: 12px;
+            transition: 0.15s ease;
+        }
+
+        .nav-item span {
+            font-size: 18px !important;
+            margin-bottom: 3px;
+            filter: drop-shadow(0 0 7px rgba(56,189,248,0.08));
+        }
+
+        .nav-item.active {
+            color: #67e8f9 !important;
+            font-weight: 900 !important;
+            background: rgba(56,189,248,0.07);
+            box-shadow: inset 0 0 0 1px rgba(56,189,248,0.08);
+        }
+
+        /* Specific visual accents that align with the existing dashboard. */
+        #view-caja > .card:first-of-type {
+            background:
+                radial-gradient(circle at 85% 15%, rgba(56,189,248,0.17), transparent 30%),
+                linear-gradient(145deg, rgba(9,25,53,0.98), rgba(4,10,24,0.98)) !important;
+            border-color: rgba(56,189,248,0.22) !important;
+        }
+
+        #view-caja > .card:nth-of-type(2) {
+            background:
+                linear-gradient(145deg, rgba(8,28,52,0.95), rgba(6,15,30,0.88)) !important;
+        }
+
+        #view-caja .admin-only-card {
+            background: linear-gradient(145deg, rgba(21,28,49,0.92), rgba(8,16,31,0.90)) !important;
+        }
+
+        #view-caja .admin-only-card:first-of-type {
+            border-color: rgba(245,158,11,0.20) !important;
+        }
+
+        /* Small-screen refinements */
+        @media (max-width: 430px) {
+            .container { padding: 11px !important; }
+            .card { border-radius: 17px !important; padding: 15px !important; }
+            .grid-2 { grid-template-columns: 1fr; gap: 2px; }
+            .grid-3 { gap: 6px; }
+            .grid-3 > div { min-width: 0; }
+            .hero-value { font-size: 34px !important; }
+            .top-header { padding-left: 12px !important; padding-right: 12px !important; }
+            .nav-item { font-size: 8px !important; }
+            .nav-item span { font-size: 17px !important; }
+        }
     </style>
 </head>
 <body>
@@ -99,8 +617,7 @@
                     <span>💵 Efectivo: <strong id="caja-efectivo" style="color: #22c55e;">$0</strong></span>
                     <button class="admin-only-btn" style="background: transparent; border: none; color: #38bdf8; font-size: 11px; cursor: pointer;" onclick="editarEfectivoDirecto()">✏️ Modificar</button>
                 </div>
-                <div style="display: flex; justify-content: space-between; font-size: 13px;">
-                    <span>💳 Transferencia: <strong id="caja-transferencia" style="color: #38bdf8;">$0</strong></span>
+                <div style="display: flex; justify-content: space-between; font-size: 13px;">                    <span>💳 Transferencia: <strong id="caja-transferencia" style="color: #38bdf8;">$0</strong></span>
                     <button class="admin-only-btn" style="background: transparent; border: none; color: #38bdf8; font-size: 11px; cursor: pointer;" onclick="editarTransferenciaDirecto()">✏️ Modificar</button>
                 </div>
             </div>
@@ -306,8 +823,7 @@
                 <div class="card-header">📌 Marcar Cliente Clavo / Bloqueado</div>
                 <div class="input-group">
                     <label>Nombre del Cliente No Apto</label>
-                    <input type="text" id="clavo-nombre" placeholder="Nombre completo">
-                </div>
+                    <input type="text" id="clavo-nombre" placeholder="Nombre completo">                </div>
                 <div class="input-group">
                     <label>Motivo del Bloqueo</label>
                     <input type="text" id="clavo-motivo" placeholder="Ej. Mala paga, agresivo, retrasado">
@@ -514,9 +1030,7 @@
             }
 
             const tipoRetiroOpt = prompt(`Escriba el método de donde sale el dinero para ${nombre}:\n\n1: EFECTIVO\n2: TRANSFERENCIA`, "1");
-            const metodo = tipoRetiroOpt === "2" ? "Transferencia" : "Efectivo";
-
-            if (metodo === "Transferencia") {
+            const metodo = tipoRetiroOpt === "2" ? "Transferencia" : "Efectivo";            if (metodo === "Transferencia") {
                 window.dbState.cajaTransferencia = (window.dbState.cajaTransferencia || 0) - monto;
             } else {
                 window.dbState.cajaEfectivo = (window.dbState.cajaEfectivo || 0) - monto;
@@ -721,9 +1235,7 @@
                 nombre: nombre,
                 motivo: motivo || "Sin motivo especificado",
                 fecha: new Date().toLocaleDateString()
-            });
-
-            window.saveToCloud();
+            });            window.saveToCloud();
             document.getElementById("clavo-nombre").value = "";
             document.getElementById("clavo-motivo").value = "";
             alert(`Cliente ${nombre} bloqueado exitosamente.`);
@@ -847,38 +1359,91 @@
         function registrarPago(id) {
             const p = window.dbState.prestamos.find(x => x.id === id);
             if (!p) return;
-            const cuota = prompt(`Saldo pendiente: $${p.saldoPendiente}\nIngrese el monto cobrado:`);
-            const val = parseFloat(cuota);
-            if (!isNaN(val) && val > 0) {
-                const tipoPagoOpt = prompt("Escriba 1 para EFECTIVO o 2 para TRANSFERENCIA:", "1");
-                const metodo = tipoPagoOpt === "2" ? "Transferencia" : "Efectivo";
 
-                p.saldoPendiente = Math.max(0, p.saldoPendiente - val);
-                
-                if (metodo === "Transferencia") {
-                    window.dbState.cajaTransferencia = (window.dbState.cajaTransferencia || 0) + val;
-                } else {
-                    window.dbState.cajaEfectivo = (window.dbState.cajaEfectivo || 0) + val;
-                }
+            const saldoPendiente = Number(p.saldoPendiente) || 0;
 
-                window.dbState.transacciones.unshift({
-                    id: Date.now(),
-                    prestamoId: p.id,
-                    clienteNombre: p.cliente,
-                    tipo: 'Abono / Pago',
-                    metodo: metodo,
-                    monto: val,
-                    fechaISO: new Date().toISOString().split('T')[0],
-                    fechaStr: new Date().toLocaleString(),
-                    detalle: `Cobro a ${p.cliente} (${metodo})`
-                });
-                
-                if (p.saldoPendiente === 0) {
-                    alert(`¡Felicidades! ${p.cliente} ha pagado la totalidad del crédito.`);
-                }
-                
-                window.saveToCloud();
+            if (saldoPendiente <= 0) {
+                alert(`Este crédito ya está completamente pagado.`);
+                return;
             }
+
+            const cuota = prompt(
+                `Cliente: ${p.cliente}
+Saldo pendiente: $${saldoPendiente.toLocaleString()}
+
+Ingrese el monto cobrado:`
+            );
+
+            if (cuota === null) return;
+
+            const val = parseFloat(cuota);
+
+            if (isNaN(val) || val <= 0) {
+                alert("❌ Ingresa un valor válido mayor que cero.");
+                return;
+            }
+
+            /* SEGURIDAD: nunca permitir un pago superior a la deuda actual. */
+            if (val > saldoPendiente) {
+                alert(
+                    `❌ PAGO NO PERMITIDO
+
+` +
+                    `El cliente debe: $${saldoPendiente.toLocaleString()}
+` +
+                    `Intentaste registrar: $${val.toLocaleString()}
+
+` +
+                    `El pago no puede ser mayor al saldo pendiente.
+` +
+                    `No se realizó ningún cambio.`
+                );
+                return;
+            }
+
+            const tipoPagoOpt = prompt(
+                "Escriba 1 para EFECTIVO o 2 para TRANSFERENCIA:",
+                "1"
+            );
+
+            if (tipoPagoOpt === null) return;
+
+            const metodo = tipoPagoOpt === "2" ? "Transferencia" : "Efectivo";
+
+            /* El valor ya fue validado, por lo que nunca puede quedar saldo negativo. */
+            p.saldoPendiente = saldoPendiente - val;
+
+            if (metodo === "Transferencia") {
+                window.dbState.cajaTransferencia = (window.dbState.cajaTransferencia || 0) + val;
+            } else {
+                window.dbState.cajaEfectivo = (window.dbState.cajaEfectivo || 0) + val;
+            }
+
+            window.dbState.transacciones.unshift({
+                id: Date.now(),
+                prestamoId: p.id,
+                clienteNombre: p.cliente,
+                tipo: 'Abono / Pago',
+                metodo: metodo,
+                monto: val,
+                fechaISO: new Date().toISOString().split('T')[0],
+                fechaStr: new Date().toLocaleString(),
+                detalle: `Cobro a ${p.cliente} (${metodo})`
+            });
+
+            if (p.saldoPendiente === 0) {
+                alert(`✅ ¡Felicidades! ${p.cliente} ha pagado la totalidad del crédito.`);
+            } else {
+                alert(
+                    `✅ Pago registrado correctamente.
+
+` +
+                    `Abono: $${val.toLocaleString()}
+` +
+                    `Saldo restante: $${p.saldoPendiente.toLocaleString()}`
+                );            }
+
+            window.saveToCloud();
         }
 
         function editarTransaccion(tId) {
@@ -892,9 +1457,47 @@
             }
 
             const nuevoValorStr = prompt(`Corregir valor para "${t.detalle}":`, t.monto);
+            if (nuevoValorStr === null) return;
+
             const nuevoValor = parseFloat(nuevoValorStr);
 
-            if (isNaN(nuevoValor) || nuevoValor <= 0) return;
+            if (isNaN(nuevoValor) || nuevoValor <= 0) {
+                alert("❌ Ingresa un valor válido mayor que cero.");
+                return;
+            }
+
+            /* SEGURIDAD:
+               al editar un abono, el máximo nuevo valor permitido es
+               el saldo actual + el valor del abono original. */
+            if (t.tipo === 'Abono / Pago' && t.prestamoId) {
+                const p = window.dbState.prestamos.find(x => x.id === t.prestamoId);
+
+                if (!p) {
+                    alert("❌ No se encontró el crédito asociado a este pago.");
+                    return;
+                }
+
+                const saldoActual = Number(p.saldoPendiente) || 0;
+                const abonoOriginal = Number(t.monto) || 0;
+                const maximoPermitido = saldoActual + abonoOriginal;
+
+                if (nuevoValor > maximoPermitido) {
+                    alert(
+                        `❌ VALOR NO PERMITIDO
+
+` +
+                        `Saldo disponible para este crédito: $${saldoActual.toLocaleString()}
+` +
+                        `Abono original: $${abonoOriginal.toLocaleString()}
+` +
+                        `Máximo que puedes dejar en este abono: $${maximoPermitido.toLocaleString()}
+
+` +
+                        `No se realizó ningún cambio.`
+                    );
+                    return;
+                }
+            }
 
             const diferencia = nuevoValor - t.monto;
 
@@ -904,10 +1507,14 @@
                 } else {
                     window.dbState.cajaEfectivo = (window.dbState.cajaEfectivo || 0) + diferencia;
                 }
+
                 if (t.prestamoId) {
                     const p = window.dbState.prestamos.find(x => x.id === t.prestamoId);
                     if (p) {
-                        p.saldoPendiente = Math.max(0, p.saldoPendiente - diferencia);
+                        p.saldoPendiente = (Number(p.saldoPendiente) || 0) - diferencia;
+
+                        /* Protección adicional contra saldo negativo. */
+                        if (p.saldoPendiente < 0) p.saldoPendiente = 0;
                     }
                 }
             } else if (t.tipo === 'Gasto') {
@@ -916,7 +1523,7 @@
 
             t.monto = nuevoValor;
             window.saveToCloud();
-            alert("Registro corregido en la nube.");
+            alert("✅ Registro corregido en la nube.");
         }
 
         function borrarTransaccion(tId) {
@@ -1040,9 +1647,7 @@
                     if (toDate && tDate > toDate) return;
 
                     totalSum += t.monto;
-                    count++;
-
-                    let color = '#22c55e';
+                    count++;                    let color = '#22c55e';
                     if (t.tipo === 'Nuevo Préstamo' || t.tipo === 'Gasto') color = '#ef4444';
 
                     const canEdit = (t.tipo === 'Abono / Pago' || t.tipo === 'Gasto') && currentUserRole === 'admin';
