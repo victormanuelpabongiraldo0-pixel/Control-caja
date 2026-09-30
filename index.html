@@ -170,8 +170,7 @@
         .key-btn {
             min-height: 64px;
             background: rgba(14, 26, 48, 0.88) !important;
-            color: #ecfeff !important;
-            border: 1px solid rgba(56,189,248,0.17) !important;
+            color: #ecfeff !important;            border: 1px solid rgba(56,189,248,0.17) !important;
             padding: 17px !important;
             font-size: 20px !important;
             border-radius: 18px !important;
@@ -342,9 +341,7 @@
             cursor: pointer;
             text-align: center;
             transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
-        }
-
-        .btn:active {
+        }        .btn:active {
             transform: scale(0.985);
         }
 
@@ -532,8 +529,7 @@
             color: #93a8bd !important;
         }
 
-        .card small {
-            color: #7f94aa !important;
+        .card small {            color: #7f94aa !important;
         }
 
         .list-item small {
@@ -705,8 +701,7 @@
                 <div id="lista-prestamos-internos" style="margin-top: 12px; border-top: 1px dashed #fcd34d; padding-top: 8px;">
                     <p style="font-size: 11px; color: #92400e; text-align: center;">Cargando retiros pendientes...</p>
                 </div>
-            </div>
-            <div class="card admin-only-card">
+            </div>            <div class="card admin-only-card">
                 <div class="card-header">Establecer Base de Caja (Efectivo)</div>
                 <div class="input-group">
                     <label>Monto de Base ($)</label>
@@ -884,8 +879,7 @@
             <div class="card" id="card-add-clavo">
                 <div class="card-header">📌 Marcar Cliente Clavo / Bloqueado</div>
                 <div class="input-group">
-                    <label>Nombre del Cliente No Apto</label>
-                    <input type="text" id="clavo-nombre" placeholder="Nombre completo">
+                    <label>Nombre del Cliente No Apto</label>                    <input type="text" id="clavo-nombre" placeholder="Nombre completo">
                 </div>
                 <div class="input-group">
                     <label>Motivo del Bloqueo</label>
@@ -977,7 +971,10 @@
         <!-- SDK Firebase Firestore Realtime -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";        const firebaseConfig = {
+        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";        /* Firebase original: se conserva el mismo proyecto y la misma colección.
+         * Firestore usa el projectId para la conexión; no se inventan ni reemplazan
+         * credenciales que no están disponibles en el archivo original. */
+        const firebaseConfig = {
             apiKey: "AIzaSyC0H3HmkRHmAOmC1-qQkDMvpJA2f-GDkmM",
             authDomain: "control-cobro.firebaseapp.com",
             projectId: "control-cobro",
@@ -1110,7 +1107,9 @@
                 if (enteredPin.length === 4) {
                     setTimeout(() => {
                         const currentAdminPin = (window.dbState && window.dbState.adminPin) ? window.dbState.adminPin : "1234";
-                        const currentOperatorPin = (window.dbState && window.dbState.operatorPin) ? window.dbState.operatorPin : "0000";                            currentUserRole = "admin";
+                        const currentOperatorPin = (window.dbState && window.dbState.operatorPin) ? window.dbState.operatorPin : "0000";
+
+                        if (enteredPin === currentAdminPin) {                            currentUserRole = "admin";
                             document.getElementById("pin-screen").style.display = "none";
                             enteredPin = "";
                             updateDots();
@@ -1132,8 +1131,7 @@
 
         function clearPin() { enteredPin = ""; updateDots(); }
         function deletePin() { enteredPin = enteredPin.slice(0, -1); updateDots(); }
-        function updateDots() {
-            for (let i = 0; i < 4; i++) {
+        function updateDots() {            for (let i = 0; i < 4; i++) {
                 const dot = document.getElementById(`dot-${i}`);
                 if (i < enteredPin.length) dot.classList.add("filled");
                 else dot.classList.remove("filled");
@@ -1375,8 +1373,7 @@
                 }
             }
         }
-                function exportarExcelCSV() {
-            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
+                function exportarExcelCSV() {            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
             let csv = "Tipo,Detalle,Metodo,Monto,Fecha\n";
             if (window.dbState.transacciones) {
                 window.dbState.transacciones.forEach(t => {
@@ -1389,7 +1386,7 @@
             a.setAttribute('href', url);
             a.setAttribute('download', `reporte_caja_${new Date().toISOString().split('T')[0]}.csv`);
             document.body.appendChild(a);
-            a.click();            document.body.removeChild(a);
+            a.click();        document.body.removeChild(a);
         }
 
         function verEstadoCuentaCliente(prestamoId) {
@@ -1526,9 +1523,7 @@
             document.getElementById("p-cliente").value = "";
             document.getElementById("p-monto").value = "";
             document.getElementById("p-interes").value = "";
-            document.getElementById("p-dias").value = "";
-
-            alert("Préstamo registrado exitosamente en la nube");            switchTab("cobros", document.querySelectorAll(".nav-item")[2]);
+            document.getElementById("p-dias").value = "";            switchTab("cobros", document.querySelectorAll(".nav-item")[2]);
         }
 
         function rePrestarCliente(nombre) {
@@ -1562,12 +1557,12 @@
             }
         }
 
-        function borrarPrestamo(id) {
-            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
+        function borrarPrestamo(id) {            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
             const p = window.dbState.prestamos.find(x => x.id === id);
             if (!p) return;
 
-            // Solo se devuelve a caja el saldo pendiente real que faltaba por cobrar.
+            // Corrección: Solo se devuelve a caja el saldo pendiente real que faltaba por cobrar, 
+            // evitando duplicar los abonos que ya habían ingresado a caja previamente.
             const devolucionCaja = p.saldoPendiente;
 
             if (confirm(`¿Estás seguro de que deseas eliminar el crédito de ${p.cliente}?\n\nSe devolverán $${devolucionCaja.toLocaleString()} (saldo pendiente) a la caja.`)) {
@@ -1576,7 +1571,6 @@
                 } else {
                     window.dbState.cajaEfectivo = (window.dbState.cajaEfectivo || 0) + devolucionCaja;
                 }
-
                 window.dbState.transacciones = window.dbState.transacciones.filter(t => t.prestamoId !== id);
                 window.dbState.prestamos = window.dbState.prestamos.filter(x => x.id !== id);
 
@@ -1667,7 +1661,8 @@ Ingrese el monto cobrado:`
                     `✅ Pago registrado correctamente.
 
 ` +
-                    `Abono: $${val.toLocaleString()}                    `Saldo restante: $${p.saldoPendiente.toLocaleString()}`
+                    `Abono: $${val.toLocaleString()}
+` +                    `Saldo restante: $${p.saldoPendiente.toLocaleString()}`
                 );
             }
 
@@ -1737,8 +1732,7 @@ Ingrese el monto cobrado:`
                 }
 
                 if (t.prestamoId) {
-                    const p = window.dbState.prestamos.find(x => x.id === t.prestamoId);
-                    if (p) {
+                    const p = window.dbState.prestamos.find(x => x.id === t.prestamoId);                    if (p) {
                         p.saldoPendiente = (Number(p.saldoPendiente) || 0) - diferencia;
 
                         /* Protección adicional contra saldo negativo. */
@@ -1806,9 +1800,8 @@ Ingrese el monto cobrado:`
             document.getElementById("gasto-motivo").value = "";
 
             alert("Gasto registrado exitosamente");
-        }
-
-        function setHistFilter(cat, btn) {            currentHistFilter = cat;
+                    }
+                function setHistFilter(cat, btn) {            currentHistFilter = cat;
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             renderHistorial();
@@ -1910,7 +1903,7 @@ Ingrese el monto cobrado:`
 
         function renderClavos() {
             const listClavos = document.getElementById("lista-clientes-clavos");
-            const cardAddClavo = document.getElementById("card-add-clavo");
+            const cardAddClavo = document.getElementById("card-add-clavo");            
             if (cardAddClavo) cardAddClavo.style.display = currentUserRole === "admin" ? "block" : "none";
             listClavos.innerHTML = "";
 
