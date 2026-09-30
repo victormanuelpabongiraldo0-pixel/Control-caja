@@ -137,8 +137,8 @@
         }
 
         .pin-title {
-            font-size: 25px !important;
-            font-weight: 800 !important;            letter-spacing: 0.5px;
+            font-size: 25px !important;            font-weight: 800 !important;
+            letter-spacing: 0.5px;
             z-index: 1;
         }
 
@@ -170,7 +170,8 @@
         .key-btn {
             min-height: 64px;
             background: rgba(14, 26, 48, 0.88) !important;
-            color: #ecfeff !important;            border: 1px solid rgba(56,189,248,0.17) !important;
+            color: #ecfeff !important;
+            border: 1px solid rgba(56,189,248,0.17) !important;
             padding: 17px !important;
             font-size: 20px !important;
             border-radius: 18px !important;
@@ -276,9 +277,9 @@
         .card-header {
             font-size: 12px !important;
             font-weight: 800 !important;
-            color: #a9c1db !important;
-            margin-bottom: 8px !important;
-            text-transform: uppercase;            letter-spacing: 0.7px;
+            color: #a9c1db !important;            margin-bottom: 8px !important;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
         }
 
         .hero-value {
@@ -341,7 +342,9 @@
             cursor: pointer;
             text-align: center;
             transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
-        }        .btn:active {
+        }
+
+        .btn:active {
             transform: scale(0.985);
         }
 
@@ -415,10 +418,10 @@
             border-color: rgba(125,211,252,0.30) !important;
         }
 
-        .list-item {
-            display: flex;
+        .list-item {            display: flex;
             justify-content: space-between;
-            align-items: center;            gap: 12px;
+            align-items: center;
+            gap: 12px;
             padding: 12px 0 !important;
             border-bottom: 1px solid rgba(148,163,184,0.09) !important;
             color: #dbeafe !important;
@@ -529,7 +532,8 @@
             color: #93a8bd !important;
         }
 
-        .card small {            color: #7f94aa !important;
+        .card small {
+            color: #7f94aa !important;
         }
 
         .list-item small {
@@ -554,11 +558,11 @@
             width: 100%;
             background: rgba(3, 8, 20, 0.92) !important;
             border-top: 1px solid rgba(56,189,248,0.14) !important;
-            display: flex;
-            justify-content: space-around;
+            display: flex;            justify-content: space-around;
             align-items: center;
             padding: 8px 4px calc(8px + env(safe-area-inset-bottom)) !important;
-            z-index: 1000;            backdrop-filter: blur(18px);
+            z-index: 1000;
+            backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
             box-shadow: 0 -12px 28px rgba(0,0,0,0.22);
         }
@@ -693,14 +697,16 @@
                     <div class="input-group">
                         <input type="text" id="p-interno-nombre" placeholder="Socio / Nombre">
                     </div>
-                    <div class="input-group">
-                        <input type="number" id="p-interno-monto" placeholder="Monto $">
+                    <div class="input-group">                        <input type="number" id="p-interno-monto" placeholder="Monto $">
                     </div>
                 </div>
-                <button class="btn btn-primary" style="background: #d97706;" onclick="registrarPrestamoInterno()">➕ Registrar Retiro Socio</button>                <div id="lista-prestamos-internos" style="margin-top: 12px; border-top: 1px dashed #fcd34d; padding-top: 8px;">
+                <button class="btn btn-primary" style="background: #d97706;" onclick="registrarPrestamoInterno()">➕ Registrar Retiro Socio</button>
+
+                <div id="lista-prestamos-internos" style="margin-top: 12px; border-top: 1px dashed #fcd34d; padding-top: 8px;">
                     <p style="font-size: 11px; color: #92400e; text-align: center;">Cargando retiros pendientes...</p>
                 </div>
-            </div>            <div class="card admin-only-card">
+            </div>
+            <div class="card admin-only-card">
                 <div class="card-header">Establecer Base de Caja (Efectivo)</div>
                 <div class="input-group">
                     <label>Monto de Base ($)</label>
@@ -831,13 +837,13 @@
                 <div id="lista-prestamos-finalizados">
                     <p style="text-align: center; color: #94a3b8; font-size: 13px;">Cargando préstamos saldados...</p>
                 </div>
-            </div>
-        </div>
+            </div>        </div>
 
         <!-- VISTA HISTORIAL -->
         <div id="view-historial" class="view">
             <div class="card">
-                <div class="card-header">Filtros de Búsqueda</div>                <div class="input-group">
+                <div class="card-header">Filtros de Búsqueda</div>
+                <div class="input-group">
                     <label>Buscar Cliente / Concepto</label>
                     <input type="text" id="hist-search" placeholder="Ej. Juan, Gasolina, Abono..." oninput="renderHistorial()">
                 </div>
@@ -878,7 +884,8 @@
             <div class="card" id="card-add-clavo">
                 <div class="card-header">📌 Marcar Cliente Clavo / Bloqueado</div>
                 <div class="input-group">
-                    <label>Nombre del Cliente No Apto</label>                    <input type="text" id="clavo-nombre" placeholder="Nombre completo">
+                    <label>Nombre del Cliente No Apto</label>
+                    <input type="text" id="clavo-nombre" placeholder="Nombre completo">
                 </div>
                 <div class="input-group">
                     <label>Motivo del Bloqueo</label>
@@ -970,32 +977,14 @@
         <!-- SDK Firebase Firestore Realtime -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        /*
-         * FIREBASE: pega aquí la configuración COMPLETA de tu proyecto.
-         * Si dejas algún campo vacío o con "...", la app funciona en modo local
-         * usando localStorage y no pierde datos por un Firebase mal configurado.
-         */
-        let firebaseConfig = {            apiKey: "",
+        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";        const firebaseConfig = {
+            apiKey: "AIzaSyC0H3HmkRHmAOmC1-qQkDMvpJA2f-GDkmM",
             authDomain: "control-cobro.firebaseapp.com",
             projectId: "control-cobro",
             storageBucket: "control-cobro.firebasestorage.app",
             messagingSenderId: "66451850332",
-            appId: ""
+            appId: "1:66451850332:web:6f012f83d5287cdbf21299"
         };
-
-        try {
-            const savedFirebaseConfig = localStorage.getItem("control_caja_firebase_config");
-            if (savedFirebaseConfig) {
-                const parsedFirebaseConfig = JSON.parse(savedFirebaseConfig);
-                if (parsedFirebaseConfig && parsedFirebaseConfig.projectId) {
-                    firebaseConfig = Object.assign(firebaseConfig, parsedFirebaseConfig);
-                }
-            }
-        } catch (error) {
-            console.warn("No se pudo leer la configuración guardada de Firebase.", error);
-        }
 
         const STORAGE_KEY = "control_caja_state_v2";
         const defaultState = {
@@ -1117,13 +1106,11 @@
         function pressPin(num) {
             if (enteredPin.length < 4) {
                 enteredPin += num;
-                updateDots();                if (enteredPin.length === 4) {
+                updateDots();
+                if (enteredPin.length === 4) {
                     setTimeout(() => {
                         const currentAdminPin = (window.dbState && window.dbState.adminPin) ? window.dbState.adminPin : "1234";
-                        const currentOperatorPin = (window.dbState && window.dbState.operatorPin) ? window.dbState.operatorPin : "0000";
-
-                        if (enteredPin === currentAdminPin) {
-                            currentUserRole = "admin";
+                        const currentOperatorPin = (window.dbState && window.dbState.operatorPin) ? window.dbState.operatorPin : "0000";                            currentUserRole = "admin";
                             document.getElementById("pin-screen").style.display = "none";
                             enteredPin = "";
                             updateDots();
@@ -1145,7 +1132,8 @@
 
         function clearPin() { enteredPin = ""; updateDots(); }
         function deletePin() { enteredPin = enteredPin.slice(0, -1); updateDots(); }
-        function updateDots() {            for (let i = 0; i < 4; i++) {
+        function updateDots() {
+            for (let i = 0; i < 4; i++) {
                 const dot = document.getElementById(`dot-${i}`);
                 if (i < enteredPin.length) dot.classList.add("filled");
                 else dot.classList.remove("filled");
@@ -1256,12 +1244,12 @@
                 window.dbState.cajaTransferencia = (window.dbState.cajaTransferencia || 0) + p.monto;
             } else if (opcion !== "3") {
                 return;
-            }            window.dbState.prestamosInternos = window.dbState.prestamosInternos.filter(x => x.id !== id);
+            }
+
+            window.dbState.prestamosInternos = window.dbState.prestamosInternos.filter(x => x.id !== id);
             window.saveToCloud();
             alert("Devolución completada exitosamente.");
-        }
-
-        function setBaseCaja() {
+        }        function setBaseCaja() {
             if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
             const m = parseFloat(document.getElementById("base-monto").value);
             if (!isNaN(m)) {
@@ -1387,7 +1375,8 @@
                 }
             }
         }
-                function exportarExcelCSV() {            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
+                function exportarExcelCSV() {
+            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
             let csv = "Tipo,Detalle,Metodo,Monto,Fecha\n";
             if (window.dbState.transacciones) {
                 window.dbState.transacciones.forEach(t => {
@@ -1396,11 +1385,11 @@
             }
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');            a.setAttribute('href', url);
+            const a = document.createElement('a');
+            a.setAttribute('href', url);
             a.setAttribute('download', `reporte_caja_${new Date().toISOString().split('T')[0]}.csv`);
             document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+            a.click();            document.body.removeChild(a);
         }
 
         function verEstadoCuentaCliente(prestamoId) {
@@ -1536,10 +1525,10 @@
 
             document.getElementById("p-cliente").value = "";
             document.getElementById("p-monto").value = "";
-            document.getElementById("p-interes").value = "";            document.getElementById("p-dias").value = "";
+            document.getElementById("p-interes").value = "";
+            document.getElementById("p-dias").value = "";
 
-            alert("Préstamo registrado exitosamente en la nube");
-            switchTab("cobros", document.querySelectorAll(".nav-item")[2]);
+            alert("Préstamo registrado exitosamente en la nube");            switchTab("cobros", document.querySelectorAll(".nav-item")[2]);
         }
 
         function rePrestarCliente(nombre) {
@@ -1573,12 +1562,12 @@
             }
         }
 
-        function borrarPrestamo(id) {            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
+        function borrarPrestamo(id) {
+            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
             const p = window.dbState.prestamos.find(x => x.id === id);
             if (!p) return;
 
-            // Corrección: Solo se devuelve a caja el saldo pendiente real que faltaba por cobrar, 
-            // evitando duplicar los abonos que ya habían ingresado a caja previamente.
+            // Solo se devuelve a caja el saldo pendiente real que faltaba por cobrar.
             const devolucionCaja = p.saldoPendiente;
 
             if (confirm(`¿Estás seguro de que deseas eliminar el crédito de ${p.cliente}?\n\nSe devolverán $${devolucionCaja.toLocaleString()} (saldo pendiente) a la caja.`)) {
@@ -1587,6 +1576,7 @@
                 } else {
                     window.dbState.cajaEfectivo = (window.dbState.cajaEfectivo || 0) + devolucionCaja;
                 }
+
                 window.dbState.transacciones = window.dbState.transacciones.filter(t => t.prestamoId !== id);
                 window.dbState.prestamos = window.dbState.prestamos.filter(x => x.id !== id);
 
@@ -1676,9 +1666,8 @@ Ingrese el monto cobrado:`
                 alert(
                     `✅ Pago registrado correctamente.
 
-` +                    `Abono: $${val.toLocaleString()}
 ` +
-                    `Saldo restante: $${p.saldoPendiente.toLocaleString()}`
+                    `Abono: $${val.toLocaleString()}                    `Saldo restante: $${p.saldoPendiente.toLocaleString()}`
                 );
             }
 
@@ -1748,7 +1737,8 @@ Ingrese el monto cobrado:`
                 }
 
                 if (t.prestamoId) {
-                    const p = window.dbState.prestamos.find(x => x.id === t.prestamoId);                    if (p) {
+                    const p = window.dbState.prestamos.find(x => x.id === t.prestamoId);
+                    if (p) {
                         p.saldoPendiente = (Number(p.saldoPendiente) || 0) - diferencia;
 
                         /* Protección adicional contra saldo negativo. */
@@ -1816,8 +1806,9 @@ Ingrese el monto cobrado:`
             document.getElementById("gasto-motivo").value = "";
 
             alert("Gasto registrado exitosamente");
-             }                function setHistFilter(cat, btn) {
-            currentHistFilter = cat;
+        }
+
+        function setHistFilter(cat, btn) {            currentHistFilter = cat;
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             renderHistorial();
@@ -1919,7 +1910,7 @@ Ingrese el monto cobrado:`
 
         function renderClavos() {
             const listClavos = document.getElementById("lista-clientes-clavos");
-            const cardAddClavo = document.getElementById("card-add-clavo");            
+            const cardAddClavo = document.getElementById("card-add-clavo");
             if (cardAddClavo) cardAddClavo.style.display = currentUserRole === "admin" ? "block" : "none";
             listClavos.innerHTML = "";
 
