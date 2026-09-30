@@ -137,7 +137,8 @@
         }
 
         .pin-title {
-            font-size: 25px !important;            font-weight: 800 !important;
+            font-size: 25px !important;
+            font-weight: 800 !important;
             letter-spacing: 0.5px;
             z-index: 1;
         }
@@ -165,9 +166,7 @@
             gap: 12px !important;
             width: min(300px, 88vw) !important;
             z-index: 1;
-        }
-
-        .key-btn {
+        }        .key-btn {
             min-height: 64px;
             background: rgba(14, 26, 48, 0.88) !important;
             color: #ecfeff !important;            border: 1px solid rgba(56,189,248,0.17) !important;
@@ -276,7 +275,8 @@
         .card-header {
             font-size: 12px !important;
             font-weight: 800 !important;
-            color: #a9c1db !important;            margin-bottom: 8px !important;
+            color: #a9c1db !important;
+            margin-bottom: 8px !important;
             text-transform: uppercase;
             letter-spacing: 0.7px;
         }
@@ -333,8 +333,7 @@
 
         .btn {
             width: 100%;
-            padding: 12px !important;
-            border: 1px solid transparent !important;
+            padding: 12px !important;            border: 1px solid transparent !important;
             border-radius: 12px !important;
             font-size: 13px !important;
             font-weight: 800 !important;
@@ -415,7 +414,8 @@
             border-color: rgba(125,211,252,0.30) !important;
         }
 
-        .list-item {            display: flex;
+        .list-item {
+            display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 12px;
@@ -501,8 +501,7 @@
             color: var(--text) !important;
             border: 1px solid rgba(56,189,248,0.18) !important;
             width: 100%;
-            max-width: 540px;
-            border-radius: 20px !important;
+            max-width: 540px;            border-radius: 20px !important;
             padding: 19px !important;
             max-height: 86vh;
             overflow-y: auto;
@@ -554,7 +553,8 @@
             width: 100%;
             background: rgba(3, 8, 20, 0.92) !important;
             border-top: 1px solid rgba(56,189,248,0.14) !important;
-            display: flex;            justify-content: space-around;
+            display: flex;
+            justify-content: space-around;
             align-items: center;
             padding: 8px 4px calc(8px + env(safe-area-inset-bottom)) !important;
             z-index: 1000;
@@ -625,6 +625,432 @@
             .nav-item { font-size: 8px !important; }
             .nav-item span { font-size: 17px !important; }
         }
+    
+
+        /* =========================================================
+           🚀 DISEÑO FUTURISTA FINTECH — SOLO APARIENCIA
+           No modifica HTML funcional, JavaScript, PIN, Firebase,
+           préstamos, cobros, historial ni datos.
+           ========================================================= */
+
+        :root {
+            --bg-main: #020817;
+            --neon-blue: #00c8ff;
+            --neon-cyan: #22d3ee;
+            --neon-purple: #7c3aed;
+            --neon-green: #00e59b;
+            --neon-pink: #ff477e;
+            --neon-yellow: #ffc400;
+            --futuristic-panel: rgba(7, 18, 38, 0.92);
+            --futuristic-border: rgba(0, 200, 255, 0.22);
+        }
+
+        html, body {
+            background:
+                radial-gradient(circle at 50% -12%, rgba(0, 200, 255, 0.18), transparent 30%),
+                radial-gradient(circle at 100% 42%, rgba(76, 29, 149, 0.14), transparent 30%),
+                radial-gradient(circle at 0% 72%, rgba(0, 229, 155, 0.08), transparent 28%),
+                #020817 !important;
+        }
+
+        body {
+            color: #e8f7ff !important;
+        }
+
+        body::before {
+            opacity: 0.24 !important;
+            background-image:
+                linear-gradient(rgba(0, 200, 255, 0.045) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 200, 255, 0.045) 1px, transparent 1px) !important;
+            background-size: 30px 30px !important;
+        }
+
+        /* ===== ENCABEZADO ===== */
+        .top-header {
+            background: linear-gradient(180deg, rgba(2, 8, 23, 0.98), rgba(2, 12, 28, 0.90)) !important;
+            border-bottom: 1px solid rgba(0, 200, 255, 0.16) !important;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.32) !important;        }
+
+        .top-header h1 {
+            font-size: 21px !important;
+            font-weight: 900 !important;
+            color: #f1faff !important;
+            letter-spacing: -0.3px !important;
+            text-shadow: 0 0 18px rgba(0, 200, 255, 0.14) !important;
+        }
+
+        .lock-btn {
+            background: linear-gradient(135deg, rgba(27, 38, 59, 0.96), rgba(8, 17, 34, 0.96)) !important;
+            border: 1px solid rgba(255, 196, 0, 0.36) !important;
+            color: #ffd84d !important;
+            border-radius: 14px !important;
+            padding: 10px 15px !important;
+            font-weight: 800 !important;
+            box-shadow: 0 0 20px rgba(255, 196, 0, 0.08) !important;
+        }
+
+        /* ===== ESTADO FIREBASE ===== */
+        #sync-status {
+            background: linear-gradient(90deg, rgba(0, 200, 255, 0.09), rgba(0, 229, 155, 0.07)) !important;
+            border: 1px solid rgba(0, 200, 255, 0.23) !important;
+            color: #71e8ff !important;
+            border-radius: 17px !important;
+            padding: 11px 15px !important;
+            font-size: 11px !important;
+            font-weight: 700 !important;
+            box-shadow: 0 0 24px rgba(0, 200, 255, 0.06) !important;
+        }
+
+        #btn-config-firebase {
+            background: linear-gradient(135deg, #2c3c55, #17243b) !important;
+            border: 1px solid rgba(148, 163, 184, 0.25) !important;
+            color: #e4edf8 !important;
+            border-radius: 16px !important;
+            min-height: 54px !important;
+            font-size: 14px !important;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.22) !important;
+        }
+
+        /* ===== ORGANIZACIÓN VISUAL DE LA CAJA ===== */
+        #view-caja {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 14px !important;
+        }
+
+        #view-caja > .card {
+            margin-bottom: 0 !important;
+        }
+
+        /* Orden visual nuevo. Las funciones siguen siendo las mismas. */
+        #view-caja > .card:nth-of-type(1) { order: 1; }
+        #view-caja > .card:nth-of-type(2) { order: 2; }
+        #view-caja > .card:nth-of-type(3) { order: 5; }
+        #view-caja > .card:nth-of-type(4) { order: 7; }
+        #view-caja > .card:nth-of-type(5) { order: 8; }
+        #view-caja > .card:nth-of-type(6) { order: 9; }
+        #view-caja > .card:nth-of-type(7) { order: 10; }
+        #view-caja > .card:nth-of-type(8) { order: 3; }
+        #view-caja > .card:nth-of-type(9) { order: 4; }
+
+        /* ===== TARJETAS ===== */
+        .card {
+            background: linear-gradient(145deg, rgba(9, 24, 48, 0.95), rgba(3, 11, 27, 0.97)) !important;
+            border: 1px solid rgba(0, 200, 255, 0.16) !important;
+            border-radius: 24px !important;
+            padding: 18px !important;
+            box-shadow:
+                0 18px 45px rgba(0,0,0,0.27),
+                inset 0 1px 0 rgba(255,255,255,0.035) !important;
+        }
+
+        .card::before {
+            height: 2px !important;
+            background: linear-gradient(90deg, transparent, rgba(0, 200, 255, 0.60), rgba(124, 58, 237, 0.55), transparent) !important;
+        }
+
+        .card-header {
+            color: #abc2da !important;
+            font-size: 13px !important;
+            font-weight: 900 !important;
+            letter-spacing: 0.5px !important;
+        }
+
+        /* ===== BALANCE PRINCIPAL ===== */
+        #view-caja > .card:nth-of-type(1) {
+            min-height: 245px;
+            background:
+                radial-gradient(circle at 92% 30%, rgba(0, 200, 255, 0.20), transparent 31%),
+                radial-gradient(circle at 8% 100%, rgba(37, 99, 235, 0.14), transparent 35%),
+                linear-gradient(145deg, #081b38, #020a19) !important;
+            border: 1px solid rgba(0, 200, 255, 0.35) !important;
+            border-radius: 27px !important;
+            box-shadow:
+                0 20px 55px rgba(0,0,0,0.35),
+                0 0 35px rgba(0, 200, 255, 0.07),
+                inset 0 1px 0 rgba(255,255,255,0.05) !important;
+        }
+
+        #view-caja > .card:nth-of-type(1) .card-header {
+            font-size: 13px !important;
+            color: #a9c4dd !important;
+        }
+
+        #caja-actual {
+            font-size: clamp(42px, 11vw, 58px) !important;
+            line-height: 1.05 !important;
+            margin-top: 8px !important;
+            color: #ecfbff !important;
+            text-shadow: 0 0 25px rgba(34, 211, 238, 0.20) !important;
+        }
+
+        #caja-efectivo { color: #00e59b !important; }
+        #caja-transferencia { color: #35cfff !important; }
+
+        /* ===== CIERRE ===== */
+        #view-caja > .card:nth-of-type(2) {
+            background: linear-gradient(145deg, rgba(11, 29, 57, 0.97), rgba(5, 15, 31, 0.97)) !important;
+            border: 1px solid rgba(0, 200, 255, 0.23) !important;
+        }
+
+        /* ===== BOTONES ===== */
+        .btn {
+            border-radius: 15px !important;
+            min-height: 48px;
+            font-weight: 900 !important;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.18) !important;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #10b7e9, #2855e8) !important;
+            border: 1px solid rgba(100, 220, 255, 0.35) !important;
+            box-shadow: 0 10px 30px rgba(0, 115, 255, 0.22) !important;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #00d69b, #009e75) !important;
+            border: 1px solid rgba(72, 255, 191, 0.25) !important;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff527d, #d91e54) !important;
+            border: 1px solid rgba(255, 120, 150, 0.30) !important;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #34445d, #202e46) !important;
+            border: 1px solid rgba(148, 163, 184, 0.18) !important;
+        }
+
+        /* ===== FORMULARIOS ===== */
+        .input-group label {
+            color: #8fa9c2 !important;
+            font-weight: 800 !important;
+        }
+
+        .input-group input,
+        .input-group select {
+            background: linear-gradient(145deg, rgba(3, 12, 28, 0.97), rgba(6, 17, 35, 0.93)) !important;
+            border: 1px solid rgba(90, 130, 170, 0.22) !important;
+            color: #eaf8ff !important;
+            border-radius: 15px !important;
+            min-height: 50px !important;
+        }
+
+        .input-group input:focus,            border-color: rgba(0, 200, 255, 0.65) !important;
+            box-shadow: 0 0 0 3px rgba(0, 200, 255, 0.08), 0 0 25px rgba(0, 200, 255, 0.08) !important;
+        }
+
+        /* ===== RESUMEN FINANCIERO ===== */
+        #view-caja > .card:nth-of-type(8) {
+            background: linear-gradient(145deg, rgba(8, 22, 44, 0.97), rgba(4, 12, 27, 0.96)) !important;
+        }
+
+        #view-caja > .card:nth-of-type(8) .grid-3 {
+            gap: 8px !important;
+        }
+
+        #view-caja > .card:nth-of-type(8) .grid-3 > div {
+            background: rgba(7, 19, 38, 0.82) !important;
+            border: 1px solid rgba(95, 135, 175, 0.13) !important;
+            border-radius: 15px !important;
+            padding: 12px 9px !important;
+        }
+
+        #total-prestado { color: #ff668d !important; }
+        #total-cobrado { color: #00e59b !important; }
+        #total-gastos { color: #ffc400 !important; }
+        #ganancia-proyectada { color: #a66cff !important; }
+
+        /* ===== GASTO RÁPIDO ===== */
+        #view-caja > .card:nth-of-type(9) {
+            border-color: rgba(0, 200, 255, 0.22) !important;
+        }
+
+        /* ===== PRÉSTAMOS PROPIOS ===== */
+        #view-caja > .card:nth-of-type(3) {
+            background:
+                radial-gradient(circle at 90% 0%, rgba(255, 196, 0, 0.11), transparent 32%),
+                linear-gradient(145deg, rgba(36, 29, 10, 0.94), rgba(13, 18, 29, 0.97)) !important;
+            border: 1px solid rgba(255, 196, 0, 0.28) !important;
+        }
+
+        #total-prestamos-internos-badge {
+            color: #ffc400 !important;
+        }
+
+        /* ===== BASE DE CAJA ===== */
+        #view-caja > .card:nth-of-type(4) {
+            background: linear-gradient(145deg, rgba(8, 26, 49, 0.95), rgba(4, 12, 27, 0.96)) !important;
+        }
+
+        /* ===== REPORTES ===== */
+        #view-caja > .card:nth-of-type(5) {
+            border-color: rgba(0, 229, 155, 0.20) !important;
+        }
+
+        /* ===== PIN ===== */
+        #view-caja > .card:nth-of-type(6) {
+            border-color: rgba(124, 58, 237, 0.35) !important;
+            background: linear-gradient(145deg, rgba(27, 20, 57, 0.92), rgba(8, 13, 30, 0.97)) !important;
+        }
+
+        /* ===== ZONA DE PELIGRO ===== */
+        #view-caja > .card:nth-of-type(7) {
+            border-color: rgba(255, 71, 126, 0.28) !important;
+            background: linear-gradient(145deg, rgba(44, 13, 29, 0.80), rgba(13, 10, 22, 0.97)) !important;
+        }
+
+        /* ===== LISTAS Y BADGES ===== */
+        .list-item {
+            border-bottom: 1px solid rgba(100, 150, 190, 0.10) !important;
+            padding: 14px 4px !important;
+        }
+
+        .list-item strong { color: #e5f5ff !important; }
+        .list-item small { color: #8099b4 !important; }
+
+        .badge {
+            border-radius: 9px !important;
+            font-weight: 900 !important;
+        }
+
+        .badge-pending {
+            background: rgba(255, 196, 0, 0.11) !important;
+            color: #ffd34e !important;
+            border-color: rgba(255,196,0,0.22) !important;
+        }
+
+        .badge-paid {
+            background: rgba(0, 229, 155, 0.10) !important;
+            color: #50f0ba !important;
+            border-color: rgba(0,229,155,0.22) !important;
+        }
+
+        .badge-danger {
+            background: rgba(255, 71, 126, 0.11) !important;
+            color: #ff6d96 !important;
+            border-color: rgba(255,71,126,0.22) !important;
+        }
+
+        /* ===== NAVEGACIÓN INFERIOR ===== */
+        .bottom-nav {
+            background: linear-gradient(180deg, rgba(2, 9, 22, 0.96), rgba(1, 6, 17, 0.99)) !important;
+            border-top: 1px solid rgba(0, 200, 255, 0.17) !important;
+            box-shadow: 0 -15px 40px rgba(0,0,0,0.35) !important;
+            padding-top: 7px !important;
+        }
+
+        .nav-item {
+            color: #6d829c !important;
+            border-radius: 16px !important;
+            margin: 2px 3px !important;
+        }
+
+        .nav-item span {
+            font-size: 20px !important;
+            margin-bottom: 4px !important;
+        }
+
+        .nav-item.active {
+            color: #62e5ff !important;
+            background: linear-gradient(180deg, rgba(0, 200, 255, 0.12), rgba(0, 100, 180, 0.05)) !important;
+            box-shadow: inset 0 0 0 1px rgba(0, 200, 255, 0.12), 0 0 20px rgba(0, 200, 255, 0.05) !important;
+        }
+
+        /* ===== MODALES ===== */
+        #modal-overlay,
+        #modal-cliente-overlay {
+            background: rgba(0, 3, 12, 0.80) !important;
+            backdrop-filter: blur(12px) !important;
+            -webkit-backdrop-filter: blur(12px) !important;
+        }
+
+        .modal-box {
+            background: linear-gradient(145deg, rgba(8, 22, 43, 0.98), rgba(3, 10, 24, 0.99)) !important;
+            border: 1px solid rgba(0, 200, 255, 0.22) !important;
+            border-radius: 23px !important;
+            box-shadow: 0 30px 90px rgba(0,0,0,0.55), 0 0 40px rgba(0,200,255,0.07) !important;
+        }
+
+        /* ===== PANTALLA PIN ===== */
+        #pin-screen {
+            background:
+                radial-gradient(circle at 50% 15%, rgba(0, 200, 255, 0.18), transparent 30%),
+                radial-gradient(circle at 15% 90%, rgba(124, 58, 237, 0.13), transparent 30%),
+                linear-gradient(180deg, #020817, #061326 70%, #01050c) !important;
+        }
+
+        #pin-screen::before {
+            width: 250px !important;
+            height: 250px !important;
+            border-color: rgba(0, 200, 255, 0.25) !important;
+            box-shadow: 0 0 45px rgba(0, 200, 255, 0.10), inset 0 0 45px rgba(0, 200, 255, 0.05) !important;
+        }
+
+        .pin-title {
+            font-size: 26px !important;
+            font-weight: 900 !important;
+            color: #eafaff !important;
+        }
+
+        .pin-dot {
+            border-color: #00c8ff !important;
+            box-shadow: 0 0 15px rgba(0,200,255,0.18) !important;
+        }
+
+        .pin-dot.filled {
+            background: #00c8ff !important;
+            box-shadow: 0 0 20px rgba(0,200,255,0.70) !important;
+        }
+
+        .key-btn {            background: linear-gradient(145deg, rgba(13, 30, 56, 0.95), rgba(5, 15, 31, 0.96)) !important;
+            border: 1px solid rgba(0, 200, 255, 0.18) !important;
+            border-radius: 18px !important;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.04) !important;
+        }
+
+        .key-btn:active {
+            border-color: rgba(0,200,255,0.65) !important;
+            box-shadow: 0 0 25px rgba(0,200,255,0.16) !important;
+        }
+
+        /* ===== MÓVIL ===== */
+        @media (max-width: 430px) {
+            .container {
+                padding: 11px !important;
+            }
+
+            #view-caja {
+                gap: 11px !important;
+            }
+
+            .card {
+                border-radius: 20px !important;
+                padding: 15px !important;
+            }
+
+            #view-caja > .card:nth-of-type(1) {
+                border-radius: 23px !important;
+            }
+
+            #caja-actual {
+                font-size: 39px !important;
+            }
+
+            .top-header h1 {
+                font-size: 19px !important;
+            }
+
+            .nav-item {
+                margin: 2px 1px !important;
+            }
+
+            .nav-item span {
+                font-size: 18px !important;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -693,7 +1119,8 @@
                     <div class="input-group">
                         <input type="text" id="p-interno-nombre" placeholder="Socio / Nombre">
                     </div>
-                    <div class="input-group">                        <input type="number" id="p-interno-monto" placeholder="Monto $">
+                    <div class="input-group">
+                        <input type="number" id="p-interno-monto" placeholder="Monto $">
                     </div>
                 </div>
                 <button class="btn btn-primary" style="background: #d97706;" onclick="registrarPrestamoInterno()">➕ Registrar Retiro Socio</button>
@@ -745,8 +1172,7 @@
                     </div>
                 </div>
                 <div style="margin-top: 10px; padding: 8px; background: #f1f5f9; border-radius: 6px; display: flex; justify-content: space-between; font-size: 12px;">
-                    <span style="color: #475569; font-weight: bold;">💰 Ganancia Proyectada en Calle:</span>
-                    <strong style="color: #16a34a;" id="ganancia-proyectada">$0</strong>
+                    <span style="color: #475569; font-weight: bold;">💰 Ganancia Proyectada en Calle:</span>                    <strong style="color: #16a34a;" id="ganancia-proyectada">$0</strong>
                 </div>
             </div>
 
@@ -832,7 +1258,8 @@
                 <div id="lista-prestamos-finalizados">
                     <p style="text-align: center; color: #94a3b8; font-size: 13px;">Cargando préstamos saldados...</p>
                 </div>
-            </div>        </div>
+            </div>
+        </div>
 
         <!-- VISTA HISTORIAL -->
         <div id="view-historial" class="view">
@@ -913,8 +1340,7 @@
                 <strong style="color: #22c55e;" id="cierre-cobrado-efectivo">$0</strong>
             </div>
             <div class="summary-row">
-                <span>(+) Total Cobrado Transferencia:</span>
-                <strong style="color: #0284c7;" id="cierre-cobrado-transf">$0</strong>
+                <span>(+) Total Cobrado Transferencia:</span>                <strong style="color: #0284c7;" id="cierre-cobrado-transf">$0</strong>
             </div>
             <div class="summary-row">
                 <span>(-) Total Prestado Nuevos:</span>
@@ -971,7 +1397,9 @@
         <!-- SDK Firebase Firestore Realtime -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";        /* Firebase original: se conserva el mismo proyecto y la misma colección.
+        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        /* Firebase original: se conserva el mismo proyecto y la misma colección.
          * Firestore usa el projectId para la conexión; no se inventan ni reemplazan
          * credenciales que no están disponibles en el archivo original. */
         const firebaseConfig = {
@@ -1080,8 +1508,7 @@
                 });
             } catch (error) {
                 console.error("Firebase initialization error:", error);
-                const status = document.getElementById("sync-status");
-                if (status) status.innerText = "📱 Modo local activo";
+                const status = document.getElementById("sync-status");                if (status) status.innerText = "📱 Modo local activo";
             }
         } else {
             const status = document.getElementById("sync-status");
@@ -1109,7 +1536,8 @@
                         const currentAdminPin = (window.dbState && window.dbState.adminPin) ? window.dbState.adminPin : "1234";
                         const currentOperatorPin = (window.dbState && window.dbState.operatorPin) ? window.dbState.operatorPin : "0000";
 
-                        if (enteredPin === currentAdminPin) {                            currentUserRole = "admin";
+                        if (enteredPin === currentAdminPin) {
+                            currentUserRole = "admin";
                             document.getElementById("pin-screen").style.display = "none";
                             enteredPin = "";
                             updateDots();
@@ -1386,7 +1814,8 @@
             a.setAttribute('href', url);
             a.setAttribute('download', `reporte_caja_${new Date().toISOString().split('T')[0]}.csv`);
             document.body.appendChild(a);
-            a.click();        document.body.removeChild(a);
+            a.click();
+            document.body.removeChild(a);
         }
 
         function verEstadoCuentaCliente(prestamoId) {
@@ -1413,8 +1842,7 @@
                             <div class="list-item" style="padding: 6px 0;">
                                 <div><small style="color: #64748b;">${t.fechaStr || t.fechaISO}</small></div>
                                 <div><strong style="color: #22c55e;">+$${t.monto.toLocaleString()}</strong> <small>(${t.metodo || 'Efectivo'})</small></div>
-                            </div>
-                        `;
+                            </div>                        `;
                     }
                 });
             }
@@ -1523,7 +1951,10 @@
             document.getElementById("p-cliente").value = "";
             document.getElementById("p-monto").value = "";
             document.getElementById("p-interes").value = "";
-            document.getElementById("p-dias").value = "";            switchTab("cobros", document.querySelectorAll(".nav-item")[2]);
+            document.getElementById("p-dias").value = "";
+
+            alert("Préstamo registrado exitosamente en la nube");
+            switchTab("cobros", document.querySelectorAll(".nav-item")[2]);
         }
 
         function rePrestarCliente(nombre) {
@@ -1577,9 +2008,7 @@
                 window.saveToCloud();
                 alert("Crédito eliminado y caja ajustada correctamente.");
             }
-        }
-
-        function registrarPago(id) {
+        }        function registrarPago(id) {
             const p = window.dbState.prestamos.find(x => x.id === id);
             if (!p) return;
 
@@ -1662,7 +2091,8 @@ Ingrese el monto cobrado:`
 
 ` +
                     `Abono: $${val.toLocaleString()}
-` +                    `Saldo restante: $${p.saldoPendiente.toLocaleString()}`
+` +
+                    `Saldo restante: $${p.saldoPendiente.toLocaleString()}`
                 );
             }
 
@@ -1745,8 +2175,7 @@ Ingrese el monto cobrado:`
 
             t.monto = nuevoValor;
             window.saveToCloud();
-            alert("✅ Registro corregido en la nube.");
-        }
+            alert("✅ Registro corregido en la nube.");        }
 
         function borrarTransaccion(tId) {
             if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
@@ -1801,7 +2230,8 @@ Ingrese el monto cobrado:`
 
             alert("Gasto registrado exitosamente");
                     }
-                function setHistFilter(cat, btn) {            currentHistFilter = cat;
+                function setHistFilter(cat, btn) {
+            currentHistFilter = cat;
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             renderHistorial();
@@ -1912,8 +2342,7 @@ Ingrese el monto cobrado:`
                     listClavos.innerHTML += `
                         <div class="list-item">
                             <div>
-                                <strong>🚫 ${c.nombre}</strong> <br>
-                                <small style="color: #ef4444;">Motivo: ${c.motivo}</small> <br>
+                                <strong>🚫 ${c.nombre}</strong> <br>                                <small style="color: #ef4444;">Motivo: ${c.motivo}</small> <br>
                                 <small style="color: #94a3b8;">Bloqueado el: ${c.fecha}</small>
                             </div>
                             <div>
@@ -1940,7 +2369,8 @@ Ingrese el monto cobrado:`
 
             if (window.dbState.prestamosInternos && window.dbState.prestamosInternos.length > 0) {
                 window.dbState.prestamosInternos.forEach(p => {
-                    totalInterno += p.monto;                    listInternos.innerHTML += `
+                    totalInterno += p.monto;
+                    listInternos.innerHTML += `
                         <div class="list-item">
                             <div>
                                 <strong style="color: #78350f;">${p.nombre}</strong> <small style="color: #0284c7;">(${p.metodo || 'Efectivo'})</small> <br>
