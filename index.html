@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
     <head>
     <meta charset="UTF-8">
@@ -138,8 +138,7 @@
 
         .pin-title {
             font-size: 25px !important;
-            font-weight: 800 !important;
-            letter-spacing: 0.5px;
+            font-weight: 800 !important;            letter-spacing: 0.5px;
             z-index: 1;
         }
 
@@ -242,7 +241,8 @@
             text-align: center;
             padding: 7px 10px !important;
             background: rgba(14,165,233,0.10) !important;
-            color: #7dd3fc !important;            border: 1px solid rgba(56,189,248,0.16);
+            color: #7dd3fc !important;
+            border: 1px solid rgba(56,189,248,0.16);
             border-radius: 10px !important;
             margin-bottom: 12px !important;
             box-shadow: 0 0 22px rgba(56,189,248,0.05);
@@ -278,8 +278,7 @@
             font-weight: 800 !important;
             color: #a9c1db !important;
             margin-bottom: 8px !important;
-            text-transform: uppercase;
-            letter-spacing: 0.7px;
+            text-transform: uppercase;            letter-spacing: 0.7px;
         }
 
         .hero-value {
@@ -419,8 +418,7 @@
         .list-item {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            gap: 12px;
+            align-items: center;            gap: 12px;
             padding: 12px 0 !important;
             border-bottom: 1px solid rgba(148,163,184,0.09) !important;
             color: #dbeafe !important;
@@ -560,8 +558,7 @@
             justify-content: space-around;
             align-items: center;
             padding: 8px 4px calc(8px + env(safe-area-inset-bottom)) !important;
-            z-index: 1000;
-            backdrop-filter: blur(18px);
+            z-index: 1000;            backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
             box-shadow: 0 -12px 28px rgba(0,0,0,0.22);
         }
@@ -661,6 +658,7 @@
     </div>
         <div class="container">
         <div id="sync-status">☁️ Sincronizado en la Nube en Tiempo Real</div>
+        <button id="btn-config-firebase" class="btn btn-secondary admin-only-btn" style="display:none; margin-bottom:12px;" onclick="configurarFirebase()">⚙️ Configurar conexión con Firebase</button>
         
         <!-- VISTA CAJA -->
         <div id="view-caja" class="view active">
@@ -672,1930 +670,1429 @@
                     <span>💵 Efectivo: <strong id="caja-efectivo" style="color: #22c55e;">$0</strong></span>
                     <button class="admin-only-btn" style="background: transparent; border: none; color: #38bdf8; font-size: 11px; cursor: pointer;" onclick="editarEfectivoDirecto()">✏️ Modificar</button>
                 </div>
-        <div style="display: flex; justify-content: space-between; font-size: 13px;">
-            <span>💳 Transferencia: <strong id="caja-transferencia" style="color: #38bdf8;">$0</strong></span>
-            <button class="admin-only-btn" style="background: transparent; border: none; color: #38bdf8; font-size: 11px; cursor: pointer;" onclick="editarTransferenciaDirecto()">✏️ Modificar</button>
+                <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                    <span>💳 Transferencia: <strong id="caja-transferencia" style="color: #38bdf8;">$0</strong></span>
+                    <button class="admin-only-btn" style="background: transparent; border: none; color: #38bdf8; font-size: 11px; cursor: pointer;" onclick="editarTransferenciaDirecto()">✏️ Modificar</button>
+                </div>
+            </div>
+
+            <div class="card" style="background: #eff6ff; border: 1px solid #bfdbfe;">
+                <div class="card-header" style="color: #1e3a8a;">📊 Panel de Cierre de Caja</div>
+                <p style="font-size: 11px; color: #1e40af; margin-bottom: 10px;">Consulta el resumen diario de cobros, préstamos y flujo neto.</p>
+                <button class="btn btn-primary" onclick="abrirModalCierre()">📊 Abrir Cierre del Día</button>
+            </div>
+
+            <div class="card admin-only-card" style="border: 2px solid #f59e0b; background: #fffbebf5;">
+                <div class="card-header" style="color: #b45309; display: flex; justify-content: space-between; align-items: center;">
+                    <span>🤝 Préstamos Propios / Retiro de Socios</span>
+                    <span id="total-prestamos-internos-badge" style="font-size: 12px; font-weight: bold; color: #b45309;">HACE FALTA: $0</span>
+                </div>
+                <p style="font-size: 11px; color: #78350f; margin-bottom: 10px;">Dinero retirado de caja por socios.</p>
+                
+                <div class="grid-2">
+                    <div class="input-group">
+                        <input type="text" id="p-interno-nombre" placeholder="Socio / Nombre">
+                    </div>
+                    <div class="input-group">
+                        <input type="number" id="p-interno-monto" placeholder="Monto $">
+                    </div>
+                </div>
+                <button class="btn btn-primary" style="background: #d97706;" onclick="registrarPrestamoInterno()">➕ Registrar Retiro Socio</button>                <div id="lista-prestamos-internos" style="margin-top: 12px; border-top: 1px dashed #fcd34d; padding-top: 8px;">
+                    <p style="font-size: 11px; color: #92400e; text-align: center;">Cargando retiros pendientes...</p>
+                </div>
+            </div>            <div class="card admin-only-card">
+                <div class="card-header">Establecer Base de Caja (Efectivo)</div>
+                <div class="input-group">
+                    <label>Monto de Base ($)</label>
+                    <input type="number" id="base-monto" placeholder="Ej. 500000">
+                </div>
+                <button class="btn btn-primary" onclick="setBaseCaja()">Actualizar Saldo Efectivo</button>
+            </div>
+
+            <div class="card admin-only-card" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
+                <div class="card-header" style="color: #166534;">📁 Reportes y Exportación</div>
+                <p style="font-size: 11px; color: #15803d; margin-bottom: 10px;">Descarga el historial completo de movimientos para Excel o WhatsApp.</p>
+                <button class="btn btn-success" onclick="exportarExcelCSV()">📥 Descargar Reporte CSV/Excel</button>
+            </div>
+
+            <div class="card admin-only-card" id="card-change-pins" style="border: 1px solid #38bdf8; background: #f0fdf4;">
+                <div class="card-header" style="color: #166534;">🔐 Seguridad y Claves de Acceso</div>
+                <p style="font-size: 11px; color: #15803d; margin-bottom: 10px;">Modifica los PINs de Administrador y Operador.</p>
+                <button class="btn btn-primary" style="background: #16a34a;" onclick="cambiarPINsAcceso()">🔐 Cambiar PINs de Acceso</button>
+            </div>
+
+            <div class="card admin-only-card" id="card-reset-system" style="border: 1px dashed #ef4444; background: #fff5f5;">
+                <div class="card-header" style="color: #dc2626;">⚙️ Zona de Peligro</div>
+                <p style="font-size: 11px; color: #7f1d1d; margin-bottom: 10px;">Borra toda la información para comenzar desde cero.</p>
+                <button class="btn btn-danger" onclick="reiniciarTodaLaAplicacion()">⚠️ Reiniciar Todo a Cero</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Resumen Financiero Global</div>
+                <div class="grid-3">
+                    <div>
+                        <p style="font-size: 10px; color: #64748b;">En la Calle</p>
+                        <p style="font-size: 15px; font-weight: bold; color: #ef4444;" id="total-prestado">$0</p>
+                    </div>
+                    <div>
+                        <p style="font-size: 10px; color: #64748b;">Cobrado</p>
+                        <p style="font-size: 15px; font-weight: bold; color: #22c55e;" id="total-cobrado">$0</p>
+                    </div>
+                    <div>
+                        <p style="font-size: 10px; color: #64748b;">Gastos</p>
+                        <p style="font-size: 15px; font-weight: bold; color: #f59e0b;" id="total-gastos">$0</p>
+                    </div>
+                </div>
+                <div style="margin-top: 10px; padding: 8px; background: #f1f5f9; border-radius: 6px; display: flex; justify-content: space-between; font-size: 12px;">
+                    <span style="color: #475569; font-weight: bold;">💰 Ganancia Proyectada en Calle:</span>
+                    <strong style="color: #16a34a;" id="ganancia-proyectada">$0</strong>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Registrar Gasto Rápido</div>
+                <div class="grid-2">
+                    <div class="input-group">
+                        <input type="number" id="gasto-monto" placeholder="Valor $">
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="gasto-motivo" placeholder="Motivo (Ej. Gasolina)">
+                    </div>
+                </div>
+                <button class="btn btn-danger" onclick="registrarGasto()">Registrar Gasto</button>
+            </div>
+        </div>
+
+        <!-- VISTA NUEVO PRESTAMO -->
+        <div id="view-nuevo" class="view">
+            <div class="card">
+                <div class="card-header">Nuevo Préstamo a Cliente</div>
+                <div class="input-group">
+                    <label>Nombre del Cliente</label>
+                    <input type="text" id="p-cliente" placeholder="Nombre completo">
+                </div>
+                <div class="input-group">
+                    <label>Monto Prestado ($)</label>
+                    <input type="number" id="p-monto" placeholder="100000">
+                </div>
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label>Tipo Interés</label>
+                        <select id="p-tipo-interes" onchange="toggleInteresInput()">
+                            <option value="porcentaje">Porcentaje (%)</option>
+                            <option value="fijo">Valor Fijo ($)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label id="lbl-interes">Interés (%)</label>
+                        <input type="number" id="p-interes" placeholder="20">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label>Días / Plazo Exacto</label>
+                        <input type="number" id="p-dias" placeholder="Ej. 30" min="1">
+                    </div>
+                    <div class="input-group">
+                        <label>Frecuencia de Pago</label>
+                        <select id="p-frecuencia">
+                            <option value="diario">Diario</option>
+                            <option value="semanal">Semanal</option>
+                            <option value="quincenal">Quincenal</option>
+                            <option value="mensual">Mensual</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Forma de Entrega</label>
+                    <select id="p-metodo">
+                        <option value="Efectivo">💵 Efectivo</option>
+                        <option value="Transferencia">💳 Transferencia</option>
+                    </select>
+                </div>
+                <button class="btn btn-success" onclick="crearPrestamo()">Registrar Préstamo</button>
+            </div>
+        </div>
+
+        <!-- VISTA COBROS ACTIVOS -->
+        <div id="view-cobros" class="view">
+            <div class="card">
+                <div class="card-header">Cobros Pendientes (Activos)</div>
+                <div id="lista-prestamos-activos">
+                    <p style="text-align: center; color: #94a3b8; font-size: 13px;">Cargando datos de la nube...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- VISTA PRESTAMOS FINALIZADOS -->
+        <div id="view-finalizados" class="view">
+            <div class="card">
+                <div class="card-header">Créditos Finalizados (Pagados 100%)</div>
+                <div id="lista-prestamos-finalizados">
+                    <p style="text-align: center; color: #94a3b8; font-size: 13px;">Cargando préstamos saldados...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- VISTA HISTORIAL -->
+        <div id="view-historial" class="view">
+            <div class="card">
+                <div class="card-header">Filtros de Búsqueda</div>                <div class="input-group">
+                    <label>Buscar Cliente / Concepto</label>
+                    <input type="text" id="hist-search" placeholder="Ej. Juan, Gasolina, Abono..." oninput="renderHistorial()">
+                </div>
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label>Desde Fecha</label>
+                        <input type="date" id="hist-date-from" onchange="renderHistorial()">
+                    </div>
+                    <div class="input-group">
+                        <label>Hasta Fecha</label>
+                        <input type="date" id="hist-date-to" onchange="renderHistorial()">
+                    </div>
+                </div>
+                
+                <div class="filter-tabs">
+                    <button class="filter-btn active" onclick="setHistFilter('TODOS', this)">Todos</button>
+                    <button class="filter-btn" onclick="setHistFilter('PAGOS', this)">Abonos / Pagos</button>
+                    <button class="filter-btn" onclick="setHistFilter('PRESTAMOS', this)">Préstamos</button>
+                    <button class="filter-btn" onclick="setHistFilter('GASTOS', this)">Gastos</button>
+                </div>
+
+                <div style="background: #f1f5f9; padding: 10px; border-radius: 8px; margin-top: 5px; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 12px; font-weight: bold; color: #475569;">Total Filtrado:</span>
+                    <strong style="font-size: 16px; color: #0f172a;" id="hist-total-sum">$0</strong>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Resultados (Edita o Elimina)</div>
+                <div id="lista-historial">
+                    <p style="text-align: center; color: #94a3b8; font-size: 13px;">Cargando historial...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- VISTA CLIENTES CLAVO -->
+        <div id="view-clavos" class="view">
+            <div class="card" id="card-add-clavo">
+                <div class="card-header">📌 Marcar Cliente Clavo / Bloqueado</div>
+                <div class="input-group">
+                    <label>Nombre del Cliente No Apto</label>                    <input type="text" id="clavo-nombre" placeholder="Nombre completo">
+                </div>
+                <div class="input-group">
+                    <label>Motivo del Bloqueo</label>
+                    <input type="text" id="clavo-motivo" placeholder="Ej. Mala paga, agresivo, retrasado">
+                </div>
+                <button class="btn btn-danger" onclick="agregarClienteClavo()">Bloquear Cliente</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">🚫 Lista de Clientes Bloqueados</div>
+                <div id="lista-clientes-clavos">
+                    <p style="text-align: center; color: #94a3b8; font-size: 13px;">Cargando clientes bloqueados...</p>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="card" style="background: #eff6ff; border: 1px solid #bfdbfe;">
-        <div class="card-header" style="color: #1e3a8a;">📊 Panel de Cierre de Caja</div>
-        <p style="font-size: 11px; color: #1e40af; margin-bottom: 10px;">Consulta el resumen diario de cobros, préstamos y flujo neto.</p>
-        <button class="btn btn-primary" onclick="abrirModalCierre()">📊 Abrir Cierre del Día</button>
-    </div>
-
-    <div class="card admin-only-card" style="border: 2px solid #f59e0b; background: #fffbebf5;">
-        <div class="card-header" style="color: #b45309; display: flex; justify-content: space-between; align-items: center;">
-            <span>🤝 Préstamos Propios / Retiro de Socios</span>
-            <span id="total-prestamos-internos-badge" style="font-size: 12px; font-weight: bold; color: #b45309;">HACE FALTA: $0</span>
-        </div>
-        <p style="font-size: 11px; color: #78350f; margin-bottom: 10px;">Dinero retirado de caja por socios.</p>
-        
-        <div class="grid-2">
-            <div class="input-group">
-                <input type="text" id="p-interno-nombre" placeholder="Socio / Nombre">
+    <!-- MODAL CIERRE DE CAJA -->
+    <div id="modal-overlay">
+        <div class="modal-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h3 style="font-size: 16px; color: #1e3a8a;">📊 Cierre del Día</h3>
+                <button class="btn btn-danger" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="cerrarModalCierre()">✕ Cerrar</button>
             </div>
             <div class="input-group">
-                <input type="number" id="p-interno-monto" placeholder="Monto $">
+                <label>Seleccionar Fecha</label>
+                <input type="date" id="cierre-fecha" onchange="calcularCierreDiario()">
+            </div>
+            <div class="summary-row">
+                <span>(+) Total Cobrado Efectivo:</span>
+                <strong style="color: #22c55e;" id="cierre-cobrado-efectivo">$0</strong>
+            </div>
+            <div class="summary-row">
+                <span>(+) Total Cobrado Transferencia:</span>
+                <strong style="color: #0284c7;" id="cierre-cobrado-transf">$0</strong>
+            </div>
+            <div class="summary-row">
+                <span>(-) Total Prestado Nuevos:</span>
+                <strong style="color: #ef4444;" id="cierre-prestado">$0</strong>
+            </div>
+            <div class="summary-row">
+                <span>(-) Total Gastos:</span>
+                <strong style="color: #f59e0b;" id="cierre-gastos">$0</strong>
+            </div>
+            <div class="summary-row" style="border-bottom: 2px solid #0f172a; font-weight: bold; margin-top: 4px; padding-bottom: 8px;">
+                <span>Flujo Neto del Día:</span>
+                <span id="cierre-flujo">$0</span>
+            </div>
+            <div class="summary-row" style="margin-top: 8px; font-size: 12px; color: #475569;">
+                <span>Total Restante en la Calle:</span>
+                <strong id="cierre-calle-final" style="color: #ef4444;">$0</strong>
             </div>
         </div>
-        <button class="btn btn-primary" style="background: #d97706;" onclick="registrarPrestamoInterno()">➕ Registrar Retiro Socio</button>
-
-        <div id="lista-prestamos-internos" style="margin-top: 12px; border-top: 1px dashed #fcd34d; padding-top: 8px;">
-            <p style="font-size: 11px; color: #92400e; text-align: center;">Cargando retiros pendientes...</p>
-        </div>
-    </div>    <div class="card admin-only-card">
-        <div class="card-header">Establecer Base de Caja (Efectivo)</div>
-        <div class="input-group">
-            <label>Monto de Base ($)</label>
-            <input type="number" id="base-monto" placeholder="Ej. 500000">
-        </div>
-        <button class="btn btn-primary" onclick="setBaseCaja()">Actualizar Saldo Efectivo</button>
     </div>
 
-    <div class="card admin-only-card" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
-        <div class="card-header" style="color: #166534;">📁 Reportes y Exportación</div>
-        <p style="font-size: 11px; color: #15803d; margin-bottom: 10px;">Descarga el historial completo de movimientos para Excel o WhatsApp.</p>
-        <button class="btn btn-success" onclick="exportarExcelCSV()">📥 Descargar Reporte CSV/Excel</button>
-    </div>
-
-    <div class="card admin-only-card" id="card-change-pins" style="border: 1px solid #38bdf8; background: #f0fdf4;">
-        <div class="card-header" style="color: #166534;">🔐 Seguridad y Claves de Acceso</div>
-        <p style="font-size: 11px; color: #15803d; margin-bottom: 10px;">Modifica los PINs de Administrador y Operador.</p>
-        <button class="btn btn-primary" style="background: #16a34a;" onclick="cambiarPINsAcceso()">🔐 Cambiar PINs de Acceso</button>
-    </div>
-
-    <div class="card admin-only-card" id="card-reset-system" style="border: 1px dashed #ef4444; background: #fff5f5;">
-        <div class="card-header" style="color: #dc2626;">⚙️ Zona de Peligro</div>
-        <p style="font-size: 11px; color: #7f1d1d; margin-bottom: 10px;">Borra toda la información para comenzar desde cero.</p>
-        <button class="btn btn-danger" onclick="reiniciarTodaLaAplicacion()">⚠️ Reiniciar Todo a Cero</button>
-    </div>
-
-    <div class="card">
-        <div class="card-header">Resumen Financiero Global</div>
-        <div class="grid-3">
-            <div>
-                <p style="font-size: 10px; color: #64748b;">En la Calle</p>
-                <p style="font-size: 15px; font-weight: bold; color: #ef4444;" id="total-prestado">$0</p>
+    <!-- MODAL ESTADO DE CUENTA INDIVIDUAL -->
+    <div id="modal-cliente-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 99999; padding: 15px;">
+        <div class="modal-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h3 id="modal-cliente-titulo" style="font-size: 16px; color: #1e3a8a;">Estado de Cuenta</h3>
+                <button class="btn btn-danger" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="cerrarModalCliente()">✕ Cerrar</button>
             </div>
-            <div>
-                <p style="font-size: 10px; color: #64748b;">Cobrado</p>
-                <p style="font-size: 15px; font-weight: bold; color: #22c55e;" id="total-cobrado">$0</p>
-            </div>
-            <div>
-                <p style="font-size: 10px; color: #64748b;">Gastos</p>
-                <p style="font-size: 15px; font-weight: bold; color: #f59e0b;" id="total-gastos">$0</p>
-            </div>
-        </div>
-        <div style="margin-top: 10px; padding: 8px; background: #f1f5f9; border-radius: 6px; display: flex; justify-content: space-between; font-size: 12px;">
-            <span style="color: #475569; font-weight: bold;">💰 Ganancia Proyectada en Calle:</span>
-            <strong style="color: #16a34a;" id="ganancia-proyectada">$0</strong>
+            <div id="modal-cliente-detalle" style="font-size: 13px; color: #475569; margin-bottom: 12px;"></div>
+            <div class="card-header" style="font-size: 12px; margin-bottom: 6px;">Historial de Abonos de este Cliente</div>
+            <div id="modal-cliente-historial" style="max-height: 250px; overflow-y: auto;"></div>
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-header">Registrar Gasto Rápido</div>
-        <div class="grid-2">
-            <div class="input-group">
-                <input type="number" id="gasto-monto" placeholder="Valor $">
-            </div>
-            <div class="input-group">
-                <input type="text" id="gasto-motivo" placeholder="Motivo (Ej. Gasolina)">
-            </div>
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('caja', this)">
+            <span>🏦</span>Caja
         </div>
-        <button class="btn btn-danger" onclick="registrarGasto()">Registrar Gasto</button>
-    </div>
-</div>
-
-<!-- VISTA NUEVO PRESTAMO -->
-<div id="view-nuevo" class="view">
-    <div class="card">
-        <div class="card-header">Nuevo Préstamo a Cliente</div>
-        <div class="input-group">
-            <label>Nombre del Cliente</label>
-            <input type="text" id="p-cliente" placeholder="Nombre completo">
+        <div class="nav-item" onclick="switchTab('nuevo', this)">
+            <span>➕</span>Nuevo
         </div>
-        <div class="input-group">
-            <label>Monto Prestado ($)</label>
-            <input type="number" id="p-monto" placeholder="100000">
+        <div class="nav-item" onclick="switchTab('cobros', this)">
+            <span>📋</span>Cobros
         </div>
-        <div class="grid-2">
-            <div class="input-group">
-                <label>Tipo Interés</label>
-                <select id="p-tipo-interes" onchange="toggleInteresInput()">
-                    <option value="porcentaje">Porcentaje (%)</option>
-                    <option value="fijo">Valor Fijo ($)</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <label id="lbl-interes">Interés (%)</label>
-                <input type="number" id="p-interes" placeholder="20">
-            </div>
+        <div class="nav-item" onclick="switchTab('finalizados', this)">
+            <span>🏁</span>Saldados
         </div>
-        <div class="grid-2">
-            <div class="input-group">
-                <label>Días / Plazo Exacto</label>
-                <input type="number" id="p-dias" placeholder="Ej. 30" min="1">
-            </div>
-            <div class="input-group">
-                <label>Frecuencia de Pago</label>
-                <select id="p-frecuencia">
-                    <option value="diario">Diario</option>
-                    <option value="semanal">Semanal</option>
-                    <option value="quincenal">Quincenal</option>
-                    <option value="mensual">Mensual</option>
-                </select>
-            </div>
+        <div class="nav-item" onclick="switchTab('historial', this)">
+            <span>📜</span>Historial
         </div>
-        <div class="input-group">
-            <label>Forma de Entrega</label>
-            <select id="p-metodo">
-                <option value="Efectivo">💵 Efectivo</option>
-                <option value="Transferencia">💳 Transferencia</option>
-            </select>
-        </div>
-        <button class="btn btn-success" onclick="crearPrestamo()">Registrar Préstamo</button>
-    </div>
-</div>
-
-<!-- VISTA COBROS ACTIVOS -->
-<div id="view-cobros" class="view">
-    <div class="card">
-        <div class="card-header">Cobros Pendientes (Activos)</div>
-        <div id="lista-prestamos-activos">
-            <p style="text-align: center; color: #94a3b8; font-size: 13px;">Cargando datos de la nube...</p>
+        <div class="nav-item" onclick="switchTab('clavos', this)">
+            <span>🚫</span>Clavos
         </div>
     </div>
-</div>
+        <!-- SDK Firebase Firestore Realtime -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-<!-- VISTA PRESTAMOS FINALIZADOS -->
-<div id="view-finalizados" class="view">
-    <div class="card">
-        <div class="card-header">Créditos Finalizados (Pagados 100%)</div>
-        <div id="lista-prestamos-finalizados">
-            <p style="text-align: center; color: #94a3b8; font-size: 13px;">Cargando préstamos saldados...</p>
-        </div>
-    </div>
-</div>
+        /*
+         * FIREBASE: pega aquí la configuración COMPLETA de tu proyecto.
+         * Si dejas algún campo vacío o con "...", la app funciona en modo local
+         * usando localStorage y no pierde datos por un Firebase mal configurado.
+         */
+        let firebaseConfig = {            apiKey: "",
+            authDomain: "control-cobro.firebaseapp.com",
+            projectId: "control-cobro",
+            storageBucket: "control-cobro.firebasestorage.app",
+            messagingSenderId: "66451850332",
+            appId: ""
+        };
 
-<!-- VISTA HISTORIAL -->
-<div id="view-historial" class="view">
-    <div class="card">
-        <div class="card-header">Filtros de Búsqueda</div>
-        <div class="input-group">
-            <label>Buscar Cliente / Concepto</label>
-            <input type="text" id="hist-search" placeholder="Ej. Juan, Gasolina, Abono..." oninput="renderHistorial()">
-        </div>        <div class="grid-2">
-            <div class="input-group">
-                <label>Desde Fecha</label>
-                <input type="date" id="hist-date-from" onchange="renderHistorial()">
-            </div>
-            <div class="input-group">
-                <label>Hasta Fecha</label>
-                <input type="date" id="hist-date-to" onchange="renderHistorial()">
-            </div>
-        </div>
-        
-        <div class="filter-tabs">
-            <button class="filter-btn active" onclick="setHistFilter('TODOS', this)">Todos</button>
-            <button class="filter-btn" onclick="setHistFilter('PAGOS', this)">Abonos / Pagos</button>
-            <button class="filter-btn" onclick="setHistFilter('PRESTAMOS', this)">Préstamos</button>
-            <button class="filter-btn" onclick="setHistFilter('GASTOS', this)">Gastos</button>
-        </div>
-
-        <div style="background: #f1f5f9; padding: 10px; border-radius: 8px; margin-top: 5px; display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-size: 12px; font-weight: bold; color: #475569;">Total Filtrado:</span>
-            <strong style="font-size: 16px; color: #0f172a;" id="hist-total-sum">$0</strong>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-header">Resultados (Edita o Elimina)</div>
-        <div id="lista-historial">
-            <p style="text-align: center; color: #94a3b8; font-size: 13px;">Cargando historial...</p>
-        </div>
-    </div>
-</div>
-
-<!-- VISTA CLIENTES CLAVO -->
-<div id="view-clavos" class="view">
-    <div class="card" id="card-add-clavo">
-        <div class="card-header">📌 Marcar Cliente Clavo / Bloqueado</div>
-        <div class="input-group">
-            <label>Nombre del Cliente No Apto</label>
-            <input type="text" id="clavo-nombre" placeholder="Nombre completo">
-        </div>
-        <div class="input-group">
-            <label>Motivo del Bloqueo</label>
-            <input type="text" id="clavo-motivo" placeholder="Ej. Mala paga, agresivo, retrasado">
-        </div>
-        <button class="btn btn-danger" onclick="agregarClienteClavo()">Bloquear Cliente</button>
-    </div>
-
-    <div class="card">
-        <div class="card-header">🚫 Lista de Clientes Bloqueados</div>
-        <div id="lista-clientes-clavos">
-            <p style="text-align: center; color: #94a3b8; font-size: 13px;">Cargando clientes bloqueados...</p>
-        </div>
-    </div>
-</div>
-</div>
-
-<!-- MODAL CIERRE DE CAJA -->
-<div id="modal-overlay">
-    <div class="modal-box">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-            <h3 style="font-size: 16px; color: #1e3a8a;">📊 Cierre del Día</h3>
-            <button class="btn btn-danger" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="cerrarModalCierre()">✕ Cerrar</button>
-        </div>
-        <div class="input-group">
-            <label>Seleccionar Fecha</label>
-            <input type="date" id="cierre-fecha" onchange="calcularCierreDiario()">
-        </div>
-        <div class="summary-row">
-            <span>(+) Total Cobrado Efectivo:</span>
-            <strong style="color: #22c55e;" id="cierre-cobrado-efectivo">$0</strong>
-        </div>
-        <div class="summary-row">
-            <span>(+) Total Cobrado Transferencia:</span>
-            <strong style="color: #0284c7;" id="cierre-cobrado-transf">$0</strong>
-        </div>
-        <div class="summary-row">
-            <span>(-) Total Prestado Nuevos:</span>
-            <strong style="color: #ef4444;" id="cierre-prestado">$0</strong>
-        </div>
-        <div class="summary-row">
-            <span>(-) Total Gastos:</span>
-            <strong style="color: #f59e0b;" id="cierre-gastos">$0</strong>
-        </div>
-        <div class="summary-row" style="border-bottom: 2px solid #0f172a; font-weight: bold; margin-top: 4px; padding-bottom: 8px;">
-            <span>Flujo Neto del Día:</span>
-            <span id="cierre-flujo">$0</span>
-        </div>
-        <div class="summary-row" style="margin-top: 8px; font-size: 12px; color: #475569;">
-            <span>Total Restante en la Calle:</span>
-            <strong id="cierre-calle-final" style="color: #ef4444;">$0</strong>
-        </div>
-    </div>
-</div>
-
-<!-- MODAL ESTADO DE CUENTA INDIVIDUAL -->
-<div id="modal-cliente-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 99999; padding: 15px;">
-    <div class="modal-box">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-            <h3 id="modal-cliente-titulo" style="font-size: 16px; color: #1e3a8a;">Estado de Cuenta</h3>
-            <button class="btn btn-danger" style="width: auto; padding: 4px 10px; font-size: 12px;" onclick="cerrarModalCliente()">✕ Cerrar</button>
-        </div>
-        <div id="modal-cliente-detalle" style="font-size: 13px; color: #475569; margin-bottom: 12px;"></div>
-        <div class="card-header" style="font-size: 12px; margin-bottom: 6px;">Historial de Abonos de este Cliente</div>
-        <div id="modal-cliente-historial" style="max-height: 250px; overflow-y: auto;"></div>
-    </div>
-</div>
-
-<div class="bottom-nav">
-    <div class="nav-item active" onclick="switchTab('caja', this)">
-        <span>🏦</span>Caja
-    </div>
-    <div class="nav-item" onclick="switchTab('nuevo', this)">
-        <span>➕</span>Nuevo
-    </div>
-    <div class="nav-item" onclick="switchTab('cobros', this)">
-        <span>📋</span>Cobros
-    </div>
-    <div class="nav-item" onclick="switchTab('finalizados', this)">
-        <span>🏁</span>Saldados
-    </div>
-    <div class="nav-item" onclick="switchTab('historial', this)">
-        <span>📜</span>Historial
-    </div>
-    <div class="nav-item" onclick="switchTab('clavos', this)">
-        <span>🚫</span>Clavos
-    </div>
-</div>
-    <!-- SDK Firebase Firestore Realtime -->
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-    /*
-     * FIREBASE: pega aquí la configuración COMPLETA de tu proyecto.
-     * Si dejas algún campo vacío o con "...", la app funciona en modo local
-     * usando localStorage y no pierde datos por un Firebase mal configurado.
-     */
-    const firebaseConfig = {
-        apiKey: "",
-        authDomain: "control-cobro.firebaseapp.com",
-        projectId: "control-cobro",
-        storageBucket: "control-cobro.firebasestorage.app",
-        messagingSenderId: "66451850332",
-        appId: ""
-    };
-
-    const STORAGE_KEY = "control_caja_state_v2";
-    const defaultState = {
-        cajaEfectivo: 0,
-        cajaTransferencia: 0,
-        prestamos: [],
-        prestamosInternos: [],
-        transacciones: [],
-        clientesClavos: [],
-        adminPin: "1234",
-        operatorPin: "0000"
-    };
-
-    function normalizarEstado(data) {
-        const state = Object.assign({}, defaultState, data || {});
-        if (state.cajaEfectivo === undefined && state.caja !== undefined) state.cajaEfectivo = Number(state.caja) || 0;
-        state.cajaEfectivo = Number.isFinite(Number(state.cajaEfectivo)) ? Number(state.cajaEfectivo) : 0;
-        state.cajaTransferencia = Number(state.cajaTransferencia) || 0;
-        state.prestamos = Array.isArray(state.prestamos) ? state.prestamos : [];
-        state.prestamosInternos = Array.isArray(state.prestamosInternos) ? state.prestamosInternos : [];
-        state.transacciones = Array.isArray(state.transacciones) ? state.transacciones : [];
-        state.clientesClavos = Array.isArray(state.clientesClavos) ? state.clientesClavos : [];
-        state.adminPin = String(state.adminPin || "1234");
-        state.operatorPin = String(state.operatorPin || "0000");
-        return state;
-    }
-
-    const localData = localStorage.getItem(STORAGE_KEY);
-    let localParsed = null;
-    try {
-        localParsed = localData ? JSON.parse(localData) : null;
-    } catch (error) {
-        console.warn("Datos locales dañados; se restaurará el estado seguro.", error);
-        localParsed = null;
-    }
-    window.dbState = normalizarEstado(localParsed);
-    window.firebaseOnline = false;
-    window.saveToCloud = async function() {
-        const clean = normalizarEstado(window.dbState);
-        window.dbState = clean;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(clean));
-        if (window.firebaseOnline && window.firebaseDocRef) {
-            try {
-                await setDoc(window.firebaseDocRef, clean);
-                return true;
-            } catch (error) {
-                console.error("Firebase save error:", error);
-                window.firebaseOnline = false;
-                const status = document.getElementById("sync-status");
-                if (status) status.innerText = "⚠️ Modo local: no se pudo sincronizar con Firebase";
-            }
-        }
-        return false;
-    };
-
-    const configCompleta = Object.values(firebaseConfig).every(v => typeof v === "string" && v.trim() !== "" && !v.includes("..."));
-
-    if (configCompleta) {
         try {
-            const app = initializeApp(firebaseConfig);
-            const db = getFirestore(app);
-            window.firebaseDocRef = doc(db, "control_caja", "general");
-            onSnapshot(window.firebaseDocRef, async (docSnap) => {
-                if (docSnap.exists()) {
-                    window.dbState = normalizarEstado(docSnap.data());
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(window.dbState));
-                } else {
-                    await window.saveToCloud();
+            const savedFirebaseConfig = localStorage.getItem("control_caja_firebase_config");
+            if (savedFirebaseConfig) {
+                const parsedFirebaseConfig = JSON.parse(savedFirebaseConfig);
+                if (parsedFirebaseConfig && parsedFirebaseConfig.projectId) {
+                    firebaseConfig = Object.assign(firebaseConfig, parsedFirebaseConfig);
                 }
-                window.firebaseOnline = true;
-                const status = document.getElementById("sync-status");
-                if (status) status.innerText = "☁️ Firebase conectado y sincronizado";
-                if (typeof render === "function") render();
-            }, (error) => {
-                console.error("Firebase listener error:", error);
-                window.firebaseOnline = false;
-                const status = document.getElementById("sync-status");
-                if (status) status.innerText = "⚠️ Firebase no disponible · usando almacenamiento local";
-                if (typeof render === "function") render();
-            });
-        } catch (error) {
-            console.error("Firebase initialization error:", error);
-            const status = document.getElementById("sync-status");
-            if (status) status.innerText = "📱 Modo local activo";
-        }
-    } else {
-        const status = document.getElementById("sync-status");
-        if (status) status.innerText = "📱 Modo local activo · configura Firebase para sincronizar";
-    }
-
-    if (typeof render === "function") render();
-</script>
-
-<script>
-    let currentUserRole = "operator";
-    let enteredPin = "";
-    let currentHistFilter = "TODOS";
-
-    const cierreFechaInicial = document.getElementById("cierre-fecha");
-    if (cierreFechaInicial) cierreFechaInicial.value = new Date().toISOString().split("T")[0];
-    cerrarTodosLosModales();
-
-    function pressPin(num) {
-        if (enteredPin.length < 4) {
-            enteredPin += num;
-            updateDots();
-            if (enteredPin.length === 4) {
-                setTimeout(() => {
-                    const currentAdminPin = (window.dbState && window.dbState.adminPin) ? window.dbState.adminPin : "1234";
-                    const currentOperatorPin = (window.dbState && window.dbState.operatorPin) ? window.dbState.operatorPin : "0000";
-
-                    if (enteredPin === currentAdminPin) {
-                        currentUserRole = "admin";
-                        document.getElementById("pin-screen").style.display = "none";
-                        enteredPin = "";
-                        updateDots();
-                        render();
-                    } else if (enteredPin === currentOperatorPin) {
-                        currentUserRole = "operator";
-                        document.getElementById("pin-screen").style.display = "none";
-                        enteredPin = "";
-                        updateDots();
-                        render();
-                    } else {
-                        alert("PIN Incorrecto");
-                        clearPin();
-                    }
-                }, 200);
             }
-        }
-    }
-
-    function clearPin() { enteredPin = ""; updateDots(); }
-    function deletePin() { enteredPin = enteredPin.slice(0, -1); updateDots(); }
-    function updateDots() {
-        for (let i = 0; i < 4; i++) {
-            const dot = document.getElementById(`dot-${i}`);
-            if (i < enteredPin.length) dot.classList.add("filled");
-            else dot.classList.remove("filled");
-        }
-    }
-
-    function lockApp() {
-        enteredPin = "";
-        updateDots();
-        cerrarTodosLosModales();
-        document.getElementById("pin-screen").style.display = "flex";
-    }
-
-    function cerrarTodosLosModales() {
-        const cierre = document.getElementById("modal-overlay");
-        const cliente = document.getElementById("modal-cliente-overlay");
-        if (cierre) {
-            cierre.classList.remove("is-open");
-            cierre.style.display = "none";
-        }
-        if (cliente) {
-            cliente.style.display = "none";
-        }
-    }
-
-    function switchTab(viewId, el) {
-        cerrarTodosLosModales();
-
-        document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
-        document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
-
-        const destino = document.getElementById(`view-${viewId}`);
-        if (destino) destino.classList.add("active");
-        if (el) el.classList.add("active");
-
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    function abrirModalCierre() {
-        cerrarModalCliente();
-        const modal = document.getElementById("modal-overlay");
-        if (!modal) return;
-        modal.classList.add("is-open");
-        calcularCierreDiario();
-    }
-
-    function cerrarModalCierre() {
-        const modal = document.getElementById("modal-overlay");
-        if (modal) {
-            modal.classList.remove("is-open");
-            modal.style.display = "none";
-        }
-    }
-
-    function cerrarModalCliente() {
-        const modal = document.getElementById("modal-cliente-overlay");
-        if (modal) {
-            modal.style.display = "none";
-        }
-    }
-
-    document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") cerrarTodosLosModales();
-    });
-
-    document.addEventListener("click", (event) => {
-        const cierre = document.getElementById("modal-overlay");
-        const cliente = document.getElementById("modal-cliente-overlay");
-
-        if (event.target === cierre) cerrarModalCierre();
-        if (event.target === cliente) cerrarModalCliente();
-    });
-
-    function toggleInteresInput() {
-        const tipo = document.getElementById("p-tipo-interes").value;
-        document.getElementById("lbl-interes").innerText = tipo === "porcentaje" ? "Interés (%)" : "Interés Fijo ($)";
-    }
-
-    function registrarPrestamoInterno() {
-        if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
-        const nombre = document.getElementById("p-interno-nombre").value.trim();
-        const monto = parseFloat(document.getElementById("p-interno-monto").value);
-
-        if (!nombre || isNaN(monto) || monto <= 0) {
-            return alert("Ingresa el nombre del socio y un monto válido.");
+        } catch (error) {
+            console.warn("No se pudo leer la configuración guardada de Firebase.", error);
         }
 
-        const tipoRetiroOpt = prompt(`Escriba el método de donde sale el dinero para ${nombre}:\n\n1: EFECTIVO\n2: TRANSFERENCIA`, "1");
-        if (tipoRetiroOpt === null) return;
-
-        const metodo = tipoRetiroOpt === "2" ? "Transferencia" : "Efectivo";
-
-        if (metodo === "Transferencia") {
-            window.dbState.cajaTransferencia = (window.dbState.cajaTransferencia || 0) - monto;
-        } else {
-            window.dbState.cajaEfectivo = (window.dbState.cajaEfectivo || 0) - monto;
-        }
-
-        if (!window.dbState.prestamosInternos) window.dbState.prestamosInternos = [];
-
-        window.dbState.prestamosInternos.push({
-            id: Date.now(),
-            nombre: nombre,
-            monto: monto,
-            metodo: metodo,
-            fecha: new Date().toLocaleDateString()
-        });
-
-        window.saveToCloud();
-
-        document.getElementById("p-interno-nombre").value = "";
-        document.getElementById("p-interno-monto").value = "";
-        alert(`Retiro de $${monto.toLocaleString()} (${metodo}) asignado a ${nombre} registrado.`);
-    }
-
-    function devolverPrestamoInterno(id) {
-        if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
-        const p = window.dbState.prestamosInternos.find(x => x.id === id);
-        if (!p) return;
-
-        const opcion = prompt(`Devolver $${p.monto.toLocaleString()} prestados a ${p.nombre}:\n\nEscribe 1 para ingresar a EFECTIVO\nEscribe 2 para ingresar a TRANSFERENCIA\nEscribe 3 para ELIMINAR SIN INGRESAR A CAJA`, "1");
-        if (opcion === null) return;
-
-        if (opcion === "1") {
-            window.dbState.cajaEfectivo = (window.dbState.cajaEfectivo || 0) + p.monto;
-        } else if (opcion === "2") {
-            window.dbState.cajaTransferencia = (window.dbState.cajaTransferencia || 0) + p.monto;
-        } else if (opcion !== "3") {
-            return;
-        }
-
-        window.dbState.prestamosInternos = window.dbState.prestamosInternos.filter(x => x.id !== id);
-        window.saveToCloud();
-        alert("Devolución completada exitosamente.");
-    }    function setBaseCaja() {
-        if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
-        const m = parseFloat(document.getElementById("base-monto").value);
-
-        if (!Number.isFinite(m) || m < 0) {
-            return alert("Ingresa un monto válido.");
-        }
-
-        window.dbState.cajaEfectivo = m;
-
-        window.dbState.transacciones.unshift({
-            id: Date.now(),
-            tipo: "Ajuste de Base",
-            metodo: "Efectivo",
-            monto: m,
-            fechaISO: new Date().toISOString().split("T")[0],
-            fechaStr: new Date().toLocaleString(),
-            detalle: "Base de caja efectivo actualizada"
-        });
-
-        document.getElementById("base-monto").value = "";
-        window.saveToCloud();
-        alert("Base de caja actualizada.");
-    }
-
-    function editarEfectivoDirecto() {
-        if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
-
-        const nuevoVal = prompt(
-            "Ingresa el valor exacto actual en EFECTIVO ($):",
-            window.dbState.cajaEfectivo || 0
-        );
-
-        if (nuevoVal === null) return;
-
-        const val = parseFloat(nuevoVal);
-
-        if (!Number.isFinite(val) || val < 0) {
-            return alert("Ingresa un valor válido.");
-        }
-
-        window.dbState.cajaEfectivo = val;
-        window.saveToCloud();
-        alert("Saldo en efectivo actualizado.");
-    }
-
-    function editarTransferenciaDirecto() {
-        if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
-
-        const nuevoVal = prompt(
-            "Ingresa el valor exacto actual en TRANSFERENCIA ($):",
-            window.dbState.cajaTransferencia || 0
-        );
-
-        if (nuevoVal === null) return;
-
-        const val = parseFloat(nuevoVal);
-
-        if (!Number.isFinite(val) || val < 0) {
-            return alert("Ingresa un valor válido.");
-        }
-
-        window.dbState.cajaTransferencia = val;
-        window.saveToCloud();
-        alert("Saldo en transferencia actualizado.");
-    }
-
-    function cambiarPINsAcceso() {
-        if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
-
-        const pinAdminActual = window.dbState.adminPin || "1234";
-        const confirmPin = prompt("Para mayor seguridad, ingresa tu PIN de Administrador actual:");
-
-        if (confirmPin === null) return;
-
-        if (confirmPin !== pinAdminActual) {
-            return alert("PIN actual incorrecto. No se realizaron cambios.");
-        }
-
-        const nuevoAdminPin = prompt(
-            "Ingresa el NUEVO PIN de Administrador (4 dígitos):",
-            window.dbState.adminPin || "1234"
-        );
-
-        if (nuevoAdminPin === null) return;
-
-        if (!/^\d{4}$/.test(nuevoAdminPin)) {
-            return alert("El PIN de Administrador debe ser exactamente de 4 números.");
-        }
-
-        const nuevoOperatorPin = prompt(
-            "Ingresa el NUEVO PIN de Operador/Empleado (4 dígitos):",
-            window.dbState.operatorPin || "0000"
-        );
-
-        if (nuevoOperatorPin === null) return;
-
-        if (!/^\d{4}$/.test(nuevoOperatorPin)) {
-            return alert("El PIN de Operador debe ser exactamente de 4 números.");
-        }
-
-        if (nuevoAdminPin === nuevoOperatorPin) {
-            return alert("El PIN de Administrador y Operador deben ser diferentes.");
-        }
-
-        window.dbState.adminPin = nuevoAdminPin;
-        window.dbState.operatorPin = nuevoOperatorPin;
-        window.saveToCloud();
-
-        alert("✅ PINs actualizados exitosamente.");
-    }
-
-    function reiniciarTodaLaAplicacion() {
-        if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
-
-        const confirm1 = confirm(
-            "⚠️ ¿ESTÁS SEGURO DE BORRAR TODO?\n\n" +
-            "Esta acción eliminará:\n" +
-            "- Todos los préstamos activos y saldados\n" +
-            "- Todo el historial de transacciones\n" +
-            "- Todos los clientes bloqueados\n" +
-            "- Todos los retiros de socios\n\n" +
-            "¿Continuar?"
-        );
-
-        if (!confirm1) return;
-
-        const confirm2 = confirm(
-            "⚠️ ÚLTIMA CONFIRMACIÓN:\n\n" +
-            "Se vaciará completamente la información almacenada. " +
-            "¿Deseas reiniciar a $0?"
-        );
-
-        if (!confirm2) return;
-
-        const currentAdminPin = window.dbState.adminPin || "1234";
-        const currentOperatorPin = window.dbState.operatorPin || "0000";
-
-        window.dbState = {
+        const STORAGE_KEY = "control_caja_state_v2";
+        const defaultState = {
             cajaEfectivo: 0,
             cajaTransferencia: 0,
             prestamos: [],
             prestamosInternos: [],
             transacciones: [],
             clientesClavos: [],
-            adminPin: currentAdminPin,
-            operatorPin: currentOperatorPin
+            adminPin: "1234",
+            operatorPin: "0000"
         };
 
-        window.saveToCloud();
-        render();
-
-        alert("✅ Aplicación reiniciada con éxito. Base de datos a $0.");
-    }
-
-    function exportarExcelCSV() {
-        if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
-
-        let csv = "Tipo,Detalle,Metodo,Monto,Fecha\n";
-
-        if (window.dbState.transacciones) {
-            window.dbState.transacciones.forEach(t => {
-                const tipo = String(t.tipo || "").replace(/"/g, '""');
-                const detalle = String(t.detalle || "").replace(/"/g, '""');
-                const metodo = String(t.metodo || "Efectivo").replace(/"/g, '""');
-                const fecha = String(t.fechaStr || t.fechaISO || "").replace(/"/g, '""');
-
-                csv += `"${tipo}","${detalle}","${metodo}",${Number(t.monto) || 0},"${fecha}"\n`;
-            });
+        function normalizarEstado(data) {
+            const state = Object.assign({}, defaultState, data || {});
+            if (state.cajaEfectivo === undefined && state.caja !== undefined) state.cajaEfectivo = Number(state.caja) || 0;
+            state.cajaEfectivo = Number(state.cajaEfectivo) || 0;
+            state.cajaTransferencia = Number(state.cajaTransferencia) || 0;
+            state.prestamos = Array.isArray(state.prestamos) ? state.prestamos.map(p => ({
+                ...p,
+                monto: Number(p.monto) || 0,
+                totalPagar: Number(p.totalPagar) || 0,
+                saldoPendiente: Number(p.saldoPendiente) || 0,
+                dias: Number(p.dias) || 0,
+                fechaCreacionMs: Number(p.fechaCreacionMs) || 0
+            })) : [];
+            state.prestamosInternos = Array.isArray(state.prestamosInternos) ? state.prestamosInternos.map(p => ({
+                ...p,
+                monto: Number(p.monto) || 0
+            })) : [];
+            state.transacciones = Array.isArray(state.transacciones) ? state.transacciones.map(t => ({
+                ...t,
+                monto: Number(t.monto) || 0,
+                detalle: String(t.detalle || "")
+            })) : [];
+            state.clientesClavos = Array.isArray(state.clientesClavos) ? state.clientesClavos : [];
+            state.adminPin = String(state.adminPin || "1234");
+            state.operatorPin = String(state.operatorPin || "0000");
+            return state;
         }
 
-        const blob = new Blob(["\ufeff" + csv], {
-            type: "text/csv;charset=utf-8;"
-        });
-
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-
-        a.href = url;
-        a.download = `reporte_caja_${new Date().toISOString().split("T")[0]}.csv`;
-
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
-    }
-
-    function verEstadoCuentaCliente(prestamoId) {
-        const p = window.dbState.prestamos.find(x => x.id === prestamoId);
-        if (!p) return;
-
-        document.getElementById("modal-cliente-titulo").innerText =
-            `Cliente: ${p.cliente}`;
-
-        document.getElementById("modal-cliente-detalle").innerHTML = `
-            <b>Monto Original:</b> $${Number(p.monto || 0).toLocaleString()} <br>
-            <b>Total a Pagar:</b> $${Number(p.totalPagar || 0).toLocaleString()} <br>
-            <b>Saldo Pendiente:</b>
-            <span style="color: #ef4444; font-weight: bold;">
-                $${Number(p.saldoPendiente || 0).toLocaleString()}
-            </span> <br>
-            <b>Plazo:</b> ${p.dias} días (${p.frecuencia}) |
-            <b>Fecha:</b> ${p.fecha}
-        `;
-
-        const histDiv = document.getElementById("modal-cliente-historial");
-        histDiv.innerHTML = "";
-
-        let abonosCount = 0;
-
-        if (window.dbState.transacciones) {
-            window.dbState.transacciones.forEach(t => {
-                if (t.prestamoId === p.id && t.tipo === "Abono / Pago") {
-                    abonosCount++;
-
-                    histDiv.innerHTML += `
-                        <div class="list-item" style="padding: 6px 0;">
-                            <div>
-                                <small style="color: #64748b;">
-                                    ${t.fechaStr || t.fechaISO}
-                                </small>
-                            </div>
-                            <div>
-                                <strong style="color: #22c55e;">
-                                    +$${Number(t.monto || 0).toLocaleString()}
-                                </strong>
-                                <small>(${t.metodo || "Efectivo"})</small>
-                            </div>
-                        </div>
-                    `;
+        const localData = localStorage.getItem(STORAGE_KEY);
+        let localParsed = null;
+        try {
+            localParsed = localData ? JSON.parse(localData) : null;
+        } catch (error) {
+            console.warn("Datos locales dañados; se restaurará el estado seguro.", error);
+            localParsed = null;
+        }
+        window.dbState = normalizarEstado(localParsed);
+        window.firebaseOnline = false;
+        window.saveToCloud = async function() {
+            const clean = normalizarEstado(window.dbState);
+            window.dbState = clean;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(clean));
+            if (window.firebaseOnline && window.firebaseDocRef) {
+                try {
+                    await setDoc(window.firebaseDocRef, clean);
+                    return true;
+                } catch (error) {
+                    console.error("Firebase save error:", error);
+                    window.firebaseOnline = false;
+                    const status = document.getElementById("sync-status");
+                    if (status) status.innerText = "⚠️ Modo local: no se pudo sincronizar con Firebase";
                 }
-            });
+            }
+            return false;
+        };
+
+        const configCompleta = Object.values(firebaseConfig).every(v => typeof v === "string" && v.trim() !== "" && !v.includes("..."));
+
+        if (configCompleta) {
+            try {
+                const app = initializeApp(firebaseConfig);
+                const db = getFirestore(app);
+                window.firebaseDocRef = doc(db, "control_caja", "general");
+                onSnapshot(window.firebaseDocRef, async (docSnap) => {
+                    if (docSnap.exists()) {
+                        window.dbState = normalizarEstado(docSnap.data());
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(window.dbState));
+                    } else {
+                        window.dbState = normalizarEstado(window.dbState);
+                        await setDoc(window.firebaseDocRef, window.dbState);
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(window.dbState));
+                    }
+                    window.firebaseOnline = true;
+                    const status = document.getElementById("sync-status");
+                    if (status) status.innerText = "☁️ Firebase conectado y sincronizado";
+                    if (typeof render === "function") render();
+                }, (error) => {
+                    console.error("Firebase listener error:", error);
+                    window.firebaseOnline = false;
+                    const status = document.getElementById("sync-status");
+                    if (status) status.innerText = "⚠️ Firebase no disponible · usando almacenamiento local";
+                    if (typeof render === "function") render();
+                });
+            } catch (error) {
+                console.error("Firebase initialization error:", error);
+                const status = document.getElementById("sync-status");
+                if (status) status.innerText = "📱 Modo local activo";
+            }
+        } else {
+            const status = document.getElementById("sync-status");
+            if (status) status.innerText = "📱 Modo local activo · configura Firebase para sincronizar";
         }
 
-        if (abonosCount === 0) {
-            histDiv.innerHTML =
-                '<p style="font-size: 12px; color: #94a3b8; text-align: center; padding: 10px;">No hay abonos registrados todavía.</p>';
+        if (typeof render === "function") render();
+    </script>
+
+    <script>
+        let currentUserRole = "operator";
+        let enteredPin = "";
+        let currentHistFilter = "TODOS";
+
+        const cierreFechaInicial = document.getElementById("cierre-fecha");
+        if (cierreFechaInicial) cierreFechaInicial.value = new Date().toISOString().split("T")[0];
+        cerrarTodosLosModales();
+
+        function pressPin(num) {
+            if (enteredPin.length < 4) {
+                enteredPin += num;
+                updateDots();                if (enteredPin.length === 4) {
+                    setTimeout(() => {
+                        const currentAdminPin = (window.dbState && window.dbState.adminPin) ? window.dbState.adminPin : "1234";
+                        const currentOperatorPin = (window.dbState && window.dbState.operatorPin) ? window.dbState.operatorPin : "0000";
+
+                        if (enteredPin === currentAdminPin) {
+                            currentUserRole = "admin";
+                            document.getElementById("pin-screen").style.display = "none";
+                            enteredPin = "";
+                            updateDots();
+                            render();
+                        } else if (enteredPin === currentOperatorPin) {
+                            currentUserRole = "operator";
+                            document.getElementById("pin-screen").style.display = "none";
+                            enteredPin = "";
+                            updateDots();
+                            render();
+                        } else {
+                            alert("PIN Incorrecto");
+                            clearPin();
+                        }
+                    }, 200);
+                }
+            }
         }
 
-        cerrarModalCierre();
+        function clearPin() { enteredPin = ""; updateDots(); }
+        function deletePin() { enteredPin = enteredPin.slice(0, -1); updateDots(); }
+        function updateDots() {            for (let i = 0; i < 4; i++) {
+                const dot = document.getElementById(`dot-${i}`);
+                if (i < enteredPin.length) dot.classList.add("filled");
+                else dot.classList.remove("filled");
+            }
+        }
+        function lockApp() { enteredPin = ""; updateDots(); document.getElementById("pin-screen").style.display = "flex"; }
 
-        document.getElementById("modal-cliente-overlay").style.display = "flex";
-    }    function agregarClienteClavo() {
-        if (currentUserRole !== "admin") {
-            return alert("Acceso restringido solo para Administrador.");
+        function cerrarTodosLosModales() {
+            const cierre = document.getElementById("modal-overlay");
+            const cliente = document.getElementById("modal-cliente-overlay");
+            if (cierre) cierre.style.display = "none";
+            if (cliente) cliente.style.display = "none";
         }
 
-        const nombre = document.getElementById("clavo-nombre").value.trim();
-        const motivo = document.getElementById("clavo-motivo").value.trim();
+        function switchTab(viewId, el) {
+            cerrarTodosLosModales();
 
-        if (!nombre) return alert("Ingresa el nombre del cliente.");
+            document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+            document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
 
-        if (!window.dbState.clientesClavos) {
-            window.dbState.clientesClavos = [];
+            const destino = document.getElementById(`view-${viewId}`);
+            if (destino) destino.classList.add("active");
+            if (el) el.classList.add("active");
+
+            window.scrollTo({ top: 0, behavior: "smooth" });
         }
 
-        const existe = window.dbState.clientesClavos.some(
-            c => String(c.nombre || "").toLowerCase() === nombre.toLowerCase()
-        );
-
-        if (existe) {
-            return alert("Este cliente ya está registrado como bloqueado.");
+        function abrirModalCierre() {
+            cerrarModalCliente();
+            const modal = document.getElementById("modal-overlay");
+            if (!modal) return;
+            modal.classList.add("is-open");
+            calcularCierreDiario();
         }
 
-        window.dbState.clientesClavos.push({
-            id: Date.now(),
-            nombre: nombre,
-            motivo: motivo || "Sin motivo especificado",
-            fecha: new Date().toLocaleDateString()
+        function cerrarModalCierre() {
+            const modal = document.getElementById("modal-overlay");
+            if (modal) { modal.classList.remove("is-open"); modal.style.display = "none"; }
+        }
+
+        function cerrarModalCliente() {
+            const modal = document.getElementById("modal-cliente-overlay");
+            if (modal) { modal.classList.remove("is-open"); modal.style.display = "none"; }
+        }
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape") cerrarTodosLosModales();
         });
 
-        window.saveToCloud();
+        document.addEventListener("click", (event) => {
+            const cierre = document.getElementById("modal-overlay");
+            const cliente = document.getElementById("modal-cliente-overlay");
 
-        document.getElementById("clavo-nombre").value = "";
-        document.getElementById("clavo-motivo").value = "";
+            if (event.target === cierre) cerrarModalCierre();
+            if (event.target === cliente) cerrarModalCliente();
+        });
 
-        alert(`Cliente ${nombre} bloqueado exitosamente.`);
-    }
-
-    function eliminarClienteClavo(id) {
-        if (currentUserRole !== "admin") {
-            return alert("Acceso restringido solo para Administrador.");
+        function toggleInteresInput() {
+            const tipo = document.getElementById("p-tipo-interes").value;
+            document.getElementById("lbl-interes").innerText = tipo === "porcentaje" ? "Interés (%)" : "Interés Fijo ($)";
         }
 
-        if (confirm("¿Deseas desbloquear a este cliente para permitirle préstamos de nuevo?")) {
-            window.dbState.clientesClavos =
-                window.dbState.clientesClavos.filter(c => c.id !== id);
+        function registrarPrestamoInterno() {
+            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
+            const nombre = document.getElementById("p-interno-nombre").value.trim();
+            const monto = parseFloat(document.getElementById("p-interno-monto").value);
+
+            if (!nombre || isNaN(monto) || monto <= 0) {
+                return alert("Ingresa el nombre del socio y un monto válido.");
+            }
+
+            const tipoRetiroOpt = prompt(`Escriba el método de donde sale el dinero para ${nombre}:\n\n1: EFECTIVO\n2: TRANSFERENCIA`, "1");
+            const metodo = tipoRetiroOpt === "2" ? "Transferencia" : "Efectivo";
+
+            if (metodo === "Transferencia") {
+                window.dbState.cajaTransferencia = (window.dbState.cajaTransferencia || 0) - monto;
+            } else {
+                window.dbState.cajaEfectivo = (window.dbState.cajaEfectivo || 0) - monto;
+            }
+
+            if (!window.dbState.prestamosInternos) window.dbState.prestamosInternos = [];
+
+            window.dbState.prestamosInternos.push({
+                id: Date.now(),
+                nombre: nombre,
+                monto: monto,
+                metodo: metodo,
+                fecha: new Date().toLocaleDateString()
+            });
 
             window.saveToCloud();
-        }
-    }
 
-    function crearPrestamo() {
-        const cliente = document.getElementById("p-cliente").value.trim();
-        const monto = parseFloat(document.getElementById("p-monto").value);
-        const tipoInteres = document.getElementById("p-tipo-interes").value;
-        const valInteres = parseFloat(document.getElementById("p-interes").value);
-        const dias = parseInt(document.getElementById("p-dias").value);
-        const frecuencia = document.getElementById("p-frecuencia").value;
-        const metodo = document.getElementById("p-metodo").value;
-
-        if (
-            !cliente ||
-            !Number.isFinite(monto) ||
-            monto <= 0 ||
-            !Number.isFinite(valInteres) ||
-            valInteres < 0 ||
-            !Number.isInteger(dias) ||
-            dias <= 0
-        ) {
-            alert("Por favor completa todos los campos con valores válidos.");
-            return;
+            document.getElementById("p-interno-nombre").value = "";
+            document.getElementById("p-interno-monto").value = "";
+            alert(`Retiro de $${monto.toLocaleString()} (${metodo}) asignado a ${nombre} registrado.`);
         }
 
-        if (tipoInteres === "porcentaje" && valInteres > 1000) {
-            alert("El porcentaje de interés parece demasiado alto. Verifica el valor.");
-            return;
+        function devolverPrestamoInterno(id) {
+            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
+            const p = window.dbState.prestamosInternos.find(x => x.id === id);
+            if (!p) return;
+
+            const opcion = prompt(`Devolver $${p.monto.toLocaleString()} prestados a ${p.nombre}:\n\nEscribe 1 para ingresar a EFECTIVO\nEscribe 2 para ingresar a TRANSFERENCIA\nEscribe 3 para ELIMINAR SIN INGRESAR A CAJA`, "1");
+
+            if (opcion === "1") {
+                window.dbState.cajaEfectivo = (window.dbState.cajaEfectivo || 0) + p.monto;
+            } else if (opcion === "2") {
+                window.dbState.cajaTransferencia = (window.dbState.cajaTransferencia || 0) + p.monto;
+            } else if (opcion !== "3") {
+                return;
+            }            window.dbState.prestamosInternos = window.dbState.prestamosInternos.filter(x => x.id !== id);
+            window.saveToCloud();
+            alert("Devolución completada exitosamente.");
         }
 
-        if (window.dbState.clientesClavos) {
-            const esClavo = window.dbState.clientesClavos.find(
-                c => String(c.nombre || "").toLowerCase() === cliente.toLowerCase()
+        function setBaseCaja() {
+            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
+            const m = parseFloat(document.getElementById("base-monto").value);
+            if (!isNaN(m)) {
+                window.dbState.cajaEfectivo = m;
+                window.dbState.transacciones.unshift({
+                    id: Date.now(),
+                    tipo: 'Ajuste de Base',
+                    metodo: 'Efectivo',
+                    monto: m,
+                    fechaISO: new Date().toISOString().split('T')[0],
+                    fechaStr: new Date().toLocaleString(),
+                    detalle: 'Base de caja efectivo actualizada'
+                });
+                document.getElementById("base-monto").value = "";
+                window.saveToCloud();
+            }
+        }
+
+        function editarEfectivoDirecto() {
+            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
+            const nuevoVal = prompt("Ingresa el valor exacto actual en EFECTIVO ($):", window.dbState.cajaEfectivo || 0);
+            const val = parseFloat(nuevoVal);
+            if (!isNaN(val) && val >= 0) {
+                window.dbState.cajaEfectivo = val;
+                window.saveToCloud();
+                alert("Saldo en efectivo actualizado.");
+            }
+        }
+
+        function editarTransferenciaDirecto() {
+            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
+            const nuevoVal = prompt("Ingresa el valor exacto actual en TRANSFERENCIA ($):", window.dbState.cajaTransferencia || 0);
+            const val = parseFloat(nuevoVal);
+            if (!isNaN(val) && val >= 0) {
+                window.dbState.cajaTransferencia = val;
+                window.saveToCloud();
+                alert("Saldo en transferencia actualizado.");
+            }
+        }
+
+        function configurarFirebase() {
+            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
+
+            const ejemplo = JSON.stringify({
+                apiKey: "TU_API_KEY",
+                authDomain: "control-cobro.firebaseapp.com",
+                projectId: "control-cobro",
+                storageBucket: "control-cobro.firebasestorage.app",
+                messagingSenderId: "66451850332",
+                appId: "TU_APP_ID"
+            });
+
+            const texto = prompt(
+                "Pega aquí el objeto completo de configuración de Firebase.\n\nEjemplo:\n" + ejemplo
             );
 
-            if (esClavo) {
+            if (texto === null) return;
+
+            try {
+                const cfg = JSON.parse(texto);
+                const required = ["apiKey", "authDomain", "projectId", "storageBucket", "messagingSenderId", "appId"];
+                const valido = required.every(key => typeof cfg[key] === "string" && cfg[key].trim() !== "" && !cfg[key].includes("..."));
+
+                if (!valido) throw new Error("Configuración incompleta");
+
+                localStorage.setItem("control_caja_firebase_config", JSON.stringify(cfg));
+                alert("✅ Configuración de Firebase guardada. La aplicación se reiniciará para conectar con la nube.");
+                location.reload();
+            } catch (error) {
+                alert("❌ Configuración no válida. Pega el objeto JSON completo que entrega Firebase.");
+            }
+        }
+
+        function cambiarPINsAcceso() {
+            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
+            
+            const pinAdminActual = window.dbState.adminPin || "1234";
+            const confirmPin = prompt("Para mayor seguridad, ingresa tu PIN de Administrador actual:");
+
+            if (confirmPin !== pinAdminActual) {
+                return alert("PIN actual incorrecto. No se realizaron cambios.");
+            }
+
+            const nuevoAdminPin = prompt("Ingresa el NUEVO PIN de Administrador (4 dígitos):", window.dbState.adminPin || "1234");
+            if (!nuevoAdminPin || nuevoAdminPin.length !== 4 || isNaN(nuevoAdminPin)) {
+                return alert("El PIN de Administrador debe ser exactamente de 4 números.");
+            }
+
+            const nuevoOperatorPin = prompt("Ingresa el NUEVO PIN de Operador/Empleado (4 dígitos):", window.dbState.operatorPin || "0000");
+            if (!nuevoOperatorPin || nuevoOperatorPin.length !== 4 || isNaN(nuevoOperatorPin)) {
+                return alert("El PIN de Operador debe ser exactamente de 4 números.");
+            }
+
+            window.dbState.adminPin = nuevoAdminPin;
+            window.dbState.operatorPin = nuevoOperatorPin;
+            window.saveToCloud();
+
+            alert("✅ PINs actualizados en la nube exitosamente.");
+        }
+
+        function reiniciarTodaLaAplicacion() {
+            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
+            
+            const confirm1 = confirm("⚠️ ¿ESTÁS SEGURO DE BORRAR TODO?\n\nEsta acción eliminará:\n- Todos los préstamos activos y saldados\n- Todo el historial de transacciones y cierres de día\n- Todos los clientes bloqueados (clavos)\n\n¿Continuar?");
+            if (confirm1) {
+                const confirm2 = confirm("⚠️ ÚLTIMA CONFIRMACIÓN:\n\nSe vaciará completamente la base de datos en la nube. ¿Deseas reiniciar a $0?");
+                if (confirm2) {
+                    const currentAdminPin = window.dbState.adminPin || "1234";
+                    const currentOperatorPin = window.dbState.operatorPin || "0000";
+
+                    window.dbState = {
+                        cajaEfectivo: 0,
+                        cajaTransferencia: 0,
+                        prestamos: [],
+                        prestamosInternos: [],
+                        transacciones: [],
+                        clientesClavos: [],
+                        adminPin: currentAdminPin,
+                        operatorPin: currentOperatorPin
+                    };
+                    window.saveToCloud();
+                    alert("✅ Aplicación reiniciada con éxito. Base de datos a $0.");
+                }
+            }
+        }
+                function exportarExcelCSV() {            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
+            let csv = "Tipo,Detalle,Metodo,Monto,Fecha\n";
+            if (window.dbState.transacciones) {
+                window.dbState.transacciones.forEach(t => {
+                    csv += `"${t.tipo}","${t.detalle}","${t.metodo || 'Efectivo'}",${t.monto},"${t.fechaStr || t.fechaISO}"\n`;
+                });
+            }
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');            a.setAttribute('href', url);
+            a.setAttribute('download', `reporte_caja_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        function verEstadoCuentaCliente(prestamoId) {
+            const p = window.dbState.prestamos.find(x => x.id === prestamoId);
+            if (!p) return;
+
+            document.getElementById("modal-cliente-titulo").innerText = `Cliente: ${p.cliente}`;
+            document.getElementById("modal-cliente-detalle").innerHTML = `
+                <b>Monto Original:</b> $${p.monto.toLocaleString()} <br>
+                <b>Total a Pagar:</b> $${p.totalPagar.toLocaleString()} <br>
+                <b>Saldo Pendiente:</b> <span style="color: #ef4444; font-weight: bold;">$${p.saldoPendiente.toLocaleString()}</span> <br>
+                <b>Plazo:</b> ${p.dias} días (${p.frecuencia}) | <b>Fecha:</b> ${p.fecha}
+            `;
+
+            const histDiv = document.getElementById("modal-cliente-historial");
+            histDiv.innerHTML = "";
+
+            let abonosCount = 0;
+            if (window.dbState.transacciones) {
+                window.dbState.transacciones.forEach(t => {
+                    if (t.prestamoId === p.id && t.tipo === 'Abono / Pago') {
+                        abonosCount++;
+                        histDiv.innerHTML += `
+                            <div class="list-item" style="padding: 6px 0;">
+                                <div><small style="color: #64748b;">${t.fechaStr || t.fechaISO}</small></div>
+                                <div><strong style="color: #22c55e;">+$${t.monto.toLocaleString()}</strong> <small>(${t.metodo || 'Efectivo'})</small></div>
+                            </div>
+                        `;
+                    }
+                });
+            }
+
+            if (abonosCount === 0) {
+                histDiv.innerHTML = '<p style="font-size: 12px; color: #94a3b8; text-align: center; padding: 10px;">No hay abonos registrados todavía.</p>';
+            }
+
+            cerrarModalCierre();
+            document.getElementById("modal-cliente-overlay").style.display = "flex";
+        }
+
+        function agregarClienteClavo() {
+            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
+            const nombre = document.getElementById("clavo-nombre").value.trim();
+            const motivo = document.getElementById("clavo-motivo").value.trim();
+
+            if (!nombre) return alert("Ingresa el nombre del cliente.");
+
+            if (!window.dbState.clientesClavos) window.dbState.clientesClavos = [];
+            
+            window.dbState.clientesClavos.push({
+                id: Date.now(),
+                nombre: nombre,
+                motivo: motivo || "Sin motivo especificado",
+                fecha: new Date().toLocaleDateString()
+            });
+
+            window.saveToCloud();
+            document.getElementById("clavo-nombre").value = "";
+            document.getElementById("clavo-motivo").value = "";
+            alert(`Cliente ${nombre} bloqueado exitosamente.`);
+        }
+
+        function eliminarClienteClavo(id) {
+            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
+            if (confirm("¿Deseas desbloquear a este cliente para permitirle préstamos de nuevo?")) {
+                window.dbState.clientesClavos = window.dbState.clientesClavos.filter(c => c.id !== id);
+                window.saveToCloud();
+            }
+        }
+
+        function crearPrestamo() {
+            const cliente = document.getElementById("p-cliente").value.trim();
+            const monto = parseFloat(document.getElementById("p-monto").value);
+            const tipoInteres = document.getElementById("p-tipo-interes").value;
+            const valInteres = parseFloat(document.getElementById("p-interes").value);
+            const dias = parseInt(document.getElementById("p-dias").value);
+            const frecuencia = document.getElementById("p-frecuencia").value;
+
+            const metodo = document.getElementById("p-metodo").value;
+
+            if (!cliente || isNaN(monto) || monto <= 0 || isNaN(valInteres) || valInteres < 0 || isNaN(dias) || dias <= 0) {
+                alert("Por favor completa todos los campos con valores válidos.");
+                return;
+            }
+
+            if (tipoInteres === "porcentaje" && valInteres > 1000) {
+                alert("El porcentaje de interés parece demasiado alto. Verifica el valor.");
+                return;
+            }
+
+            if (window.dbState.clientesClavos) {
+                const esClavo = window.dbState.clientesClavos.find(c => c.nombre.toLowerCase() === cliente.toLowerCase());
+                if (esClavo) {
+                    alert(`⛔ ATENCIÓN: El cliente "${cliente}" está registrado como CLIENTE CLAVO/BLOQUEADO.\nMotivo: ${esClavo.motivo}\n\nNO se permite realizar préstamos a este cliente.`);
+                    return;
+                }
+            }
+
+            let ganancia = tipoInteres === "porcentaje" ? (monto * (valInteres / 100)) : valInteres;
+            let totalPagar = monto + ganancia;
+            const prestamoId = Date.now();
+
+            window.dbState.prestamos.push({
+                id: prestamoId,
+                cliente,
+                monto,
+                totalPagar,
+                saldoPendiente: totalPagar,
+                dias,
+                frecuencia,
+                metodoEntrega: metodo,
+                fecha: new Date().toLocaleDateString(),
+                fechaCreacionMs: Date.now()
+            });
+
+            if (metodo === "Transferencia") {
+                window.dbState.cajaTransferencia = (window.dbState.cajaTransferencia || 0) - monto;
+            } else {
+                window.dbState.cajaEfectivo = (window.dbState.cajaEfectivo || 0) - monto;
+            }
+            window.dbState.transacciones.unshift({
+                id: Date.now(),
+                prestamoId: prestamoId,
+                tipo: 'Nuevo Préstamo',
+                metodo: metodo,
+                monto: monto,
+                fechaISO: new Date().toISOString().split('T')[0],
+                fechaStr: new Date().toLocaleString(),
+                detalle: `Préstamo a ${cliente}`
+            });
+
+            window.saveToCloud();
+
+            document.getElementById("p-cliente").value = "";
+            document.getElementById("p-monto").value = "";
+            document.getElementById("p-interes").value = "";            document.getElementById("p-dias").value = "";
+
+            alert("Préstamo registrado exitosamente en la nube");
+            switchTab("cobros", document.querySelectorAll(".nav-item")[2]);
+        }
+
+        function rePrestarCliente(nombre) {
+            document.getElementById("p-cliente").value = nombre;
+            switchTab("nuevo", document.querySelectorAll(".nav-item")[1]);
+        }
+
+        function editarPrestamo(id) {
+            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
+            const p = window.dbState.prestamos.find(x => x.id === id);
+            if (!p) return;
+
+            const nuevoCliente = prompt("Nombre del Cliente:", p.cliente);
+            if (!nuevoCliente) return;
+
+            const nuevoTotal = prompt("Monto Total a Pagar ($):", p.totalPagar);
+            const nuevoSaldo = prompt("Saldo Pendiente Actual ($):", p.saldoPendiente);
+
+            const numTotal = parseFloat(nuevoTotal);
+            const numSaldo = parseFloat(nuevoSaldo);
+
+            const totalPagado = Math.max(0, (Number(p.totalPagar) || 0) - (Number(p.saldoPendiente) || 0));
+            if (!isNaN(numTotal) && !isNaN(numSaldo) && numTotal > 0 && numSaldo >= 0 && numSaldo <= numTotal && numTotal >= totalPagado) {
+                p.cliente = nuevoCliente.trim();
+                p.totalPagar = numTotal;
+                p.saldoPendiente = numSaldo;
+                window.saveToCloud();
+                alert("Crédito actualizado correctamente.");
+            } else {
+                alert(`Valores inválidos. El total debe ser mayor que $${totalPagado.toLocaleString()}, y el saldo debe estar entre $0 y el total.`);
+            }
+        }
+
+        function borrarPrestamo(id) {            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
+            const p = window.dbState.prestamos.find(x => x.id === id);
+            if (!p) return;
+
+            // Corrección: Solo se devuelve a caja el saldo pendiente real que faltaba por cobrar, 
+            // evitando duplicar los abonos que ya habían ingresado a caja previamente.
+            const devolucionCaja = p.saldoPendiente;
+
+            if (confirm(`¿Estás seguro de que deseas eliminar el crédito de ${p.cliente}?\n\nSe devolverán $${devolucionCaja.toLocaleString()} (saldo pendiente) a la caja.`)) {
+                if (p.metodoEntrega === "Transferencia") {
+                    window.dbState.cajaTransferencia = (window.dbState.cajaTransferencia || 0) + devolucionCaja;
+                } else {
+                    window.dbState.cajaEfectivo = (window.dbState.cajaEfectivo || 0) + devolucionCaja;
+                }
+                window.dbState.transacciones = window.dbState.transacciones.filter(t => t.prestamoId !== id);
+                window.dbState.prestamos = window.dbState.prestamos.filter(x => x.id !== id);
+
+                window.saveToCloud();
+                alert("Crédito eliminado y caja ajustada correctamente.");
+            }
+        }
+
+        function registrarPago(id) {
+            const p = window.dbState.prestamos.find(x => x.id === id);
+            if (!p) return;
+
+            const saldoPendiente = Number(p.saldoPendiente) || 0;
+
+            if (saldoPendiente <= 0) {
+                alert(`Este crédito ya está completamente pagado.`);
+                return;
+            }
+
+            const cuota = prompt(
+                `Cliente: ${p.cliente}
+Saldo pendiente: $${saldoPendiente.toLocaleString()}
+
+Ingrese el monto cobrado:`
+            );
+
+            if (cuota === null) return;
+
+            const val = parseFloat(cuota);
+
+            if (isNaN(val) || val <= 0) {
+                alert("❌ Ingresa un valor válido mayor que cero.");
+                return;
+            }
+
+            /* SEGURIDAD: nunca permitir un pago superior a la deuda actual. */
+            if (val > saldoPendiente) {
                 alert(
-                    `⛔ ATENCIÓN: El cliente "${cliente}" está registrado como ` +
-                    `CLIENTE CLAVO/BLOQUEADO.\nMotivo: ${esClavo.motivo}\n\n` +
-                    `NO se permite realizar préstamos a este cliente.`
+                    `❌ PAGO NO PERMITIDO
+
+` +
+                    `El cliente debe: $${saldoPendiente.toLocaleString()}
+` +
+                    `Intentaste registrar: $${val.toLocaleString()}
+
+` +
+                    `El pago no puede ser mayor al saldo pendiente.
+` +
+                    `No se realizó ningún cambio.`
                 );
                 return;
             }
-        }
 
-        const ganancia =
-            tipoInteres === "porcentaje"
-                ? monto * (valInteres / 100)
-                : valInteres;
+            const tipoPagoOpt = prompt(
+                "Escriba 1 para EFECTIVO o 2 para TRANSFERENCIA:",
+                "1"
+            );
 
-        const totalPagar = monto + ganancia;
-        const prestamoId = Date.now();
+            if (tipoPagoOpt === null) return;
 
-        window.dbState.prestamos.push({
-            id: prestamoId,
-            cliente,
-            monto,
-            totalPagar,
-            saldoPendiente: totalPagar,
-            dias,
-            frecuencia,
-            metodoEntrega: metodo,
-            fecha: new Date().toLocaleDateString(),
-            fechaCreacionMs: Date.now()
-        });
+            const metodo = tipoPagoOpt === "2" ? "Transferencia" : "Efectivo";
 
-        if (metodo === "Transferencia") {
-            window.dbState.cajaTransferencia =
-                (window.dbState.cajaTransferencia || 0) - monto;
-        } else {
-            window.dbState.cajaEfectivo =
-                (window.dbState.cajaEfectivo || 0) - monto;
-        }
+            /* El valor ya fue validado, por lo que nunca puede quedar saldo negativo. */
+            p.saldoPendiente = saldoPendiente - val;
 
-        window.dbState.transacciones.unshift({
-            id: Date.now(),
-            prestamoId,
-            tipo: "Nuevo Préstamo",
-            metodo,
-            monto,
-            fechaISO: new Date().toISOString().split("T")[0],
-            fechaStr: new Date().toLocaleString(),
-            detalle: `Préstamo a ${cliente}`
-        });
+            if (metodo === "Transferencia") {
+                window.dbState.cajaTransferencia = (window.dbState.cajaTransferencia || 0) + val;
+            } else {
+                window.dbState.cajaEfectivo = (window.dbState.cajaEfectivo || 0) + val;
+            }
 
-        window.saveToCloud();
-
-        document.getElementById("p-cliente").value = "";
-        document.getElementById("p-monto").value = "";
-        document.getElementById("p-interes").value = "";
-        document.getElementById("p-dias").value = "";
-
-        alert("Préstamo registrado exitosamente.");
-
-        switchTab(
-            "cobros",
-            document.querySelectorAll(".nav-item")[2]
-        );
-    }
-
-    function rePrestarCliente(nombre) {
-        document.getElementById("p-cliente").value = nombre;
-        switchTab("nuevo", document.querySelectorAll(".nav-item")[1]);
-    }
-
-    function editarPrestamo(id) {
-        if (currentUserRole !== "admin") {
-            return alert("Acceso restringido solo para Administrador.");
-        }
-
-        const p = window.dbState.prestamos.find(x => x.id === id);
-        if (!p) return;
-
-        const nuevoCliente = prompt("Nombre del Cliente:", p.cliente);
-        if (nuevoCliente === null || !nuevoCliente.trim()) return;
-
-        const nuevoTotal = prompt(
-            "Monto Total a Pagar ($):",
-            p.totalPagar
-        );
-
-        if (nuevoTotal === null) return;
-
-        const nuevoSaldo = prompt(
-            "Saldo Pendiente Actual ($):",
-            p.saldoPendiente
-        );
-
-        if (nuevoSaldo === null) return;
-
-        const numTotal = parseFloat(nuevoTotal);
-        const numSaldo = parseFloat(nuevoSaldo);
-
-        if (
-            Number.isFinite(numTotal) &&
-            Number.isFinite(numSaldo) &&
-            numTotal >= 0 &&
-            numSaldo >= 0 &&
-            numSaldo <= numTotal
-        ) {
-            p.cliente = nuevoCliente.trim();
-            p.totalPagar = numTotal;
-            p.saldoPendiente = numSaldo;
+            window.dbState.transacciones.unshift({
+                id: Date.now(),
+                prestamoId: p.id,
+                clienteNombre: p.cliente,
+                tipo: 'Abono / Pago',
+                metodo: metodo,
+                monto: val,
+                fechaISO: new Date().toISOString().split('T')[0],
+                fechaStr: new Date().toLocaleString(),
+                detalle: `Cobro a ${p.cliente} (${metodo})`
+            });
 
             if (p.saldoPendiente === 0) {
-                p.saldoPendiente = 0;
+                alert(`✅ ¡Felicidades! ${p.cliente} ha pagado la totalidad del crédito.`);
+            } else {
+                alert(
+                    `✅ Pago registrado correctamente.
+
+` +                    `Abono: $${val.toLocaleString()}
+` +
+                    `Saldo restante: $${p.saldoPendiente.toLocaleString()}`
+                );
             }
 
             window.saveToCloud();
-            alert("Crédito actualizado en la nube.");
-        } else {
-            alert("Valores inválidos: el saldo debe estar entre $0 y el total a pagar.");
-        }
-    }
-
-    function borrarPrestamo(id) {
-        if (currentUserRole !== "admin") {
-            return alert("Acceso restringido solo para Administrador.");
         }
 
-        const pIndex = window.dbState.prestamos.findIndex(x => x.id === id);
-        if (pIndex === -1) return;
+        function editarTransaccion(tId) {
+            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
+            const t = window.dbState.transacciones.find(x => x.id === tId);
+            if (!t) return;
 
-        const p = window.dbState.prestamos[pIndex];
+            if (t.tipo !== 'Abono / Pago' && t.tipo !== 'Gasto') {
+                alert("Solo se pueden corregir valores de Abonos/Pagos o Gastos.");
+                return;
+            }
 
-        if (!confirm(
-            `¿Eliminar el préstamo de ${p.cliente}?\n\n` +
-            `Saldo pendiente actual: $${Number(p.saldoPendiente || 0).toLocaleString()}\n\n` +
-            `Esta acción eliminará también sus movimientos asociados.`
-        )) {
-            return;
-        }
+            const nuevoValorStr = prompt(`Corregir valor para "${t.detalle}":`, t.monto);
+            if (nuevoValorStr === null) return;
 
-        /* Al borrar un préstamo se devuelve solamente el saldo pendiente,
-           porque los abonos ya fueron recibidos previamente. */
-        const saldoPendiente = Number(p.saldoPendiente) || 0;
+            const nuevoValor = parseFloat(nuevoValorStr);
 
-        if (p.metodoEntrega === "Transferencia") {
-            window.dbState.cajaTransferencia =
-                (window.dbState.cajaTransferencia || 0) + saldoPendiente;
-        } else {
-            window.dbState.cajaEfectivo =
-                (window.dbState.cajaEfectivo || 0) + saldoPendiente;
-        }
+            if (isNaN(nuevoValor) || nuevoValor <= 0) {
+                alert("❌ Ingresa un valor válido mayor que cero.");
+                return;
+            }
 
-        window.dbState.prestamos.splice(pIndex, 1);
+            /* SEGURIDAD:
+               al editar un abono, el máximo nuevo valor permitido es
+               el saldo actual + el valor del abono original. */
+            if (t.tipo === 'Abono / Pago' && t.prestamoId) {
+                const p = window.dbState.prestamos.find(x => x.id === t.prestamoId);
 
-        window.dbState.transacciones =
-            window.dbState.transacciones.filter(
-                t => t.prestamoId !== id
-            );
+                if (!p) {
+                    alert("❌ No se encontró el crédito asociado a este pago.");
+                    return;
+                }
 
-        window.saveToCloud();
-        alert("Préstamo eliminado correctamente.");
-    }
-
-    function registrarPago(id) {
-        const p = window.dbState.prestamos.find(x => x.id === id);
-        if (!p) return;
-
-        const saldo = Number(p.saldoPendiente) || 0;
-
-        if (saldo <= 0) {
-            return alert("Este crédito ya está completamente pagado.");
-        }
-
-        const montoStr = prompt(
-            `Cliente: ${p.cliente}\nSaldo pendiente: $${saldo.toLocaleString()}\n\n` +
-            "¿Cuánto deseas registrar como abono?"
-        );
-
-        if (montoStr === null) return;
-
-        const monto = parseFloat(montoStr);
-
-        if (!Number.isFinite(monto) || monto <= 0) {
-            return alert("Ingresa un monto válido.");
-        }
-
-        if (monto > saldo) {
-            return alert(
-                `El abono no puede superar el saldo pendiente de $${saldo.toLocaleString()}.`
-            );
-        }
-
-        const metodoOpt = prompt(
-            "Método de pago:\n\n1: EFECTIVO\n2: TRANSFERENCIA",
-            "1"
-        );
-
-        if (metodoOpt === null) return;
-
-        const metodo = metodoOpt === "2"
-            ? "Transferencia"
-            : "Efectivo";
-
-        p.saldoPendiente = Math.max(0, saldo - monto);
-
-        if (metodo === "Transferencia") {
-            window.dbState.cajaTransferencia =
-                (window.dbState.cajaTransferencia || 0) + monto;
-        } else {
-            window.dbState.cajaEfectivo =
-                (window.dbState.cajaEfectivo || 0) + monto;
-        }
-
-        window.dbState.transacciones.unshift({
-            id: Date.now(),
-            prestamoId: id,
-            tipo: "Abono / Pago",
-            metodo,
-            monto,
-            fechaISO: new Date().toISOString().split("T")[0],
-            fechaStr: new Date().toLocaleString(),
-            detalle: `Abono de ${p.cliente}`
-        });
-
-        window.saveToCloud();
-
-        alert(
-            `Abono registrado.\n\n` +
-            `Abonado: $${monto.toLocaleString()}\n` +
-            `Saldo restante: $${p.saldoPendiente.toLocaleString()}`
-        );
- }    function editarTransaccion(tId) {
-        if (currentUserRole !== "admin") {
-            return alert("Acceso restringido solo para Administrador.");
-        }
-
-        const t = window.dbState.transacciones.find(x => x.id === tId);
-        if (!t) return;
-
-        if (t.tipo !== "Abono / Pago" && t.tipo !== "Gasto") {
-            return alert("Este tipo de movimiento no puede editarse desde aquí.");
-        }
-
-        const nuevoStr = prompt(
-            `Valor actual: $${Number(t.monto || 0).toLocaleString()}\n\n` +
-            "Ingresa el nuevo valor:"
-        );
-
-        if (nuevoStr === null) return;
-
-        const nuevoValor = parseFloat(nuevoStr);
-
-        if (!Number.isFinite(nuevoValor) || nuevoValor <= 0) {
-            return alert("Ingresa un valor válido mayor que cero.");
-        }
-
-        const abonoOriginal = Number(t.monto) || 0;
-
-        if (t.tipo === "Abono / Pago" && t.prestamoId) {
-            const p = window.dbState.prestamos.find(
-                x => x.id === t.prestamoId
-            );
-
-            if (p) {
                 const saldoActual = Number(p.saldoPendiente) || 0;
-
-                /* El máximo permitido es el saldo que había antes
-                   de registrar este abono. */
+                const abonoOriginal = Number(t.monto) || 0;
                 const maximoPermitido = saldoActual + abonoOriginal;
 
                 if (nuevoValor > maximoPermitido) {
-                    return alert(
-                        `❌ VALOR NO PERMITIDO\n\n` +
-                        `Máximo permitido para este movimiento: ` +
-                        `$${maximoPermitido.toLocaleString()}.`
+                    alert(
+                        `❌ VALOR NO PERMITIDO
+
+` +
+                        `Saldo disponible para este crédito: $${saldoActual.toLocaleString()}
+` +
+                        `Abono original: $${abonoOriginal.toLocaleString()}
+` +
+                        `Máximo que puedes dejar en este abono: $${maximoPermitido.toLocaleString()}
+
+` +
+                        `No se realizó ningún cambio.`
                     );
+                    return;
                 }
+            }
 
-                const diferencia = nuevoValor - abonoOriginal;
+            const diferencia = nuevoValor - t.monto;
 
-                if (t.metodo === "Transferencia") {
-                    window.dbState.cajaTransferencia =
-                        (window.dbState.cajaTransferencia || 0) + diferencia;
+            if (t.tipo === 'Abono / Pago') {
+                if (t.metodo === 'Transferencia') {
+                    window.dbState.cajaTransferencia = (window.dbState.cajaTransferencia || 0) + diferencia;
                 } else {
-                    window.dbState.cajaEfectivo =
-                        (window.dbState.cajaEfectivo || 0) + diferencia;
+                    window.dbState.cajaEfectivo = (window.dbState.cajaEfectivo || 0) + diferencia;
                 }
 
-                p.saldoPendiente = Math.max(
-                    0,
-                    saldoActual - diferencia
-                );
-            }
-        }
+                if (t.prestamoId) {
+                    const p = window.dbState.prestamos.find(x => x.id === t.prestamoId);                    if (p) {
+                        p.saldoPendiente = (Number(p.saldoPendiente) || 0) - diferencia;
 
-        if (t.tipo === "Gasto") {
-            const diferencia = nuevoValor - abonoOriginal;
-
-            window.dbState.cajaEfectivo =
-                (window.dbState.cajaEfectivo || 0) - diferencia;
-        }
-
-        t.monto = nuevoValor;
-
-        window.saveToCloud();
-        alert("✅ Registro corregido en la nube.");
-    }
-
-    function borrarTransaccion(tId) {
-        if (currentUserRole !== "admin") {
-            return alert("Acceso restringido solo para Administrador.");
-        }
-
-        const tIndex = window.dbState.transacciones.findIndex(
-            x => x.id === tId
-        );
-
-        if (tIndex === -1) return;
-
-        const t = window.dbState.transacciones[tIndex];
-
-        if (!confirm(
-            `¿Deseas eliminar esta transacción de ` +
-            `$${Number(t.monto || 0).toLocaleString()}?`
-        )) {
-            return;
-        }
-
-        if (t.tipo === "Abono / Pago") {
-            if (t.metodo === "Transferencia") {
-                window.dbState.cajaTransferencia =
-                    (window.dbState.cajaTransferencia || 0) - t.monto;
-            } else {
-                window.dbState.cajaEfectivo =
-                    (window.dbState.cajaEfectivo || 0) - t.monto;
-            }
-
-            if (t.prestamoId) {
-                const p = window.dbState.prestamos.find(
-                    x => x.id === t.prestamoId
-                );
-
-                if (p) {
-                    p.saldoPendiente =
-                        (Number(p.saldoPendiente) || 0) + Number(t.monto || 0);
-
-                    if (p.saldoPendiente > p.totalPagar) {
-                        p.saldoPendiente = p.totalPagar;
+                        /* Protección adicional contra saldo negativo. */
+                        if (p.saldoPendiente < 0) p.saldoPendiente = 0;
                     }
                 }
+            } else if (t.tipo === 'Gasto') {
+                window.dbState.cajaEfectivo = (window.dbState.cajaEfectivo || 0) - diferencia;
             }
+
+            t.monto = nuevoValor;
+            window.saveToCloud();
+            alert("✅ Registro corregido en la nube.");
         }
 
-        if (t.tipo === "Gasto") {
-            window.dbState.cajaEfectivo =
-                (window.dbState.cajaEfectivo || 0) + Number(t.monto || 0);
-        }
+        function borrarTransaccion(tId) {
+            if (currentUserRole !== "admin") return alert("Acceso restringido solo para Administrador.");
+            const tIndex = window.dbState.transacciones.findIndex(x => x.id === tId);
+            if (tIndex === -1) return;
+            const t = window.dbState.transacciones[tIndex];
 
-        window.dbState.transacciones.splice(tIndex, 1);
-
-        window.saveToCloud();
-        alert("Movimiento eliminado correctamente.");
-    }
-
-    function registrarGasto() {
-        const monto = parseFloat(
-            document.getElementById("gasto-monto").value
-        );
-
-        const motivo =
-            document.getElementById("gasto-motivo").value.trim();
-
-        if (!Number.isFinite(monto) || monto <= 0 || !motivo) {
-            return alert("Ingresa un valor válido y el motivo del gasto.");
-        }
-
-        window.dbState.cajaEfectivo =
-            (window.dbState.cajaEfectivo || 0) - monto;
-
-        window.dbState.transacciones.unshift({
-            id: Date.now(),
-            tipo: "Gasto",
-            metodo: "Efectivo",
-            monto,
-            fechaISO: new Date().toISOString().split("T")[0],
-            fechaStr: new Date().toLocaleString(),
-            detalle: motivo
-        });
-
-        window.saveToCloud();
-
-        document.getElementById("gasto-monto").value = "";
-        document.getElementById("gasto-motivo").value = "";
-
-        alert("Gasto registrado exitosamente.");
-    }
-
-    function setHistFilter(cat, btn) {
-        currentHistFilter = cat;
-
-        document
-            .querySelectorAll(".filter-btn")
-            .forEach(b => b.classList.remove("active"));
-
-        if (btn) btn.classList.add("active");
-
-        renderHistorial();
-    }
-
-    function calcularCierreDiario() {
-        const fechaInput = document.getElementById("cierre-fecha");
-        if (!fechaInput) return;
-
-        const fechaSel = fechaInput.value;
-
-        let cobradoEfectivo = 0;
-        let cobradoTransf = 0;
-        let prestadoDia = 0;
-        let gastosDia = 0;
-
-        if (window.dbState.transacciones) {
-            window.dbState.transacciones.forEach(t => {
-                const tFecha =
-                    t.fechaISO ||
-                    (t.fechaStr ? t.fechaStr.split(",")[0] : "");
-
-                if (tFecha !== fechaSel) return;
-
-                const monto = Number(t.monto) || 0;
-
-                if (t.tipo === "Abono / Pago") {
-                    if (t.metodo === "Transferencia") {
-                        cobradoTransf += monto;
+            if (confirm(`¿Deseas eliminar esta transacción de $${t.monto.toLocaleString()}?`)) {
+                if (t.tipo === 'Abono / Pago') {
+                    if (t.metodo === 'Transferencia') {
+                        window.dbState.cajaTransferencia = (window.dbState.cajaTransferencia || 0) - t.monto;
                     } else {
-                        cobradoEfectivo += monto;
+                        window.dbState.cajaEfectivo = (window.dbState.cajaEfectivo || 0) - t.monto;
                     }
+                    if (t.prestamoId) {
+                        const p = window.dbState.prestamos.find(x => x.id === t.prestamoId);
+                        if (p) p.saldoPendiente += t.monto;
+                    }
+                } else if (t.tipo === 'Gasto') {
+                    window.dbState.cajaEfectivo = (window.dbState.cajaEfectivo || 0) + t.monto;
                 }
 
-                if (t.tipo === "Nuevo Préstamo") {
-                    prestadoDia += monto;
-                }
+                window.dbState.transacciones.splice(tIndex, 1);
+                window.saveToCloud();
+            }
+        }
 
-                if (t.tipo === "Gasto") {
-                    gastosDia += monto;
-                }
+        function registrarGasto() {
+            const monto = parseFloat(document.getElementById("gasto-monto").value);
+            const motivo = document.getElementById("gasto-motivo").value.trim();
+
+            if (isNaN(monto) || monto <= 0 || !motivo) {
+                alert("Ingresa un valor válido y el motivo del gasto.");
+                return;
+            }
+
+            window.dbState.cajaEfectivo = (window.dbState.cajaEfectivo || 0) - monto;
+            window.dbState.transacciones.unshift({
+                id: Date.now(),
+                tipo: 'Gasto',
+                metodo: 'Efectivo',
+                monto: monto,
+                fechaISO: new Date().toISOString().split('T')[0],
+                fechaStr: new Date().toLocaleString(),
+                detalle: motivo
             });
+
+            window.saveToCloud();
+
+            document.getElementById("gasto-monto").value = "";
+            document.getElementById("gasto-motivo").value = "";
+
+            alert("Gasto registrado exitosamente");
+             }                function setHistFilter(cat, btn) {
+            currentHistFilter = cat;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderHistorial();
         }
 
-        const flujoNeto =
-            cobradoEfectivo +
-            cobradoTransf -
-            prestadoDia -
-            gastosDia;
+        function calcularCierreDiario() {
+            const fechaSel = document.getElementById("cierre-fecha").value;
+            let cobradoEfectivo = 0, cobradoTransf = 0, prestadoDia = 0, gastosDia = 0;
 
-        const efec = document.getElementById("cierre-cobrado-efectivo");
-        const transf = document.getElementById("cierre-cobrado-transf");
-        const prestado = document.getElementById("cierre-prestado");
-        const gastos = document.getElementById("cierre-gastos");
-        const flujo = document.getElementById("cierre-flujo");
-        const calle = document.getElementById("cierre-calle-final");
+            if (window.dbState.transacciones) {
+                window.dbState.transacciones.forEach(t => {
+                    const tFecha = t.fechaISO || (t.fechaStr ? t.fechaStr.split(',')[0] : '');
+                    if (tFecha === fechaSel) {
+                        if (t.tipo === 'Abono / Pago') {
+                            if (t.metodo === 'Transferencia') cobradoTransf += t.monto;
+                            else cobradoEfectivo += t.monto;
+                        }
+                        if (t.tipo === 'Nuevo Préstamo') prestadoDia += t.monto;
+                        if (t.tipo === 'Gasto') gastosDia += t.monto;
+                    }
+                });
+            }
 
-        if (efec) efec.innerText = `$${cobradoEfectivo.toLocaleString()}`;
-        if (transf) transf.innerText = `$${cobradoTransf.toLocaleString()}`;
-        if (prestado) prestado.innerText = `$${prestadoDia.toLocaleString()}`;
-        if (gastos) gastos.innerText = `$${gastosDia.toLocaleString()}`;
+            const flujoNeto = (cobradoEfectivo + cobradoTransf) - prestadoDia - gastosDia;
 
-        if (flujo) {
-            flujo.innerText = `$${flujoNeto.toLocaleString()}`;
-            flujo.style.color =
-                flujoNeto >= 0 ? "#22c55e" : "#ef4444";
+            document.getElementById("cierre-cobrado-efectivo").innerText = `$${cobradoEfectivo.toLocaleString()}`;
+            document.getElementById("cierre-cobrado-transf").innerText = `$${cobradoTransf.toLocaleString()}`;
+            document.getElementById("cierre-prestado").innerText = `$${prestadoDia.toLocaleString()}`;
+            document.getElementById("cierre-gastos").innerText = `$${gastosDia.toLocaleString()}`;
+            
+            const elFlujo = document.getElementById("cierre-flujo");
+            elFlujo.innerText = `$${flujoNeto.toLocaleString()}`;
+            elFlujo.style.color = flujoNeto >= 0 ? "#22c55e" : "#ef4444";
+
+            let prestadoTotal = 0;
+            if (window.dbState.prestamos) {
+                window.dbState.prestamos.forEach(p => { prestadoTotal += p.saldoPendiente; });
+            }
+            document.getElementById("cierre-calle-final").innerText = `$${prestadoTotal.toLocaleString()}`;
         }
 
-        let prestadoTotal = 0;
+        function renderHistorial() {
+            const search = document.getElementById("hist-search").value.toLowerCase();
+            const fromDate = document.getElementById("hist-date-from").value;
+            const toDate = document.getElementById("hist-date-to").value;
 
-        if (window.dbState.prestamos) {
-            window.dbState.prestamos.forEach(p => {
-                prestadoTotal += Number(p.saldoPendiente) || 0;
-            });
-        }
+            const histList = document.getElementById("lista-historial");
+            histList.innerHTML = "";
 
-        if (calle) {
-            calle.innerText = `$${prestadoTotal.toLocaleString()}`;
-        }
-         }    function renderHistorial() {
-        const searchEl = document.getElementById("hist-search");
-        const fromEl = document.getElementById("hist-date-from");
-        const toEl = document.getElementById("hist-date-to");
-        const histList = document.getElementById("lista-historial");
+            let totalSum = 0;
+            let count = 0;
 
-        if (!searchEl || !fromEl || !toEl || !histList) return;
+            if (window.dbState.transacciones) {
+                window.dbState.transacciones.forEach(t => {
+                    if (currentHistFilter === 'PAGOS' && t.tipo !== 'Abono / Pago') return;
+                    if (currentHistFilter === 'PRESTAMOS' && t.tipo !== 'Nuevo Préstamo') return;
+                    if (currentHistFilter === 'GASTOS' && t.tipo !== 'Gasto') return;
 
-        const search = searchEl.value.toLowerCase().trim();
-        const fromDate = fromEl.value;
-        const toDate = toEl.value;
+                    const matchSearch = t.tipo.toLowerCase().includes(search) || t.detalle.toLowerCase().includes(search);
+                    if (!matchSearch) return;
 
-        histList.innerHTML = "";
+                    const tDate = t.fechaISO || (t.fechaStr ? t.fechaStr.split(',')[0] : '');
+                    if (fromDate && tDate < fromDate) return;
+                    if (toDate && tDate > toDate) return;
 
-        let totalSum = 0;
-        let count = 0;
+                    totalSum += t.monto;
+                    count++;
 
-        if (window.dbState.transacciones) {
-            window.dbState.transacciones.forEach(t => {
-                if (
-                    currentHistFilter === "PAGOS" &&
-                    t.tipo !== "Abono / Pago"
-                ) return;
+                    let color = '#22c55e';
+                    if (t.tipo === 'Nuevo Préstamo' || t.tipo === 'Gasto') color = '#ef4444';
 
-                if (
-                    currentHistFilter === "PRESTAMOS" &&
-                    t.tipo !== "Nuevo Préstamo"
-                ) return;
+                    const canEdit = (t.tipo === 'Abono / Pago' || t.tipo === 'Gasto') && currentUserRole === 'admin';
 
-                if (
-                    currentHistFilter === "GASTOS" &&
-                    t.tipo !== "Gasto"
-                ) return;
-
-                const texto = (
-                    String(t.tipo || "") +
-                    " " +
-                    String(t.detalle || "")
-                ).toLowerCase();
-
-                if (search && !texto.includes(search)) return;
-
-                const tDate =
-                    t.fechaISO ||
-                    (t.fechaStr ? t.fechaStr.split(",")[0] : "");
-
-                if (fromDate && tDate < fromDate) return;
-                if (toDate && tDate > toDate) return;
-
-                const monto = Number(t.monto) || 0;
-
-                totalSum += monto;
-                count++;
-
-                let color = "#22c55e";
-
-                if (
-                    t.tipo === "Nuevo Préstamo" ||
-                    t.tipo === "Gasto"
-                ) {
-                    color = "#ef4444";
-                }
-
-                const canEdit =
-                    currentUserRole === "admin" &&
-                    (t.tipo === "Abono / Pago" || t.tipo === "Gasto");
-
-                histList.innerHTML += `
-                    <div class="list-item">
-                        <div>
-                            <strong>${t.tipo}</strong>
-                            <small style="color: #0284c7;">
-                                (${t.metodo || "Efectivo"})
-                            </small>
-                            <br>
-                            <small style="color: #64748b;">
-                                ${t.detalle || ""}
-                            </small>
-                            <br>
-                            <small style="color: #94a3b8;">
-                                ${t.fechaStr || t.fechaISO || ""}
-                            </small>
-                        </div>
-
-                        <div style="text-align: right;">
-                            <strong style="color: ${color};">
-                                $${monto.toLocaleString()}
-                            </strong>
-                            <br>
-
-                            ${
-                                canEdit
-                                    ? `
-                                    <button
-                                        style="background: none; border: none; font-size: 11px; color: #2563eb; cursor: pointer; margin-top: 4px;"
-                                        onclick="editarTransaccion(${t.id})"
-                                    >✏️ Editar</button>
-
-                                    <button
-                                        style="background: none; border: none; font-size: 11px; color: #ef4444; cursor: pointer; margin-left: 6px;"
-                                        onclick="borrarTransaccion(${t.id})"
-                                    >🗑️</button>
-                                    `
-                                    : ""
-                            }
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        if (count === 0) {
-            histList.innerHTML =
-                '<p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay movimientos con los filtros seleccionados</p>';
-        }
-
-        const totalEl = document.getElementById("hist-total-sum");
-
-        if (totalEl) {
-            totalEl.innerText = `$${totalSum.toLocaleString()}`;
-        }
-    }
-
-    function renderClavos() {
-        const listClavos =
-            document.getElementById("lista-clientes-clavos");
-
-        const cardAddClavo =
-            document.getElementById("card-add-clavo");
-
-        if (!listClavos) return;
-
-        if (cardAddClavo) {
-            cardAddClavo.style.display =
-                currentUserRole === "admin" ? "block" : "none";
-        }
-
-        listClavos.innerHTML = "";
-
-        if (
-            window.dbState.clientesClavos &&
-            window.dbState.clientesClavos.length > 0
-        ) {
-            window.dbState.clientesClavos.forEach(c => {
-                listClavos.innerHTML += `
-                    <div class="list-item">
-                        <div>
-                            <strong>🚫 ${c.nombre}</strong>
-                            <br>
-                            <small style="color: #ef4444;">
-                                Motivo: ${c.motivo}
-                            </small>
-                            <br>
-                            <small style="color: #94a3b8;">
-                                Bloqueado el: ${c.fecha}
-                            </small>
-                        </div>
-
-                        <div>
-                            ${
-                                currentUserRole === "admin"
-                                    ? `
-                                    <button
-                                        class="btn btn-secondary"
-                                        style="padding: 4px 8px; font-size: 11px;"
-                                        onclick="eliminarClienteClavo(${c.id})"
-                                    >Desbloquear</button>
-                                    `
-                                    : '<span class="badge badge-danger">BLOQUEADO</span>'
-                            }
-                        </div>
-                    </div>
-                `;
-            });
-        } else {
-            listClavos.innerHTML =
-                '<p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay clientes bloqueados</p>';
-        }
-    }
-
-    function renderPrestamosInternos() {
-        const listInternos =
-            document.getElementById("lista-prestamos-internos");
-
-        const badgeInternos =
-            document.getElementById("total-prestamos-internos-badge");
-
-        if (!listInternos) return;
-
-        listInternos.innerHTML = "";
-
-        let totalInterno = 0;
-
-        if (
-            window.dbState.prestamosInternos &&
-            window.dbState.prestamosInternos.length > 0
-        ) {
-            window.dbState.prestamosInternos.forEach(p => {
-                totalInterno += Number(p.monto) || 0;
-
-                listInternos.innerHTML += `
-                    <div class="list-item">
-                        <div>
-                            <strong style="color: #78350f;">
-                                ${p.nombre}
-                            </strong>
-
-                            <small style="color: #0284c7;">
-                                (${p.metodo || "Efectivo"})
-                            </small>
-
-                            <br>
-
-                            <small style="color: #b45309;">
-                                Retirado: $${Number(p.monto || 0).toLocaleString()}
-                            </small>
-
-                            <br>
-
-                            <small style="color: #94a3b8;">
-                                Fecha: ${p.fecha}
-                            </small>
-                        </div>
-
-                        <div>
-                            ${
-                                currentUserRole === "admin"
-                                    ? `
-                                    <button
-                                        class="btn btn-success"
-                                        style="padding: 4px 8px; font-size: 11px;"
-                                        onclick="devolverPrestamoInterno(${p.id})"
-                                    >🔄 Devolver a Caja</button>
-                                    `
-                                    : '<span class="badge badge-pending">PENDIENTE</span>'
-                            }
-                        </div>
-                    </div>
-                `;
-            });
-        } else {
-            listInternos.innerHTML =
-                '<p style="font-size: 11px; color: #92400e; text-align: center;">No hay préstamos propios o retiros pendientes</p>';
-        }
-
-        if (badgeInternos) {
-            badgeInternos.innerText =
-                `HACE FALTA: $${totalInterno.toLocaleString()}`;
-        }
-    }
-
-    function render() {
-        if (!window.dbState) return;
-
-        const efec = Number(window.dbState.cajaEfectivo) || 0;
-        const transf = Number(window.dbState.cajaTransferencia) || 0;
-        const totalCaja = efec + transf;
-
-        const cajaActual = document.getElementById("caja-actual");
-        const cajaEfectivo = document.getElementById("caja-efectivo");
-        const cajaTransferencia = document.getElementById("caja-transferencia");
-
-        if (cajaActual) {
-            cajaActual.innerText = `$${totalCaja.toLocaleString()}`;
-        }
-
-        if (cajaEfectivo) {
-            cajaEfectivo.innerText = `$${efec.toLocaleString()}`;
-        }
-
-        if (cajaTransferencia) {
-            cajaTransferencia.innerText =
-                `$${transf.toLocaleString()}`;
-        }
-
-        document.querySelectorAll(".admin-only-btn").forEach(btn => {
-            btn.style.display =
-                currentUserRole === "admin" ? "inline" : "none";
-        });
-
-        document.querySelectorAll(".admin-only-card").forEach(card => {
-            card.style.display =
-                currentUserRole === "admin" ? "block" : "none";
-        });
-
-        let prestado = 0;
-        let cobrado = 0;
-        let totalGastos = 0;
-        let gananciaProyectadaTotal = 0;
-
-        const listActivos =
-            document.getElementById("lista-prestamos-activos");
-
-        const listFinalizados =
-            document.getElementById("lista-prestamos-finalizados");
-
-        if (!listActivos || !listFinalizados) return;
-
-        listActivos.innerHTML = "";
-        listFinalizados.innerHTML = "";
-
-        let countActivos = 0;
-        let countFinalizados = 0;
-
-        const ahoraMs = Date.now();
-
-        if (window.dbState.prestamos) {
-            window.dbState.prestamos.forEach(p => {
-                p.monto = Number(p.monto) || 0;
-                p.totalPagar = Number(p.totalPagar) || 0;
-                p.saldoPendiente = Math.max(
-                    0,
-                    Number(p.saldoPendiente) || 0
-                );
-
-                const isPaid = p.saldoPendiente === 0;
-
-                if (!isPaid) {
-                    gananciaProyectadaTotal +=
-                        p.totalPagar - p.monto;
-                }
-
-                let diasTranscurridos = 0;
-
-                if (p.fechaCreacionMs) {
-                    diasTranscurridos = Math.floor(
-                        (ahoraMs - p.fechaCreacionMs) /
-                        (1000 * 60 * 60 * 24)
-                    );
-                }
-
-                const limiteDias = Number(p.dias) || 30;
-
-                const enMora =
-                    !isPaid &&
-                    diasTranscurridos > limiteDias;
-
-                if (isPaid) {
-                    listFinalizados.innerHTML += `
-                        <div
-                            class="list-item"
-                            onclick="verEstadoCuentaCliente(${p.id})"
-                            style="cursor: pointer;"
-                        >
+                    histList.innerHTML += `
+                        <div class="list-item">
                             <div>
-                                <strong>${p.cliente}</strong> 🔍
-                                <br>
-
-                                <small style="color: #64748b;">
-                                    Finalizado - Plazo: ${p.dias} días
-                                </small>
-
-                                <br>
-
-                                <small style="color: #2563eb;">
-                                    Total Pagado:
-                                    $${p.totalPagar.toLocaleString()}
-                                </small>
+                                <strong>${t.tipo}</strong> <small style="color: #0284c7;">(${t.metodo || 'Efectivo'})</small> <br>
+                                <small style="color: #64748b;">${t.detalle}</small> <br>
+                                <small style="color: #94a3b8;">${t.fechaStr || t.fechaISO}</small>
                             </div>
-
-                            <div
-                                style="text-align: right;"
-                                onclick="event.stopPropagation()"
-                            >
-                                <span class="badge badge-paid">
-                                    SALDADO
-                                </span>
-
-                                <br>
-
-                                <button
-                                    class="btn btn-secondary"
-                                    style="padding: 4px 8px; font-size: 11px; margin-top: 6px;"
-                                    onclick="rePrestarCliente('${String(p.cliente).replace(/'/g, "\\'")}')"
-                                >🔄 Prestar</button>
-
-                                ${
-                                    currentUserRole === "admin"
-                                        ? `
-                                        <button
-                                            class="btn btn-danger"
-                                            style="padding: 4px 8px; font-size: 11px; margin-top: 6px; margin-left: 4px;"
-                                            onclick="borrarPrestamo(${p.id})"
-                                        >🗑️ Borrar</button>
-                                        `
-                                        : ""
-                                }
+                            <div style="text-align: right;">
+                                <strong style="color: ${color};">$${t.monto.toLocaleString()}</strong><br>
+                                ${canEdit ? `
+                                    <button style="background: none; border: none; font-size: 11px; color: #2563eb; cursor: pointer; margin-top: 4px;" onclick="editarTransaccion(${t.id})">✏️ Editar</button>
+                                    <button style="background: none; border: none; font-size: 11px; color: #ef4444; cursor: pointer; margin-left: 6px;" onclick="borrarTransaccion(${t.id})">🗑️</button>
+                                ` : ''}
                             </div>
                         </div>
                     `;
+                });
+            }
 
-                    countFinalizados++;
-                } else {
-                    prestado += p.saldoPendiente;
+            if (count === 0) {
+                histList.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay movimientos con los filtros seleccionados</p>';
+            }
 
-                    listActivos.innerHTML += `
-                        <div
-                            class="list-item"
-                            onclick="verEstadoCuentaCliente(${p.id})"
-                            style="cursor: pointer;"
-                        >
+            document.getElementById("hist-total-sum").innerText = `$${totalSum.toLocaleString()}`;
+        }
+
+        function renderClavos() {
+            const listClavos = document.getElementById("lista-clientes-clavos");
+            const cardAddClavo = document.getElementById("card-add-clavo");            
+            if (cardAddClavo) cardAddClavo.style.display = currentUserRole === "admin" ? "block" : "none";
+            listClavos.innerHTML = "";
+
+            if (window.dbState.clientesClavos && window.dbState.clientesClavos.length > 0) {
+                window.dbState.clientesClavos.forEach(c => {
+                    listClavos.innerHTML += `
+                        <div class="list-item">
                             <div>
-                                <strong>${p.cliente}</strong>
-                                🔍
-                                ${
-                                    enMora
-                                        ? '<span class="badge badge-danger">EN MORA</span>'
-                                        : ""
-                                }
-                                <br>
-
-                                <small style="color: #64748b;">
-                                    ${p.frecuencia} - Plazo: ${p.dias} días
-                                </small>
-
-                                <br>
-
-                                <small style="color: #2563eb;">
-                                    Monto Total:
-                                    $${p.totalPagar.toLocaleString()}
-                                </small>
+                                <strong>🚫 ${c.nombre}</strong> <br>
+                                <small style="color: #ef4444;">Motivo: ${c.motivo}</small> <br>
+                                <small style="color: #94a3b8;">Bloqueado el: ${c.fecha}</small>
                             </div>
-
-                            <div
-                                style="text-align: right;"
-                                onclick="event.stopPropagation()"
-                            >
-                                <span class="badge badge-pending">
-                                    PENDIENTE
-                                </span>
-
-                                <br>
-
-                                <strong style="color: #ef4444;">
-                                    $${p.saldoPendiente.toLocaleString()}
-                                </strong>
-
-                                <br>
-
-                                <button
-                                    class="btn btn-success"
-                                    style="padding: 4px 8px; font-size: 11px; margin-top: 4px;"
-                                    onclick="registrarPago(${p.id})"
-                                >Abonar</button>
-
-                                ${
-                                    currentUserRole === "admin"
-                                        ? `
-                                        <button
-                                            style="background: transparent; border: none; font-size: 11px; color: #2563eb; margin-left: 4px; cursor: pointer;"
-                                            onclick="editarPrestamo(${p.id})"
-                                        >✏️</button>
-
-                                        <button
-                                            style="background: transparent; border: none; font-size: 11px; color: #ef4444; margin-left: 4px; cursor: pointer;"
-                                            onclick="borrarPrestamo(${p.id})"
-                                        >🗑️</button>
-                                        `
-                                        : ""
-                                }
+                            <div>
+                                ${currentUserRole === 'admin' ? `
+                                    <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;" onclick="eliminarClienteClavo(${c.id})">Desbloquear</button>
+                                ` : '<span class="badge badge-danger">BLOQUEADO</span>'}
                             </div>
                         </div>
                     `;
+                });
+            } else {
+                listClavos.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay clientes bloqueados</p>';
+            }
+        }
 
-                    countActivos++;
-                }
+        function renderPrestamosInternos() {
+            const listInternos = document.getElementById("lista-prestamos-internos");
+            const badgeInternos = document.getElementById("total-prestamos-internos-badge");
+            
+            if (!listInternos) return;
+            listInternos.innerHTML = "";
+
+            let totalInterno = 0;
+
+            if (window.dbState.prestamosInternos && window.dbState.prestamosInternos.length > 0) {
+                window.dbState.prestamosInternos.forEach(p => {
+                    totalInterno += p.monto;                    listInternos.innerHTML += `
+                        <div class="list-item">
+                            <div>
+                                <strong style="color: #78350f;">${p.nombre}</strong> <small style="color: #0284c7;">(${p.metodo || 'Efectivo'})</small> <br>
+                                <small style="color: #b45309;">Retirado: $${p.monto.toLocaleString()}</small> <br>
+                                <small style="color: #94a3b8;">Fecha: ${p.fecha}</small>
+                            </div>
+                            <div>
+                                ${currentUserRole === 'admin' ? `
+                                    <button class="btn btn-success" style="padding: 4px 8px; font-size: 11px;" onclick="devolverPrestamoInterno(${p.id})">🔄 Devolver a Caja</button>
+                                ` : '<span class="badge badge-pending">PENDIENTE</span>'}
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                listInternos.innerHTML = '<p style="font-size: 11px; color: #92400e; text-align: center;">No hay préstamos propios o retiros pendientes</p>';
+            }
+
+            if (badgeInternos) badgeInternos.innerText = `HACE FALTA: $${totalInterno.toLocaleString()}`;
+        }
+
+        function render() {
+            const efec = window.dbState.cajaEfectivo || 0;
+            const transf = window.dbState.cajaTransferencia || 0;
+            const totalCaja = efec + transf;
+
+            document.getElementById("caja-actual").innerText = `$${totalCaja.toLocaleString()}`;
+            document.getElementById("caja-efectivo").innerText = `$${efec.toLocaleString()}`;
+            document.getElementById("caja-transferencia").innerText = `$${transf.toLocaleString()}`;
+
+            document.querySelectorAll(".admin-only-btn").forEach(btn => {
+                btn.style.display = currentUserRole === "admin" ? "inline" : "none";
             });
-        }
 
-        if (countActivos === 0) {
-            listActivos.innerHTML =
-                '<p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay préstamos activos pendientes</p>';
-        }
-
-        if (countFinalizados === 0) {
-            listFinalizados.innerHTML =
-                '<p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay préstamos saldados todavía</p>';
-        }
-
-        if (window.dbState.transacciones) {
-            window.dbState.transacciones.forEach(t => {
-                const monto = Number(t.monto) || 0;
-
-                if (t.tipo === "Gasto") {
-                    totalGastos += monto;
-                }
-
-                if (t.tipo === "Abono / Pago") {
-                    cobrado += monto;
-                }
+            document.querySelectorAll(".admin-only-card").forEach(card => {
+                card.style.display = currentUserRole === "admin" ? "block" : "none";
             });
+
+            const firebaseButton = document.getElementById("btn-config-firebase");
+            if (firebaseButton) {
+                firebaseButton.style.display = currentUserRole === "admin" ? "block" : "none";
+            }
+
+            let prestado = 0, cobrado = 0, totalGastos = 0, gananciaProyectadaTotal = 0;
+            
+            const listActivos = document.getElementById("lista-prestamos-activos");
+            const listFinalizados = document.getElementById("lista-prestamos-finalizados");
+            
+            listActivos.innerHTML = "";
+            listFinalizados.innerHTML = "";
+
+            let countActivos = 0;
+            let countFinalizados = 0;
+            const ahoraMs = Date.now();
+
+            if (window.dbState.prestamos) {
+                window.dbState.prestamos.forEach(p => {
+                    const isPaid = p.saldoPendiente === 0;
+
+                    if (!isPaid) {
+                        gananciaProyectadaTotal += (p.totalPagar - p.monto);
+                    }
+
+                    let diasTranscurridos = 0;
+                    if (p.fechaCreacionMs) {
+                        diasTranscurridos = Math.floor((ahoraMs - p.fechaCreacionMs) / (1000 * 60 * 60 * 24));
+                    }
+                    let limiteDias = p.dias || 30;
+                    let enMora = !isPaid && diasTranscurridos > limiteDias;
+
+                    if (isPaid) {
+                        listFinalizados.innerHTML += `
+                            <div class="list-item" onclick="verEstadoCuentaCliente(${p.id})" style="cursor: pointer;">
+                                <div>
+                                    <strong>${p.cliente}</strong> 🔍<br>
+                                    <small style="color: #64748b;">Finalizado - Plazo: ${p.dias} días</small> <br>
+                                    <small style="color: #2563eb;">Total Pagado: $${p.totalPagar.toLocaleString()}</small>
+                                </div>
+                                <div style="text-align: right;" onclick="event.stopPropagation()">
+                                    <span class="badge badge-paid">SALDADO</span><br>
+                                    <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px; margin-top: 6px;" onclick="rePrestarCliente('${p.cliente}')">🔄 Prestar</button>
+                                    ${currentUserRole === 'admin' ? `<button class="btn btn-danger" style="padding: 4px 8px; font-size: 11px; margin-top: 6px; margin-left: 4px;" onclick="borrarPrestamo(${p.id})">🗑️ Borrar</button>` : ''}
+                                </div>
+                            </div>
+                        `;
+                        countFinalizados++;
+                    } else {
+                        prestado += p.saldoPendiente;
+                        listActivos.innerHTML += `
+                            <div class="list-item" onclick="verEstadoCuentaCliente(${p.id})" style="cursor: pointer;">
+                                <div>
+                                    <strong>${p.cliente}</strong> 🔍 ${enMora ? '<span class="badge badge-danger">EN MORA</span>' : ''}<br>
+                                    <small style="color: #64748b;">${p.frecuencia} - Plazo: ${p.dias} días</small> <br>
+                                    <small style="color: #2563eb;">Monto Total: $${p.totalPagar.toLocaleString()}</small>
+                                </div>
+                                <div style="text-align: right;" onclick="event.stopPropagation()">
+                                    <span class="badge badge-pending">PENDIENTE</span><br>
+                                    <strong style="color: #ef4444;">$${p.saldoPendiente.toLocaleString()}</strong><br>
+                                    <button class="btn btn-success" style="padding: 4px 8px; font-size: 11px; margin-top: 4px;" onclick="registrarPago(${p.id})">Abonar</button>
+                                    ${currentUserRole === 'admin' ? `
+                                        <button style="background: transparent; border: none; font-size: 11px; color: #2563eb; margin-left: 4px; cursor: pointer;" onclick="editarPrestamo(${p.id})">✏️</button>
+                                        <button style="background: transparent; border: none; font-size: 11px; color: #ef4444; margin-left: 4px; cursor: pointer;" onclick="borrarPrestamo(${p.id})">🗑️</button>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        `;
+                        countActivos++;
+                    }
+                });
+            }
+
+            if (countActivos === 0) {
+                listActivos.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay préstamos activos pendientes</p>';
+            }
+
+            if (countFinalizados === 0) {
+                listFinalizados.innerHTML = '<p style="text-align: center; color: #94a3b8; font-size: 13px;">No hay préstamos saldados todavía</p>';
+            }
+
+            if (window.dbState.transacciones) {
+                window.dbState.transacciones.forEach(t => {
+                    if (t.tipo === 'Gasto') totalGastos += t.monto;
+                    if (t.tipo === 'Abono / Pago') cobrado += t.monto;
+                });
+            }
+
+            document.getElementById("total-prestado").innerText = `$${prestado.toLocaleString()}`;
+            document.getElementById("total-cobrado").innerText = `$${cobrado.toLocaleString()}`;
+            document.getElementById("total-gastos").innerText = `$${totalGastos.toLocaleString()}`;
+            document.getElementById("ganancia-proyectada").innerText = `$${gananciaProyectadaTotal.toLocaleString()}`;
+
+            calcularCierreDiario();
+            renderHistorial();
+            renderClavos();
+            renderPrestamosInternos();
         }
-
-        const totalPrestadoEl =
-            document.getElementById("total-prestado");
-
-        const totalCobradoEl =
-            document.getElementById("total-cobrado");
-
-        const totalGastosEl =
-            document.getElementById("total-gastos");
-
-        const gananciaEl =
-            document.getElementById("ganancia-proyectada");
-
-        if (totalPrestadoEl) {
-            totalPrestadoEl.innerText =
-                `$${prestado.toLocaleString()}`;
-        }
-
-        if (totalCobradoEl) {
-            totalCobradoEl.innerText =
-                `$${cobrado.toLocaleString()}`;
-        }
-
-        if (totalGastosEl) {
-            totalGastosEl.innerText =
-                `$${totalGastos.toLocaleString()}`;
-        }
-
-        if (gananciaEl) {
-            gananciaEl.innerText =
-                `$${gananciaProyectadaTotal.toLocaleString()}`;
-        }
-
-        calcularCierreDiario();
-        renderHistorial();
-        renderClavos();
-        renderPrestamosInternos();
-    }
-</script>
+    </script>
 </body>
 </html>
